@@ -1,0 +1,51 @@
+/* SWING CMS APP LAYOUT CSS */
+
+/* *******************
+- Reusable Media Queries Sentences
+
+// Laptops and Computers
+@media all and (min-width: 56.25em) {
+}
+
+// Tablets
+@media all and (max-width: 56.24em) {
+}
+
+// Smartphones
+@media all and (max-width: 39.99em) {
+}
+
+********************** */
+
+@use "swing_theme_variables" as stv;
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: stv.$swing-theme-background;
+    display: flex;
+    font-size: 1rem;
+    font-family: stv.$swing-typography-font-family;
+}
+
+.mdc-drawer-app-content {
+    flex: auto;
+    height: 100vh;
+    overflow: auto;
+    position: relative;
+}
+
+.s-main-content {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    justify-content: space-evenly;
+}
+
+.s-footer {
+    padding: 2rem;
+}

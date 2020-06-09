@@ -1,0 +1,204 @@
+{% extends 'layout_main.html' %}
+{% block drawer %}
+<aside class="mdc-drawer">
+    <div class="mdc-drawer__header">
+        <img id="logo-nav-drawer" src="{{ url_for('static', filename='images/manifest/contact-os.svg') }}"
+            alt="Logo HappY" />
+        <h3 class="mdc-drawer__title">Contact-Os</h3>
+        <h6 class="mdc-drawer__subtitle">Asistencia Remota</h6>
+    </div>
+    <div class="mdc-drawer__content">
+        <nav class="mdc-list">
+            <a class="mdc-list-item" href="/" aria-current="page" tabindex="0">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">360</i>
+                <span class="mdc-list-item__text">Entrada</span>
+            </a>
+            <a class="mdc-list-item" href="/recepcion/">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">home</i>
+                <span class="mdc-list-item__text">Recepción</span>
+            </a>
+            <a class="mdc-list-item" href="/orientacion/">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">emoji_people</i>
+                <span class="mdc-list-item__text">Oficinas de Orientación</span>
+            </a>
+            <a class="mdc-list-item" href="/jardin/">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">local_florist</i>
+                <span class="mdc-list-item__text">Jardín</span>
+            </a>
+            <a class="mdc-list-item" href="/recreo/">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">deck</i>
+                <span class="mdc-list-item__text">Zona de Recreo</span>
+            </a>
+            <a class="mdc-list-item" href="/cafeteria/">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">local_cafe</i>
+                <span class="mdc-list-item__text">Cafetería</span>
+            </a>
+            <hr class="mdc-list-divider s-mdc-list-divider">
+            <a class="mdc-list-item" href="/autonomia-economica/">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">poll</i>
+                <span class="mdc-list-item__text">Autonomía Económica</span>
+            </a>
+            <a class="mdc-list-item" href="/clases-computacion/">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">chevron_right</i>
+                <span class="mdc-list-item__text">Clases de Computación</span>
+            </a>
+            <a class="mdc-list-item" href="/cursos-agricultura/">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">chevron_right</i>
+                <span class="mdc-list-item__text">Cursos de Agricultura</span>
+            </a>
+            <a class="mdc-list-item" href="/cursos-cocina/">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">chevron_right</i>
+                <span class="mdc-list-item__text">Cursos de Cocina</span>
+            </a>
+            <a class="mdc-list-item" href="/taller-alta-costura/">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">chevron_right</i>
+                <span class="mdc-list-item__text">Taller de Alta Costura</span>
+            </a>
+            <a class="mdc-list-item" href="/taller-emprendedurismo/">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">chevron_right</i>
+                <span class="mdc-list-item__text">Taller de Emprendedurismo</span>
+            </a>
+            <hr class="mdc-list-divider s-mdc-list-divider">
+            <a class="mdc-list-item" href="/acercade/">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">info</i>
+                <span class="mdc-list-item__text">Acerca de...</span>
+            </a>
+        </nav>
+    </div>
+</aside>
+<div class="mdc-drawer-scrim"></div>
+{% endblock %}
+{% block topbar %}
+<header class="mdc-top-app-bar">
+    <div class="mdc-top-app-bar__row">
+        <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button" aria-label="Menu">
+                menu
+            </button>
+            <span class="mdc-top-app-bar__title topAppBar-title">
+                <a href="/">Contact-Os</a>
+            </span>
+        </section>
+        <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
+            <div class="mdc-menu-surface--anchor">
+                <button id="shareButton" class="mdc-top-app-bar__action-item mdc-icon-button"
+                    aria-label="Share" alt="Share">
+                    <i class="material-icons mdc-icon-button__icon">share</i>
+                </button>
+                <div id="shareMenu" class="mdc-menu mdc-menu-surface" tabindex="-1">
+                    <ul class="mdc-list mdc-menu__items" role="menu" aria-hidden="true">
+                        <li class="mdc-list-item" role="menuitem" tabindex="0">
+                            <i class="classic-color-em material-icons mdc-list-item__graphic"
+                                aria-hidden="true">email</i>
+                            Email
+                        </li>
+                        <li class="mdc-list-item" role="menuitem" tabindex="0">
+                            <i class="classic-color-fb mdc-list-item__graphic fa fa-facebook" aria-hidden="true"></i>
+                            Facebook
+                        </li>
+                        <li class="mdc-list-item" role="menuitem" tabindex="0">
+                            <i class="classic-color-li mdc-list-item__graphic fa fa-linkedin" aria-hidden="true"></i>
+                            LinkedIn
+                        </li>
+                        <li class="mdc-list-item" role="menuitem" tabindex="0">
+                            <i class="classic-color-tw mdc-list-item__graphic fa fa-twitter" aria-hidden="true"></i>
+                            Twitter
+                        </li>
+                        <li class="mdc-list-item" role="menuitem" tabindex="0">
+                            <i class="classic-color-wa mdc-list-item__graphic fa fa-whatsapp" aria-hidden="true"></i>
+                            WhatsApp
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- 
+            <button id="loginButton" class="mdc-button mdc-button--raised topAppBar-button" aria-label="Login" alt="Login">
+                Login
+            </button> 
+            -->
+        </section>
+    </div>
+</header>
+{% endblock %}
+{% block footer %}
+<div class="mdc-snackbar" aria-live="assertive" aria-atomic="true" aria-hidden="true">
+    <div class="mdc-snackbar__surface">
+        <div class="mdc-snackbar__label" role="status" aria-live="polite"></div>
+        <div class="mdc-snackbar__actions">
+            <button type="button" class="mdc-button mdc-snackbar__action"></button>
+        </div>
+    </div>
+</div>
+{% block bottombar %}{% endblock %}
+<footer class="s-footer">
+    <section class="footer-about">
+        <div class="footer-section__title">
+            Contact-Os
+        </div>
+        <div class="footer-about__text">
+            Poniendo en ContactO a las personas y los servicios.
+        </div>
+        <span class="footer-about__author">
+            RXDBit
+        </span>
+    </section>
+    <section class="footer-followus">
+        <div class="footer-section__title">
+            Sigue conectado con nosotros
+        </div>
+        <div class="footer-followus__list">
+            <ul class="mdc-list" aria-orientation="vertical" aria-hidden="true">
+                <li class="mdc-list-item">
+                    <a href="https://www.facebook.com/" target="_blank" rel="external">
+                        <i class="mdc-list-item__graphic fa fa-facebook" aria-hidden="true"></i>
+                        Facebook
+                    </a>
+                </li>
+                <li class="mdc-list-item">
+                    <a href="https://twitter.com/" target="_blank" rel="external">
+                        <i class="mdc-list-item__graphic fa fa-twitter" aria-hidden="true"></i>
+                        Twitter
+                    </a>
+                </li>
+                <li class="mdc-list-item">
+                    <a href="https://www.youtube.com/" target="_blank"
+                        rel="external">
+                        <i class="mdc-list-item__graphic fa fa-youtube" aria-hidden="true"></i>
+                        YouTube
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </section>
+    <section class="footer-contactus">
+        <div class="footer-section__title">
+            Contáctanos
+        </div>
+        <div class="footer-contactus__list">
+            <ul class="mdc-list" aria-orientation="vertical" aria-hidden="true">
+                <!-- <li class="mdc-list-item">
+                    <a href="https://www.google.com/maps/search/Ciudad+Mujer/@13.7162107,-89.3177012,12z" target="_blank" rel="external">
+                        <i class="material-icons mdc-list-item__graphic" aria-hidden="true">map</i>
+                        Encuéntranos en Google Maps
+                    </a>
+                </li> -->
+                <li class="mdc-list-item" itemscope itemtype="http://schema.org/LocalBusiness">
+                    <a href="tel:+50311223344" rel="external">
+                        <i class="material-icons mdc-list-item__graphic" aria-hidden="true">phone</i>
+                        <span itemprop="telephone">+503 1122 3344</span>
+                    </a>
+                </li>
+                <li class="mdc-list-item">
+                    <a href="mailto:info@rxdbit.com" target="_blank" rel="external">
+                        <i class="material-icons mdc-list-item__graphic" aria-hidden="true">email</i>
+                        info@rxdbit.com
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </section>
+    <section class="footer-copyright">
+        Contact-Os. Derechos reservados | Diseñado por RXDBit
+    </section>
+</footer>
+{% endblock %}
