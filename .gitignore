@@ -171,10 +171,10 @@ typings/
 .next
 
 # sass compiled js placeholder
-static/css/compile_placeholder.js
+static/css/bundle/
 
 # js compiled bundle
-static/js/swing-bundle.js
+static/js/bundle/
 
 # Migrate-Alembic ini file
 alembic.ini
