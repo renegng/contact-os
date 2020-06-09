@@ -1,4 +1,4 @@
-{% extends 'layout_topbar_footer.html' %}
+{% extends 'layout_topbar_drawer_footer.html' %}
 {% block page_description %}Contact-Os Components{% endblock %}
 {% block page_title %}Contact-Os Components{% endblock %}
 {% block body %}
@@ -79,22 +79,12 @@
                                     <li class="mdc-list-item" role="menuitem">
                                         <span class="mdc-list-item__text">Body 2</span>
                                     </li>
-                                    <li class="mdc-list-item" role="menuitem">
-                                        <span class="mdc-list-item__text">Body 2</span>
-                                    </li>
-                                    <li class="mdc-list-item" role="menuitem">
-                                        <span class="mdc-list-item__text">Body 2</span>
-                                    </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </section>
             </div>
-        </div>
-    </div>
-    <div class="mdc-layout-grid">
-        <div class="mdc-layout-grid__inner">
             <div class="mdc-layout-grid__cell">
                 <section class="component-section">
                     <div class="section-header">
@@ -104,15 +94,18 @@
                             <i class="material-icons">open_in_new</i>
                         </a>
                     </div>
-                    <div class="component-wrapper button-component-wrapper">
-                        <button class="mdc-button mdc-button--raised">
-                            Button
-                        </button>
+                    <div class="">
                         <button class="mdc-button">
-                            Button
+                            <div class="mdc-button__ripple"></div>
+                            <span class="mdc-button__label">Text Button</span>
                         </button>
                         <button class="mdc-button mdc-button--outlined">
-                            Button
+                            <div class="mdc-button__ripple"></div>
+                            <span class="mdc-button__label">Outlined Button</span>
+                        </button>
+                        <button class="mdc-button mdc-button--raised">
+                            <div class="mdc-button__ripple"></div>
+                            <span class="mdc-button__label">Button</span>
                         </button>
                     </div>
                 </section>
@@ -166,6 +159,80 @@
                                     <li class="mdc-list-item" role="menuitem">
                                         <span class="mdc-list-item__text">Body 2</span>
                                     </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="mdc-layout-grid__cell">
+                <section class="component-section">
+                    <div class="section-header">
+                        <a href="https://material.io/design/components/buttons.html" class="mdc-typography--button"
+                            target="_blank">
+                            Button
+                            <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    <div class="">
+                        <button class="mdc-button">
+                            <div class="mdc-button__ripple"></div>
+                            <span class="mdc-button__label">Text Button</span>
+                        </button>
+                        <button class="mdc-button mdc-button--outlined">
+                            <div class="mdc-button__ripple"></div>
+                            <span class="mdc-button__label">Outlined Button</span>
+                        </button>
+                        <button class="mdc-button mdc-button--raised">
+                            <div class="mdc-button__ripple"></div>
+                            <span class="mdc-button__label">Button</span>
+                        </button>
+                    </div>
+                </section>
+            </div>
+            <div class="mdc-layout-grid__cell">
+                <section class="component-section">
+                    <div class="section-header">
+                        <a href="https://material.io/design/components/app-bars-top.html" class="mdc-typography--button"
+                            target="_blank">
+                            Top App Bar
+                            <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    <div class="component-wrapper top-bar-component-wrapper">
+                        <header class="mdc-top-app-bar mdc-top-app-bar--fixed">
+                            <div class="mdc-top-app-bar__row">
+                                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+                                    <a class="material-icons mdc-top-app-bar__navigation-icon">menu</a>
+                                    <span class="mdc-top-app-bar__title">Headline 6</span>
+                                </section>
+                                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end"
+                                    role="toolbar">
+                                    <a class="material-icons mdc-icon-button mdc-top-app-bar__action-item"
+                                        aria-label="Share" alt="Share">share</a>
+                                    <a class="material-icons mdc-icon-button mdc-top-app-bar__action-item"
+                                        aria-label="Bookmark this page" alt="Bookmark this page">bookmark</a>
+                                    <a class="material-icons mdc-icon-button mdc-top-app-bar__action-item"
+                                        aria-label="Search this page" alt="Search this page">search</a>
+                                </section>
+                            </div>
+                        </header>
+                    </div>
+                </section>
+            </div>
+            <div class="mdc-layout-grid__cell">
+                <section class="component-section menu-section">
+                    <div class="section-header">
+                        <a href="https://material.io/design/components/menus.html" class="mdc-typography--button"
+                            target="_blank">
+                            Menu
+                            <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    <div class="component-wrapper">
+                        <div class="mdc-menu-surface--anchor">
+                            <div class="mdc-menu mdc-menu-surface mdc-menu-surface--open" tabindex="-1">
+                                <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical">
                                     <li class="mdc-list-item" role="menuitem">
                                         <span class="mdc-list-item__text">Body 2</span>
                                     </li>

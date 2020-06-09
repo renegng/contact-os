@@ -148,6 +148,12 @@
 }
 
 /* Drawer */
+.mdc-drawer__header {
+    img {
+        width: 9rem;
+        margin: 1rem auto;
+    }
+}
 .drawer-component-wrapper {
     background: stv.$swing-theme-primary;
 
@@ -236,6 +242,13 @@
 /* Top app bar */
 .mdc-top-app-bar {
     position: absolute;
+
+    .mdc-top-app-bar__title {
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+    }
 }
 
 .mdc-top-app-bar__navigation-icon--hidden {
