@@ -181,6 +181,17 @@
 }
 
 /* List */
+.mdc-list {
+    .mdc-list-item {
+        a {
+            color: inherit;
+            display: inline-flex;
+            text-decoration: inherit;
+            width: 100%;
+        }
+    }
+}
+
 .component-wrapper > .mdc-list {
     border: 0.0625rem solid rgba(0, 0, 0, 0.1);
     background: stv.$swing-theme-background;
@@ -191,7 +202,11 @@
             rgba(0, 0, 0, 0.12),
             rgba(255, 255, 255, 0.12)
         );
-        color: if(theme.contrast-tone(stv.$swing-theme-background) == "dark", rgba(0, 0, 0, 0.68), rgba(255, 255, 255, 0.68));
+        color: if(
+            theme.contrast-tone(stv.$swing-theme-background) == "dark",
+            rgba(0, 0, 0, 0.68),
+            rgba(255, 255, 255, 0.68)
+        );
     }
 }
 

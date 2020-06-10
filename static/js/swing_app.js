@@ -137,6 +137,12 @@ var mdcLineRipples = [].map.call(document.querySelectorAll('.mdc-line-ripple'), 
     return new MDCLineRipple(el);
 });
 
+// Material Lists
+var mdcLists = [].map.call(document.querySelectorAll('.mdc-list'), function (el) {
+    let elList = new MDCList(el);
+    return elList.listElements.map((listItemEl) => new MDCRipple(listItemEl));
+});
+
 // Material Notched Ouline
 var mdcNotchedOutlines = [].map.call(document.querySelectorAll('.mdc-notched-outline'), function (el) {
     return new MDCNotchedOutline(el);

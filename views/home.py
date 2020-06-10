@@ -11,8 +11,13 @@ home = Blueprint('home', __name__, template_folder='templates', static_folder='s
 @home.route('/')
 def _index():
     app.logger.debug('** SWING_CMS ** - Index')
+    # return render_template('components.html')
+    return redirect(url_for('home._welcome'))
+
+@home.route('/components/')
+def _components():
+    app.logger.debug('** SWING_CMS ** - Welcome')
     return render_template('components.html')
-    # return redirect(url_for('home._welcome'))
 
 
 @home.route('/welcome/')

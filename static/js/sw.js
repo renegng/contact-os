@@ -9,7 +9,9 @@ const filesToPreCache = [
     { url: '/politicaprivacidad/', revision: '2020-06-08-1' },
     { url: '/terminosdelservicio/', revision: '2020-06-08-1' },
     // Images
-    { url: '/static/images/manifest/bid_slogan.png', revision: '2020-06-08-1' }
+    { url: '/static/images/manifest/bid_slogan.png', revision: '2020-06-08-1' },
+    { url: '/static/images/manifest/contact-os.svg', revision: '2020-06-08-1' },
+    { url: '/static/images/manifest/icon-512x512.png', revision: '2020-06-08-1' }
 ];
 
 // Importing Google's Workbox library for ServiceWorker implementation

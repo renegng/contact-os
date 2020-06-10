@@ -1,157 +1,108 @@
-{% extends 'layout_topbar_footer.html' %}
-{% block page_description %}Contact-Os, Asistencia Remota, Conectando personas y servicios, ContactO{% endblock %}
-{% block page_title %}Contact-Os{% endblock %}
+{% extends 'layout_footer.html' %}
+{% block page_description %}Contact-Os, Welcome, Home, Inicio, Bienvenida{% endblock %}
+{% block page_title %}Contact-Os Welcome{% endblock %}
 {% block body %}
 <main class="s-main-content mdc-top-app-bar--fixed-adjust">
-    <section>
-        <div class="parallax-caption">
-            <img src="../static/images/manifest/icon-192x192.png" alt="Big Picture">
-            <span class="parallax-caption--dark">Inicia sesión</span>
-        </div>
-        <div id="s-loader" class="s-loader"></div>
-        <div id="firebaseui-auth-container" class="firebase-auth-widget"></div>
-    </section>
-    <section class="parallax-div parallax-div--light">
-        <h2>
-            Contact-Os
-        </h2>
-        <div class="parallax-content">
-            <div class="parallax-content--wrap-left">
-                <i class="material-icons" aria-hidden="true">account_circle</i>
-            </div>
-            <div class="parallax-content--text">
-                <p>
-                    En <b>Contact-Os</b> encontrarás un espacio dedicado especialmente para ti.
-                </p>
-                <p>
-                    Esta sección te brindará herramientas pensadas para ti, que te serán de mucha ayuda en tu día a
-                    día. Lo único que necesitarás hacer para utilizarlas es registrarte con nuestra app por medio
-                    de una de las siguientes opciones:
-                    <ul class="mdc-list mdc-menu__items" role="menu" aria-hidden="true" aria-orientation="vertical">
-                        <li class="mdc-list-item" role="menuitem" tabindex="0">
-                            <i class="classic-color-gp mdc-list-item__graphic fa fa-google" aria-hidden="true"></i>
-                            <span class="mdc-list-item__text">
-                                <span class="mdc-list-item__primary-text">Google</span>
-                            </span>
-                        </li>
-                        <li role="separator" class="mdc-list-divider"></li>
-                        <li class="mdc-list-item" role="menuitem" tabindex="0">
-                            <i class="classic-color-fb mdc-list-item__graphic fa fa-facebook" aria-hidden="true"></i>
-                            <span class="mdc-list-item__text">
-                                <span class="mdc-list-item__primary-text">Facebook</span>
-                            </span>
-                        </li>
-                        <li role="separator" class="mdc-list-divider"></li>
-                        <li class="mdc-list-item" role="menuitem" tabindex="0">
-                            <i class="classic-color-em material-icons mdc-list-item__graphic" aria-hidden="true">email</i>
-                            <span class="mdc-list-item__text">
-                                <span class="mdc-list-item__primary-text">Correo Electrónico</span>
-                            </span>
-                        </li>
-                        
-                    </ul>
-                </p>
+    <div class="container-color-background">
+        <div class="mdc-layout-grid container-size-l">
+            <div class="mdc-layout-grid__inner">
+                <div
+                    class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--align-middle">
+                    <h2 class="mdc-typography--headline2 s-font-color-primary s-font-align-center">
+                        Contact-Os
+                    </h2>
+                    <h6 class="mdc-typography--headline6">
+                        Atención y servicios a un click de distancia.
+                    </h6>
+                    <p class="mdc-typography--body1 s-font-color-secondary">
+                        Brindamos una plataforma moderna, segura y fácil de usar, con diferentes herramientas de
+                        comunicación, para que puedas entrar en <b>Contact-O</b> de manera digital y confidencial con
+                        personal calificado en diferentes servicios pensados para ti.
+                    </p>
+                    <p>
+                        <button class="mdc-button mdc-button--raised">
+                            <div class="mdc-button__ripple"></div>
+                            <span class="mdc-button__label">Pruebalo ahora</span>
+                        </button>
+                    </p>
+                </div>
+                <div
+                    class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle">
+                    <img class="resize-image-2fit-90"
+                        src="{{ url_for('static', filename='images/manifest/contact-os.svg') }}"
+                        alt="Logo Contact-Os" />
+                </div>
             </div>
         </div>
-    </section>
-    <section class="parallax parallax--small" style="background-image: url(https://source.unsplash.com/1600x900/?tech);">
-        <div class="parallax-caption">
-            <span class="parallax-caption--light">Lista de Quehaceres</span>
-        </div>
-    </section>
-    <section class="parallax-div parallax-div--dark">
-        <h2>
-            Tu lista personal de tareas y pendientes
-        </h2>
-        <div class="parallax-content">
-            <div class="parallax-content--wrap-right">
-                <i class="material-icons" aria-hidden="true">list_alt</i>
-            </div>
-            <div class="parallax-content--text">
-                <p>
-                    <b>Contact-Os</b> te ayudará a que nunca olvides aquello importante para ti.
-                </p>
-                <p>
-                    Carga contigo, siempre y en todo lugar, tu lista de quehaceres, tareas pendientes, tareas por
-                    realizar o metas por alcanzar. Esto te brindará beneficios como:
-                    <ul class="mdc-list mdc-menu__items" role="menu" aria-hidden="true" aria-orientation="vertical">
-                        <li class="mdc-list-item" role="menuitem" tabindex="0">
-                            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">short_text</i>
-                            <span class="mdc-list-item__text">
-                                <span class="mdc-list-item__primary-text">Priorizar tus tareas</span>
-                            </span>
-                        </li>
-                        <li role="separator" class="mdc-list-divider"></li>
-                        <li class="mdc-list-item" role="menuitem" tabindex="0">
-                            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">short_text</i>
-                            <span class="mdc-list-item__text">
-                                <span class="mdc-list-item__primary-text">Organizar mejor tu tiempo</span>
-                            </span>
-                        </li>
-                        <li role="separator" class="mdc-list-divider"></li>
-                        <li class="mdc-list-item" role="menuitem" tabindex="0">
-                            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">short_text</i>
-                            <span class="mdc-list-item__text">
-                                <span class="mdc-list-item__primary-text">Volverte aún más productiva</span>
-                            </span>
-                        </li>
-                    </ul>
-                </p>
+    </div>
+    <div class="container-color-surface">
+        <div class="mdc-layout-grid container-size-m">
+            <div class="mdc-layout-grid__inner">
+                <div
+                    class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--align-middle">
+                    <h2 class="mdc-typography--headline2 s-font-color-secondary s-font-align-center">
+                        Diferentes formas para comunicarse
+                    </h2>
+                </div>
+                <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-top">
+                    <i class="material-icons s-font-size-l s-font-color-primary" aria-hidden="true">chat</i>
+                    <p class="mdc-typography--body1">
+                        Mensajes por Chat
+                    </p>
+                    <p class="mdc-typography--body2">
+                        Muchas veces es más eficiente y cómodo escribir tus pensamientos.
+                    </p>
+                </div>
+                <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-top">
+                    <i class="material-icons s-font-size-l s-font-color-primary" aria-hidden="true">phone</i>
+                    <p class="mdc-typography--body1">
+                        Llamada de Voz
+                    </p>
+                    <p class="mdc-typography--body2">
+                        Agenda una llamada de voz con un agente por medio de nuestra plataforma.
+                    </p>
+                </div>
+                <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-top">
+                    <i class="material-icons s-font-size-l s-font-color-primary" aria-hidden="true">voice_chat</i>
+                    <p class="mdc-typography--body1">
+                        Videollamada
+                    </p>
+                    <p class="mdc-typography--body2">
+                        Una videollamada puede resultar una experiencia mucho más personal.
+                    </p>
+                </div>
             </div>
         </div>
-    </section>
-    <section class="parallax parallax--small" style="background-image: url(https://source.unsplash.com/1600x900/?buildings);">
-        <div class="parallax-caption">
-            <span class="parallax-caption--dark">Notificaciones</span>
-        </div>
-    </section>
-    <section class="parallax-div parallax-div--light">
-        <h2>
-            Notificaciones y Recordatorios
-        </h2>
-        <div class="parallax-content">
-            <div class="parallax-content--wrap-left">
-                <i class="material-icons" aria-hidden="true">notifications</i>
-            </div>
-            <div class="parallax-content--text">
-                <p>
-                    Por medio de <b>Contact-Os</b>, recibirás notificaciones y recordatorios directamente a tu
-                    dispositivo.
-                </p>
-                <p>
-                    Mantendremos un enlace directo de comunicación contigo, para poder informarte sobre noticias y
-                    anuncios relevantes de Ciudad Mujer. Además recibirás recordatorios sobre eventos
-                    importantes. Todo esto y más, para poder ofrecerte:
-                    <ul class="mdc-list mdc-menu__items" role="menu" aria-hidden="true" aria-orientation="vertical">
-                        <li class="mdc-list-item" role="menuitem" tabindex="0">
-                            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">short_text</i>
-                            <span class="mdc-list-item__text">
-                                <span class="mdc-list-item__primary-text">Información directa</span>
-                            </span>
-                        </li>
-                        <li role="separator" class="mdc-list-divider"></li>
-                        <li class="mdc-list-item" role="menuitem" tabindex="0">
-                            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">short_text</i>
-                            <span class="mdc-list-item__text">
-                                <span class="mdc-list-item__primary-text">Recordatorios importantes</span>
-                            </span>
-                        </li>
-                        <li role="separator" class="mdc-list-divider"></li>
-                        <li class="mdc-list-item" role="menuitem" tabindex="0">
-                            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">short_text</i>
-                            <span class="mdc-list-item__text">
-                                <span class="mdc-list-item__primary-text">Mensajes de interés</span>
-                            </span>
-                        </li>
-                    </ul>
-                </p>
+    </div>
+    <div class="container-color-background">
+        <div class="mdc-layout-grid container-size-m">
+            <div class="mdc-layout-grid__inner">
+                <div
+                    class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle">
+                    <img class="resize-image-2fit-70"
+                        src="{{ url_for('static', filename='images/manifest/calendar.svg') }}" alt="Calendario" />
+                </div>
+                <div
+                    class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--align-middle">
+                    <h2 class="mdc-typography--headline2 s-font-color-primary s-font-align-center">
+                        Reserva tu cita
+                    </h2>
+                    <h6 class="mdc-typography--headline6">
+                        Puedes reservar tu cita de servicio.
+                    </h6>
+                    <p class="mdc-typography--body1 s-font-color-secondary">
+                        Al registrarte en la plataforma, tendrás acceso a la opción de poder reservar la cita en el día
+                        y hora que te sea más conveniente.
+                    </p>
+                    <p>
+                        <button class="mdc-button mdc-button--outlined">
+                            <div class="mdc-button__ripple"></div>
+                            <span class="mdc-button__label">Registrate aquí</span>
+                        </button>
+                    </p>
+                </div>
             </div>
         </div>
-    </section>
-    <section class="parallax parallax--small">
-        <div class="parallax-caption">
-            <span class="parallax-caption--dark">¡Y todo de manera <b>GRATUITA</b>!.</span>
-        </div>
-    </section>
+    </div>
 </main>
 {% endblock %}
