@@ -20,6 +20,12 @@ def _acercade():
     return render_template('acercade.html')
 
 
+@home.route('/chat/')
+def _chat():
+    app.logger.debug('** SWING_CMS ** - Try Chat')
+    return render_template('chat.html')
+
+
 @home.route('/components/')
 def _components():
     app.logger.debug('** SWING_CMS ** - Welcome')
@@ -74,7 +80,7 @@ def _loginuser():
             user.email = fbUser.email
             user.name = fbUser.display_name
             user.datecreated = datetime.datetime.utcnow()
-            user.cmsvuserid = 'CNTC-' + user.name.strip().upper()[0:1] + user.datecreated.strftime('-%y%m%d-%H%M%S')
+            user.cmuserid = 'CNOS-' + user.name.strip().upper()[0:1] + user.datecreated.strftime('-%y%m%d-%H%M%S')
             
             db.session.add(user)
             db.session.commit()
@@ -84,7 +90,7 @@ def _loginuser():
         createLoginSession(user)
         
         # Return Session Cookie
-        response = createCookieSession(idToken, 'redirectURL', '/home/')
+        response = createCookieSession(idToken, 'redirectURL', '/chat/')
         return response
 
     except Exception as e:

@@ -1,0 +1,51 @@
+{% extends 'layout_main-drawer_footer_topbar.html' %}
+{% block page_description %}Contact-Os Chat, Mensajes de Texto por Chat, Mensajes{% endblock %}
+{% block page_title %}Contact-Os Chat{% endblock %}
+{% block body %}
+<main class="s-main-content mdc-top-app-bar--fixed-adjust">
+    <div class="container-chat">
+        <div class="container-color-surface container-chat--canvas">
+            <div class="mdc-layout-grid container-chat--grid">
+                <div class="mdc-layout-grid__inner container-chat--grid__inner">
+                    <div
+                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
+                                mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--topbar component-wrapper">
+                        <header class="mdc-top-app-bar mdc-top-app-bar--dense">
+                            <div class="mdc-top-app-bar__row">
+                                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end"
+                                    role="toolbar">
+                                    <a class="material-icons mdc-icon-button mdc-top-app-bar__action-item"
+                                        aria-label="Search this page" alt="Search this page">duo</a>
+                                    <a class="material-icons mdc-icon-button mdc-top-app-bar__action-item"
+                                        aria-label="Search this page" alt="Search this page">add_ic_call</a>
+                                </section>
+                            </div>
+                        </header>
+                    </div>
+                    <div
+                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
+                                mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--body">
+                        Cuerpo del Chat
+                    </div>
+                    <div
+                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
+                                mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--footer">
+                        <label
+                            class="mdc-text-field mdc-text-field--with-trailing-icon mdc-text-field--outlined mdc-text-field--textarea">
+                            <textarea class="mdc-text-field__input" aria-label="Message Area"></textarea>
+                            <i class="material-icons mdc-text-field__icon mdc-text-field__icon--trailing">send</i>
+                            <span class="mdc-notched-outline">
+                                <span class="mdc-notched-outline__leading"></span>
+                                <span class="mdc-notched-outline__notch">
+                                    <span class="mdc-floating-label" id="my-label-id">Escribe tu mensaje...</span>
+                                </span>
+                                <span class="mdc-notched-outline__trailing"></span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

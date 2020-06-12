@@ -76,6 +76,7 @@
 @use "@material/tab-indicator/mdc-tab-indicator";
 @use "@material/tab-scroller";
 @use "@material/tab-scroller/mdc-tab-scroller";
+@use "@material/textfield/icon";
 @use "@material/textfield/helper-text";
 @use "@material/textfield";
 @use "@material/top-app-bar";
@@ -88,6 +89,7 @@
 @include card.core-styles;
 @include fab.core-styles;
 @include floating-label.core-styles;
+@include icon.icon-core-styles;
 @include icon-button.core-styles;
 @include image-list.core-styles;
 @include line-ripple.core-styles;
@@ -281,7 +283,8 @@
 }
 
 .component-wrapper .mdc-top-app-bar {
-    @include elevation.elevation(4);
+    border-radius: 0.5rem;
+    @include top-app-bar.fill-color(stv.$swing-theme-secondary);
     position: relative;
     z-index: 1;
 

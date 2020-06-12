@@ -16,6 +16,7 @@ import { MDCTabIndicator } from '@material/tab-indicator';
 import { MDCTabScroller } from '@material/tab-scroller';
 import { MDCTextField } from '@material/textfield';
 import { MDCTextFieldHelperText } from '@material/textfield/helper-text';
+import { MDCTextFieldIcon } from '@material/textfield/icon';
 import { MDCTopAppBar } from '@material/top-app-bar';
 import { Workbox } from 'workbox-window/Workbox.mjs';
 import { isNull } from 'util';
@@ -162,6 +163,11 @@ var mdcTextInputs = [].map.call(document.querySelectorAll('.mdc-text-field'), fu
 // Material Textfields Helper Text
 var mdcTFHelperTexts = [].map.call(document.querySelectorAll('.mdc-text-field-helper-text'), function (el) {
     return new MDCTextFieldHelperText(el);
+});
+
+// Material Textfields
+var mdcTextInputsIcons = [].map.call(document.querySelectorAll('.mdc-text-field-icon'), function (el) {
+    return new MDCTextFieldIcon(el);
 });
 
 // Social Media Share Redirect
@@ -317,15 +323,6 @@ if (!isNull(document.querySelector('.mdc-list-item__collapse'))) {
         });
     });
 }
-
-// Login Button
-// var loginButton = null;
-// if (!isNull(document.querySelector('#loginButton'))) {
-//     loginButton = document.querySelector('#loginButton');
-// }
-// if (loginButton != null) {
-//     loginButton.addEventListener('click', () => (window.location.href = '/login'));
-// }
 
 // Button Element Actions On Click
 document.querySelectorAll('.mdc-button[data-action-type]').forEach(buttonEl => {

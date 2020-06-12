@@ -11,7 +11,7 @@ var firebaseUIConfig = {
                     "idToken": idToken,
                     "csrfToken": "ADMIN123654"
                 };
-                postFetch('/loginUser/', postData);
+                postFetch('/loginuser/', postData);
             });
         },
         signInFailure: function(error) {
@@ -28,7 +28,7 @@ var firebaseUIConfig = {
             document.getElementById('s-loader').style.display = 'none';
         }
     },
-    signInSuccessUrl: '/home/',
+    signInSuccessUrl: '/chat/',
     signInOptions: [
         // Leave the lines as is for the providers you want to offer your users.
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,

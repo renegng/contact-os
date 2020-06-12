@@ -84,6 +84,72 @@ body {
 
 /* Container layouts */
 
+@media all and (min-width: 56.25em) {
+    // Laptops and Computers
+    .container-chat {
+        margin: 0rem 10%;
+        min-height: 80vh;
+        padding: 1rem;
+        width: 80%;
+
+        .container-chat--canvas {
+            height: 100%;
+            border-radius: 0.5rem;
+        }
+    }
+}
+@media all and (max-width: 56.24em) {
+    // Tablets
+    .container-chat {
+        margin: 0;
+        min-height: 80vh;
+        padding: 2rem;
+        width: 90%;
+
+        .container-chat--canvas {
+            height: 100%;
+            border-radius: 0.5rem;
+        }
+    }
+}
+@media all and (max-width: 39.99em) {
+    // Smartphones
+    .container-chat {
+        margin: 0;
+        min-height: 92vh;
+        padding: 0;
+        width: 100%;
+
+        .container-chat--canvas {
+            height: 100%;
+            border-radius: 0rem;
+        }
+    }
+}
+
+.container-chat {
+    .container-chat--grid,
+    .container-chat--grid__inner {
+        height: 100%;
+    }
+
+    .container-chat--topbar {
+        max-height: 3rem;
+    }
+
+    .container-chat--body {
+        height: 50vh;
+    }
+
+    .container-chat--footer {
+        max-height: 5rem;
+
+        .mdc-text-field__input {
+            height: 4rem;
+        }
+    }
+}
+
 .container-color-background {
     background: stv.$swing-theme-background;
     display: block;
