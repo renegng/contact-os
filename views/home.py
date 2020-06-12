@@ -11,8 +11,14 @@ home = Blueprint('home', __name__, template_folder='templates', static_folder='s
 @home.route('/')
 def _index():
     app.logger.debug('** SWING_CMS ** - Index')
-    # return render_template('components.html')
     return redirect(url_for('home._welcome'))
+
+
+@home.route('/acercade/')
+def _acercade():
+    app.logger.debug('** SWING_CMS ** - AcercaDe')
+    return render_template('acercade.html')
+
 
 @home.route('/components/')
 def _components():
@@ -20,10 +26,17 @@ def _components():
     return render_template('components.html')
 
 
-@home.route('/welcome/')
-def _welcome():
-    app.logger.debug('** SWING_CMS ** - Welcome')
-    return render_template('welcome.html')
+@home.route('/home/')
+@login_required
+def _home():
+    app.logger.debug('** SWING_CMS ** - Home')
+    return render_template('acercade.html')
+
+
+@home.route('/login/')
+def _login():
+    app.logger.debug('** SWING_CMS ** - Login')
+    return render_template('login.html')
 
 
 @home.route('/loginuser/', methods=['POST'])
@@ -71,7 +84,7 @@ def _loginuser():
         createLoginSession(user)
         
         # Return Session Cookie
-        response = createCookieSession(idToken, 'redirectURL', '/terminosdelservicio/')
+        response = createCookieSession(idToken, 'redirectURL', '/home/')
         return response
 
     except Exception as e:
@@ -99,26 +112,6 @@ def _logoutuser():
         return jsonify({ 'status': 'error' })
 
 
-@home.route('/chooseavatar/')
-@login_required
-def _chooseavatar():
-    app.logger.debug('** SWING_CMS ** - ChooseAvatar')
-    return render_template('acercade.html')
-
-
-@home.route('/home/')
-@login_required
-def _home():
-    app.logger.debug('** SWING_CMS ** - Home')
-    return render_template('acercade.html')
-
-
-@home.route('/acercade/')
-def _acercade():
-    app.logger.debug('** SWING_CMS ** - AcercaDe')
-    return render_template('acercade.html')
-
-
 @home.route('/politicaprivacidad/')
 def _politicaprivacidad():
     app.logger.debug('** SWING_CMS ** - PoliticaPrivacidad')
@@ -129,3 +122,9 @@ def _politicaprivacidad():
 def _terminosdelservicio():
     app.logger.debug('** SWING_CMS ** - TerminosDelServicio')
     return render_template('terminosdelservicio.html')
+
+
+@home.route('/welcome/')
+def _welcome():
+    app.logger.debug('** SWING_CMS ** - Welcome')
+    return render_template('welcome.html')

@@ -38,10 +38,8 @@ var firebaseUIConfig = {
     // Terms of service url/callback.
     tosUrl: '/terminosdelservicio/',
     // Privacy policy url/callback.
-    privacyPolicyUrl: function () {
-        window.location.assign('/politicaprivacidad/');
-    }
-};
+    privacyPolicyUrl: '/politicaprivacidad/'
+}
 
 // Initialize the FirebaseUI Widget using Firebase.
 var firebaseUI = new firebaseui.auth.AuthUI(firebase.auth());

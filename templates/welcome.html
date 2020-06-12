@@ -1,4 +1,4 @@
-{% extends 'layout_footer.html' %}
+{% extends 'layout_main-footer.html' %}
 {% block page_description %}Contact-Os, Welcome, Home, Inicio, Bienvenida{% endblock %}
 {% block page_title %}Contact-Os Welcome{% endblock %}
 {% block body %}
@@ -6,7 +6,8 @@
     <div class="container-color-background">
         <div class="mdc-layout-grid container-size-l">
             <div class="mdc-layout-grid__inner">
-                <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--align-middle">
+                <div
+                    class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--align-middle">
                     <h2 class="mdc-typography--headline2 s-font-color-primary s-font-align-center">
                         Contact-Os
                     </h2>
@@ -19,13 +20,25 @@
                         personal calificado en diferentes servicios pensados para ti.
                     </p>
                     <p>
-                        <button class="mdc-button mdc-button--raised">
+                        <button class="mdc-button mdc-button--raised" aria-label="Try Chat" alt="Try Chat"
+                            data-action-type="redirect" data-action-val="/chat/">
                             <div class="mdc-button__ripple"></div>
                             <span class="mdc-button__label">Pruebalo ahora</span>
                         </button>
                     </p>
+                    <h6 class="mdc-typography--subtitle2">
+                        O, si ya posees una cuenta en la plataforma:
+                    </h6>
+                    <p>
+                        <button id="loginButton" class="mdc-button mdc-button--outlined" aria-label="Login" alt="Login"
+                            data-action-type="redirect" data-action-val="/login/">
+                            <div class="mdc-button__ripple"></div>
+                            <span class="mdc-button__label">Inicia Sesión</span>
+                        </button>
+                    </p>
                 </div>
-                <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 mdc-layout-grid__cell--span-8-tablet 
+                <div
+                    class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 mdc-layout-grid__cell--span-8-tablet 
                             mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle s-font-align-center">
                     <img class="resize-image-2fit-90"
                         src="{{ url_for('static', filename='images/manifest/contact-os.svg') }}"
@@ -37,7 +50,8 @@
     <div class="container-color-surface">
         <div class="mdc-layout-grid container-size-m">
             <div class="mdc-layout-grid__inner">
-                <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--align-middle">
+                <div
+                    class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--align-middle">
                     <h2 class="mdc-typography--headline2 s-font-color-secondary s-font-align-center">
                         Diferentes formas para comunicarse
                     </h2>
@@ -75,7 +89,8 @@
     <div class="container-color-background">
         <div class="mdc-layout-grid container-size-m">
             <div class="mdc-layout-grid__inner">
-                <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 mdc-layout-grid__cell--span-8-tablet 
+                <div
+                    class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 mdc-layout-grid__cell--span-8-tablet 
                             mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle s-font-align-center">
                     <img class="resize-image-2fit-70"
                         src="{{ url_for('static', filename='images/manifest/calendar.svg') }}" alt="Calendario" />
@@ -93,7 +108,8 @@
                         y hora que te sea más conveniente. Nos ajustamos a tu horario para estar en <b>Contact-O</b>.
                     </p>
                     <p>
-                        <button class="mdc-button mdc-button--outlined">
+                        <button class="mdc-button mdc-button--outlined" aria-label="Register" alt="Register"
+                        data-action-type="redirect" data-action-val="/login/">
                             <div class="mdc-button__ripple"></div>
                             <span class="mdc-button__label">Registrate aquí</span>
                         </button>

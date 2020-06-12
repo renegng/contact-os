@@ -110,6 +110,16 @@
     height: 2.25rem;
 }
 
+.mdc-button--color-inverted {
+    @include button.container-fill-color(stv.$swing-theme-on-primary);
+    @include button.ink-color(stv.$swing-theme-primary);
+}
+
+.mdc-button--color-secondary {
+    @include button.container-fill-color(stv.$swing-theme-secondary);
+    @include button.ink-color(stv.$swing-theme-on-secondary);
+}
+
 /* Card */
 .mdc-card {
     width: 100%;

@@ -1,6 +1,6 @@
 {% extends 'layout_main.html' %}
 {% block drawer %}
-<aside class="mdc-drawer">
+<aside class="s-drawer mdc-drawer">
     <div class="mdc-drawer__header">
         <img id="logo-nav-drawer" src="{{ url_for('static', filename='images/manifest/contact-os.svg') }}"
             alt="Logo Contact-Os" />
@@ -24,7 +24,7 @@
 <div class="mdc-drawer-scrim"></div>
 {% endblock %}
 {% block topbar %}
-<header class="mdc-top-app-bar">
+<header class="s-topbar mdc-top-app-bar">
     <div class="mdc-top-app-bar__row">
         <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
             <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button" aria-label="Menu">
@@ -66,11 +66,10 @@
                     </ul>
                 </div>
             </div>
-            <!-- 
-            <button id="loginButton" class="mdc-button mdc-button--raised topAppBar-button" aria-label="Login" alt="Login">
-                Login
-            </button> 
-            -->
+            <!-- <button id="loginButton" class="mdc-button mdc-button--outlined mdc-button--color-inverted" aria-label="Login" alt="Login">
+                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__label">Iniciar Sesión</span>
+            </button> -->
         </section>
     </div>
 </header>

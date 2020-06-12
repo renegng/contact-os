@@ -85,6 +85,12 @@ if (!isNull(drawerEl) && !isNull(topAppBarEl)) {
             child.classList.add("mdc-list-item--activated");
         }
     });
+} else if (!isNull(topAppBarEl)) {
+    const topAppBar = MDCTopAppBar.attachTo(topAppBarEl);
+    const mainContentEl = document.querySelector('.s-main-content');
+
+    topAppBar.setScrollTarget(mainContentEl);
+    topAppBarNavEl.classList.add("mdc-top-app-bar__navigation-icon--hidden");
 }
 
 // Material Menu
@@ -313,13 +319,22 @@ if (!isNull(document.querySelector('.mdc-list-item__collapse'))) {
 }
 
 // Login Button
-var loginButton = null;
-if (!isNull(document.querySelector('#loginButton'))) {
-    loginButton = document.querySelector('#loginButton');
-}
-if (loginButton != null) {
-    loginButton.addEventListener('click', () => (window.location.href = '/login'));
-}
+// var loginButton = null;
+// if (!isNull(document.querySelector('#loginButton'))) {
+//     loginButton = document.querySelector('#loginButton');
+// }
+// if (loginButton != null) {
+//     loginButton.addEventListener('click', () => (window.location.href = '/login'));
+// }
+
+// Button Element Actions On Click
+document.querySelectorAll('.mdc-button[data-action-type]').forEach(buttonEl => {
+    let actionType = buttonEl.getAttribute('data-action-type');
+    if (actionType == 'redirect') {
+        let actionVal = buttonEl.getAttribute('data-action-val');
+        buttonEl.addEventListener('click', () => (window.location.href = actionVal));
+    }
+});
 
 // Read More Button
 if (!isNull(document.querySelector('.mdc-card__action--button'))) {
