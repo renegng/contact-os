@@ -44,6 +44,16 @@ def unauthorized():
         return jsonify({ 'status': 'error' })
 
 
+# Create a JSON Response
+def createJsonResponse(status = 'error', cmd = None, action = None):
+    jsonData = {
+        'status': status,
+        'cmd': cmd,
+        'action': action
+    }
+    return jsonify(jsonData)
+
+
 # Creates a Flask-Login Session instance
 def createLoginSession(user):
     try:
@@ -69,12 +79,7 @@ def createCookieSession(idToken, cmd = None, action = None):
         session_cookie = auth.create_session_cookie(idToken, expires_in = expires_in)
 
         # Create an HTTP Response with a JSON Success Status and attach the cookie to it.
-        jsonData = {
-            'status': 'success',
-            'cmd': cmd,
-            'action': action
-        }
-        response = jsonify(jsonData)
+        response = createJsonResponse('success', cmd, action)
 
         if app.config['ENV'] == 'development':
             # Cookies for Development

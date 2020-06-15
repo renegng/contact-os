@@ -1,6 +1,7 @@
 import datetime
 
-from . import auth, db, createLoginSession, createCookieSession, isFirebaseCookieSessionValid, verifyFirebaseCookieCreateSession
+from . import auth, createCookieSession, createLoginSession, createJsonResponse, db
+from . import isFirebaseCookieSessionValid, verifyFirebaseCookieCreateSession
 from flask import Blueprint, redirect, render_template, request, url_for, jsonify, make_response
 from flask import current_app as app
 from flask_login import logout_user, current_user, login_required
@@ -53,14 +54,14 @@ def _loginuser():
         if current_user.is_authenticated:
             # If it has a valid Session, verifies the Firebase Cookie Session
             if isFirebaseCookieSessionValid():
-                return redirect(url_for('home._index'))
+                return createJsonResponse('success', 'redirectURL', '/chat/')
             else:
                 # If the Firebase Cookie Session is invalid, user is logged out and Login Process continues
                 logout_user()
         else:
             # If user doesnt have a Valid Session, validate if it has a Firebase Cookie Session
             if verifyFirebaseCookieCreateSession():
-                return redirect(url_for('home._index'))
+                return createJsonResponse('success', 'redirectURL', '/chat/')
         
         # Login Process
         # Retrieve the uid from the JWT idToken
