@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import jsonify
 from flask_login import UserMixin
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy, orm
 
 db = SQLAlchemy()
 
@@ -25,6 +25,7 @@ class UserInfo(UserMixin, db.Model):
     roles = db.relationship('UserXRole', lazy='subquery', back_populates='user_info')
 
     # UserClass properties and methods
+    @orm.reconstructor
     def __init__(self):
         # Properties required by Flask-Login
         self._is_active = False
