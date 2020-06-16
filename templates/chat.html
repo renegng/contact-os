@@ -2,37 +2,95 @@
 {% block page_description %}Contact-Os Chat, Mensajes de Texto por Chat, Mensajes{% endblock %}
 {% block page_title %}Contact-Os Chat{% endblock %}
 {% block body %}
-<main class="s-main-content mdc-top-app-bar--fixed-adjust">
+<main class="s-main-content s-main-content--extend-tab-color-primary mdc-top-app-bar--fixed-adjust">
     <div class="container-chat">
         <div class="container-color-surface container-chat--canvas">
-            <div class="mdc-layout-grid container-chat--grid">
+            <div class="mdc-layout-grid container-chat--grid container-elevation-s">
                 <div class="mdc-layout-grid__inner container-chat--grid__inner">
                     <div
                         class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
-                                mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--topbar component-wrapper">
-                        <header class="mdc-top-app-bar mdc-top-app-bar--dense">
-                            <div class="mdc-top-app-bar__row">
-                                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end"
-                                    role="toolbar">
-                                    <a class="material-icons mdc-icon-button mdc-top-app-bar__action-item"
-                                        aria-label="Search this page" alt="Search this page">duo</a>
-                                    <a class="material-icons mdc-icon-button mdc-top-app-bar__action-item"
-                                        aria-label="Search this page" alt="Search this page">add_ic_call</a>
-                                </section>
-                            </div>
+                                mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--topbar">
+                        <header class="container-chat--topbar-header">
+                            <section class="container-chat--topbar-info">
+                                <div class="container-chat--topbar-info-pic">
+                                    <img src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}"
+                                        alt="Logo Contact-Os" />
+                                </div>
+                                <div class="container-chat--topbar-info-data">
+                                    <span class="container-chat--topbar-info-data-name mdc-typography--subtitle2">Agente 007</span>
+                                    <span class="container-chat--topbar-info-data-status mdc-typography--caption s-font-color-secondary">Online</span>
+                                </div>
+                            </section>
+                            <section class="container-chat--topbar-actions">
+                                <button id="videoCall" class="mdc-icon-button s-font-color-secondary" aria-label="Video Call" alt="Video Call">
+                                    <i class="material-icons mdc-icon-button__icon">video_call</i>
+                                </button>
+                                <button id="audioCall" class="mdc-icon-button s-font-color-secondary" aria-label="Audio Call" alt="Audio Call">
+                                    <i class="material-icons mdc-icon-button__icon">call</i>
+                                </button>
+                            </section>
                         </header>
                     </div>
                     <div
                         class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--body">
-                        Cuerpo del Chat
+                        <div class="container-chat--body-messages">
+                            <p class="container-chat--body-messages-me">
+                                <span class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-primary container-elevation-s">
+                                    Este es uno de los mensajes que probaremos en este chat 1
+                                </span>
+                                <span class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
+                                    12:22am
+                                </span>
+                            </p>
+                            <p class="container-chat--body-messages-me">
+                                <span class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-primary container-elevation-s">
+                                    Este es uno de los mensajes que probaremos en este chat 2
+                                </span>
+                                <span class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
+                                    12:22am
+                                </span>
+                            </p>
+                            <p class="container-chat--body-messages-me">
+                                <span class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-primary container-elevation-s">
+                                    Este es uno de los mensajes que probaremos en este chat 3
+                                </span>
+                                <span class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
+                                    12:22am
+                                </span>
+                            </p>
+                            <p class="container-chat--body-messages-others">
+                                <span class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-secondary container-elevation-s">
+                                    Este es uno de los mensajes que probaremos en este chat 1
+                                </span>
+                                <span class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
+                                    12:22am
+                                </span>
+                            </p>
+                            <p class="container-chat--body-messages-others">
+                                <span class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-secondary container-elevation-s">
+                                    Este es uno de los mensajes que probaremos en este chat 2
+                                </span>
+                                <span class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
+                                    12:22am
+                                </span>
+                            </p>
+                            <p class="container-chat--body-messages-others">
+                                <span class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-secondary container-elevation-s">
+                                    Este es uno de los mensajes que probaremos en este chat 3
+                                </span>
+                                <span class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
+                                    12:22am
+                                </span>
+                            </p>
+                        </div>
                     </div>
                     <div
                         class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--footer">
                         <label
                             class="mdc-text-field mdc-text-field--with-trailing-icon mdc-text-field--outlined mdc-text-field--textarea">
-                            <textarea class="mdc-text-field__input" aria-label="Message Area"></textarea>
+                            <textarea id="chat-textarea-input" class="mdc-text-field__input" aria-label="Message Area"></textarea>
                             <i class="material-icons mdc-text-field__icon mdc-text-field__icon--trailing">send</i>
                             <span class="mdc-notched-outline">
                                 <span class="mdc-notched-outline__leading"></span>

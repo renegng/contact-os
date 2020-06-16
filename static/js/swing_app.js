@@ -170,6 +170,15 @@ var mdcTextInputsIcons = [].map.call(document.querySelectorAll('.mdc-text-field-
     return new MDCTextFieldIcon(el);
 });
 
+// Material Button Element Actions On Click
+document.querySelectorAll('.mdc-button[data-action-type]').forEach(buttonEl => {
+    let actionType = buttonEl.getAttribute('data-action-type');
+    if (actionType == 'redirect') {
+        let actionVal = buttonEl.getAttribute('data-action-val');
+        buttonEl.addEventListener('click', () => (window.location.href = actionVal));
+    }
+});
+
 // Social Media Share Redirect
 // Applications URLs
 const emailShareUrl = "mailto:?body=";
@@ -323,15 +332,6 @@ if (!isNull(document.querySelector('.mdc-list-item__collapse'))) {
         });
     });
 }
-
-// Button Element Actions On Click
-document.querySelectorAll('.mdc-button[data-action-type]').forEach(buttonEl => {
-    let actionType = buttonEl.getAttribute('data-action-type');
-    if (actionType == 'redirect') {
-        let actionVal = buttonEl.getAttribute('data-action-val');
-        buttonEl.addEventListener('click', () => (window.location.href = actionVal));
-    }
-});
 
 // Read More Button
 if (!isNull(document.querySelector('.mdc-card__action--button'))) {

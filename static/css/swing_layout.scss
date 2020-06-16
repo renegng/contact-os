@@ -19,6 +19,7 @@
 
 /* Import Theme Variables */
 
+@use "@material/elevation";
 @use "swing_theme_variables" as stv;
 
 /* Main Layout Components */
@@ -48,6 +49,10 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
+}
+
+.s-main-content--extend-tab-color-primary {
+    background: linear-gradient(180deg, stv.$swing-theme-primary 20%, stv.$swing-theme-background 20%);
 }
 
 .s-footer {
@@ -135,10 +140,97 @@ body {
 
     .container-chat--topbar {
         max-height: 3rem;
+
+        .container-chat--topbar-header {
+            align-items: center;
+            border-bottom: 0.1rem solid stv.$swing-theme-secondary;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+
+            .container-chat--topbar-info {
+                display: inline-flex;
+                flex: 1 1 auto;
+                justify-content: flex-start;
+
+                .container-chat--topbar-info-data {
+                    display: flex;
+                    flex-flow: column;
+                    margin: 0rem 1rem;
+                }
+
+                .container-chat--topbar-info-pic {
+                    border-radius: 50%;
+                    height: 2.5rem;
+
+                    img {
+                        border-radius: 50%;
+                        height: 100%;
+                    }
+                }
+            }
+
+            .container-chat--topbar-actions {
+                display: inline-flex;
+                flex: 1 1 auto;
+                justify-content: flex-end;
+            }
+        }
     }
 
     .container-chat--body {
         height: 50vh;
+
+        .container-chat--body-messages {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: auto;
+            padding: 0rem 1rem;
+
+            .container-chat--body-messages-reversed {
+                display: flex;
+                flex-direction: column-reverse;
+            }
+
+            .container-chat--body-messages-me {
+                align-self: flex-end;
+                display: flex;
+                flex-direction: column;
+                margin-left: 3rem;
+
+                .container-chat--body-messages-message {
+                    align-self: flex-end;
+                    background: stv.$swing-theme-primary;
+                    border-radius: 0.75rem 0rem 0.75rem 0.75rem;
+                    padding: 0.75rem 0.5rem;
+                }
+
+                .container-chat--body-messages-message-time {
+                    align-self: flex-end;
+                    margin-top: 0.25rem;
+                }
+            }
+
+            .container-chat--body-messages-others {
+                align-self: flex-start;
+                display: flex;
+                flex-direction: column;
+                margin-right: 3rem;
+
+                .container-chat--body-messages-message {
+                    align-self: flex-start;
+                    background: stv.$swing-theme-secondary;
+                    border-radius: 0rem 0.75rem 0.75rem 0.75rem;
+                    padding: 0.75rem 0.5rem;
+                }
+
+                .container-chat--body-messages-message-time {
+                    align-self: flex-start;
+                    margin-top: 0.25rem;
+                }
+            }
+        }
     }
 
     .container-chat--footer {
@@ -146,6 +238,7 @@ body {
 
         .mdc-text-field__input {
             height: 4rem;
+            resize: none;
         }
     }
 }
@@ -166,6 +259,18 @@ body {
     background: stv.$swing-theme-surface;
     display: block;
     width: 100%;
+}
+
+.container-elevation-s {
+    @include elevation.elevation(4);
+}
+
+.container-elevation-m {
+    @include elevation.elevation(8);
+}
+
+.container-elevation-l {
+    @include elevation.elevation(16);
 }
 
 .container-parallax {
