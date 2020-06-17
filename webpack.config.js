@@ -9,8 +9,8 @@ module.exports = {
         './static/js/swing_app.js'
     ],
     output: {
-        path: __dirname,
         filename: 'static/js/bundle/swing-bundle.js',
+        path: __dirname
     },
     module: {
         rules: [

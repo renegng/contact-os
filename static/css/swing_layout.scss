@@ -185,7 +185,7 @@ body {
             display: flex;
             flex-direction: column;
             height: 100%;
-            overflow: auto;
+            overflow-y: auto;
             padding: 0rem 1rem;
 
             .container-chat--body-messages-reversed {
@@ -197,7 +197,7 @@ body {
                 align-self: flex-end;
                 display: flex;
                 flex-direction: column;
-                margin-left: 3rem;
+                margin-left: 4rem;
 
                 .container-chat--body-messages-message {
                     align-self: flex-end;
@@ -216,7 +216,7 @@ body {
                 align-self: flex-start;
                 display: flex;
                 flex-direction: column;
-                margin-right: 3rem;
+                margin-right: 4rem;
 
                 .container-chat--body-messages-message {
                     align-self: flex-start;
@@ -228,6 +228,11 @@ body {
                 .container-chat--body-messages-message-time {
                     align-self: flex-start;
                     margin-top: 0.25rem;
+                }
+
+                .container-chat--body-messages-message-user {
+                    align-self: flex-end;
+                    margin-right: 0.5rem;
                 }
             }
         }
@@ -414,3 +419,4 @@ body {
         transform: scale(1);
     }
 }
+
