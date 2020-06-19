@@ -22,12 +22,7 @@ def _disconnect():
 
 @socketio.on('receiveSocketID')
 def _receiveSocketID(json):
-    socketio.emit('addUserSocketID', json)
-
-
-@socketio.on('connectToUser')
-def _connectToUser(data):
-    socketio.emit('connectUserSocketID', data)
+    app.logger.info('** SWING_CMS ** - SocketIO SocketID: {}'.format(json))
 
 
 @socketio.on('sendOfferToUser')

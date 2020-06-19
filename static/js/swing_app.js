@@ -144,7 +144,7 @@ export function createChatMessageContainer(txt, dateTime, user, userName = '') {
         msgContainerMsg.classList.add('s-font-color-on-secondary');
         msgContainerUser.classList.add('container-chat--body-messages-message-user', 'mdc-typography--caption', 's-font-color-secondary');
 
-        msgContainerUser.textContent = 'Agente 007';
+        msgContainerUser.textContent = userName;
 
         msgContainer.appendChild(msgContainerUser);
     } else if (user == 'auto') {
@@ -174,9 +174,12 @@ export function appendChatMessage(txt, dateTime, user, userName = '') {
 
 export function sendChatMessage() {
     let textElement = document.getElementById('chat-textarea-input');
+    let userName = document.querySelector('.container-chat--topbar-info-data-name').textContent;
     let textMessage = textElement.value;
+    let dateTime = Date.now();
     if (textMessage && textMessage.trim() != "") {
-        appendChatMessage(textMessage, Date.now(), 'me');
+        sendPeerChatMessage('msg', textMessage, dateTime, userName);
+        appendChatMessage(textMessage, dateTime, 'me');
         textElement.value = '';
         textElement.focus();
     }
@@ -191,6 +194,17 @@ if (!isNull(document.querySelector('#chat-textarea-input'))) {
             document.querySelector('#chat-textarea-button').click();
         }
     });
+}
+
+export function sendPeerChatMessage(type, text, dateTime, userName) {
+    if (peer) {
+        peer.send(JSON.stringify({
+            msgType: type,
+            msg: text,
+            msgDateTime: dateTime,
+            msgUserName: userName
+        }));
+    }
 }
 
 
