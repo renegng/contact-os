@@ -8,6 +8,7 @@ from flask_login import LoginManager, login_user, current_user, logout_user
 from models.models import db
 from models.models import UserInfo
 
+
 # Enable instance of SQLAlchemy
 db.init_app(app)
 

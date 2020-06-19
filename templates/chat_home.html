@@ -1,0 +1,146 @@
+{% extends 'layout_main-drawer_footer_topbar.html' %}
+{% block page_description %}Contact-Os Chat, Mensajes de Texto por Chat, Mensajes{% endblock %}
+{% block page_title %}Contact-Os Chat{% endblock %}
+{% block body %}
+<main class="s-main-content s-main-content--extend-tab-color-primary mdc-top-app-bar--fixed-adjust">
+    <div class="container-chat">
+        <div class="container-color-surface container-chat--canvas">
+            <div class="mdc-layout-grid container-chat--grid container-elevation-s">
+                <div class="mdc-layout-grid__inner container-chat--grid__inner">
+                    <div
+                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
+                                mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--topbar">
+                        <header class="container-chat--topbar-header">
+                            <section class="container-chat--topbar-info">
+                                <div class="container-chat--topbar-info-pic">
+                                    <img src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}"
+                                        alt="Logo Contact-Os" />
+                                </div>
+                                <div class="container-chat--topbar-info-data">
+                                    <span class="container-chat--topbar-info-data-name mdc-typography--subtitle2">Agente
+                                        007</span>
+                                    <span
+                                        class="container-chat--topbar-info-data-status mdc-typography--caption s-font-color-secondary">Online</span>
+                                </div>
+                            </section>
+                            <section class="container-chat--topbar-actions">
+                                <button id="videoCall" class="mdc-icon-button s-font-color-secondary"
+                                    aria-label="Video Call" alt="Video Call">
+                                    <i class="material-icons mdc-icon-button__icon">video_call</i>
+                                </button>
+                                <button id="audioCall" class="mdc-icon-button s-font-color-secondary"
+                                    aria-label="Audio Call" alt="Audio Call">
+                                    <i class="material-icons mdc-icon-button__icon">call</i>
+                                </button>
+                            </section>
+                        </header>
+                    </div>
+                    <div
+                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
+                                mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--body">
+                        <div class="container-chat--body-messages">
+                            <p class="container-chat--body-messages-auto">
+                                <span class="mdc-typography--subtitle2 s-font-color-secondary">
+                                    Este es un mensaje automatizado
+                                </span>
+                            </p>
+                            <p class="container-chat--body-messages-me">
+                                <span
+                                    class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-primary container-elevation-s">
+                                    Este es uno de los mensajes que probaremos en este chat 1
+                                </span>
+                                <span
+                                    class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
+                                    12:22am
+                                </span>
+                            </p>
+                            <p class="container-chat--body-messages-me">
+                                <span
+                                    class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-primary container-elevation-s">
+                                    Este es uno de los mensajes que probaremos en este chat 2
+                                </span>
+                                <span
+                                    class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
+                                    12:22am
+                                </span>
+                            </p>
+                            <p class="container-chat--body-messages-me">
+                                <span
+                                    class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-primary container-elevation-s">
+                                    Este es uno de los mensajes que probaremos en este chat 3
+                                </span>
+                                <span
+                                    class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
+                                    12:22am
+                                </span>
+                            </p>
+                            <p class="container-chat--body-messages-others">
+                                <span
+                                    class="container-chat--body-messages-message-user mdc-typography--caption s-font-color-secondary">
+                                    Agente 007
+                                </span>
+                                <span
+                                    class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-secondary container-elevation-s">
+                                    Este es uno de los mensajes que probaremos en este chat 1
+                                </span>
+                                <span
+                                    class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
+                                    12:22am
+                                </span>
+                            </p>
+                            <p class="container-chat--body-messages-others">
+                                <span
+                                    class="container-chat--body-messages-message-user mdc-typography--caption s-font-color-secondary">
+                                    Agente 007
+                                </span>
+                                <span
+                                    class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-secondary container-elevation-s">
+                                    Este es uno de los mensajes que probaremos en este chat 2
+                                </span>
+                                <span
+                                    class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
+                                    12:22am
+                                </span>
+                            </p>
+                            <p class="container-chat--body-messages-others">
+                                <span
+                                    class="container-chat--body-messages-message-user mdc-typography--caption s-font-color-secondary">
+                                    Agente 007
+                                </span>
+                                <span
+                                    class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-secondary container-elevation-s">
+                                    Este es uno de los mensajes que probaremos en este chat 3
+                                </span>
+                                <span
+                                    class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
+                                    12:22am
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <div
+                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
+                                mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--footer">
+                        <label
+                            class="mdc-text-field mdc-text-field--with-trailing-icon mdc-text-field--outlined mdc-text-field--textarea">
+                            <textarea id="chat-textarea-input" class="mdc-text-field__input"
+                                aria-label="Message Area"></textarea>
+                            <button id="chat-textarea-button" class="mdc-icon-button mdc-text-field__icon--trailing"
+                                aria-label="Send Message" alt="Send Message" data-action-type="submit" data-action-fn="sendChatMessage">
+                                <i class="material-icons mdc-icon-button__icon s-font-color-primary">send</i>
+                            </button>
+                            <span class="mdc-notched-outline">
+                                <span class="mdc-notched-outline__leading"></span>
+                                <span class="mdc-notched-outline__notch">
+                                    <span class="mdc-floating-label" id="my-label-id">Escribe tu mensaje...</span>
+                                </span>
+                                <span class="mdc-notched-outline__trailing"></span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

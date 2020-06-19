@@ -4,12 +4,14 @@ module.exports = {
     entry: [
         './instance/js/swing_firebase-api-init.js',
         './static/css/swing_app.scss',
-        './static/js/swing_firebase.js',
         './static/js/lazysizes.min.js',
+        './static/js/swing_firebase.js',
         './static/js/swing_app.js'
     ],
     output: {
         filename: 'static/js/bundle/swing-bundle.js',
+        library: 'swcms',
+        libraryTarget: 'var',
         path: __dirname
     },
     module: {

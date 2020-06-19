@@ -27,6 +27,18 @@ def _chat():
     return render_template('chat.html')
 
 
+@home.route('/chat/admin/')
+def _chat_admin():
+    app.logger.debug('** SWING_CMS ** - Chat Admin')
+    return render_template('chat_admin.html')
+
+
+@home.route('/chat/home/')
+def _chat_home():
+    app.logger.debug('** SWING_CMS ** - Chat Home')
+    return render_template('chat_home.html')
+
+
 @home.route('/components/')
 def _components():
     app.logger.debug('** SWING_CMS ** - Welcome')
@@ -54,14 +66,14 @@ def _loginuser():
         if current_user.is_authenticated:
             # If it has a valid Session, verifies the Firebase Cookie Session
             if isFirebaseCookieSessionValid():
-                return createJsonResponse('success', 'redirectURL', '/chat/')
+                return createJsonResponse('success', 'redirectURL', '/chat/admin/')
             else:
                 # If the Firebase Cookie Session is invalid, user is logged out and Login Process continues
                 logout_user()
         else:
             # If user doesnt have a Valid Session, validate if it has a Firebase Cookie Session
             if verifyFirebaseCookieCreateSession():
-                return createJsonResponse('success', 'redirectURL', '/chat/')
+                return createJsonResponse('success', 'redirectURL', '/chat/admin/')
         
         # Login Process
         # Retrieve the uid from the JWT idToken
@@ -91,7 +103,7 @@ def _loginuser():
         createLoginSession(user)
         
         # Return Session Cookie
-        response = createCookieSession(idToken, 'redirectURL', '/chat/')
+        response = createCookieSession(idToken, 'redirectURL', '/chat/admin/')
         return response
 
     except Exception as e:

@@ -147,13 +147,19 @@ export function createChatMessageContainer(txt, dateTime, user, userName = '') {
         msgContainerUser.textContent = 'Agente 007';
 
         msgContainer.appendChild(msgContainerUser);
+    } else if (user == 'auto') {
+        msgContainer.classList.add('container-chat--body-messages-auto', 's-font-align-center');
+        msgContainerMsg = document.createElement('span');
+        msgContainerMsg.classList.add('mdc-typography--subtitle2', 's-font-color-secondary');
     }
 
     msgContainerMsg.textContent = txt;
-    msgContainerTime.textContent = returnFormatDate(dateTime);
-
     msgContainer.appendChild(msgContainerMsg);
-    msgContainer.appendChild(msgContainerTime);
+    
+    if (user != 'auto') {
+        msgContainerTime.textContent = returnFormatDate(dateTime);
+        msgContainer.appendChild(msgContainerTime);
+    }
 
     return msgContainer;
 }
@@ -177,7 +183,6 @@ export function sendChatMessage() {
 }
 /* Allow 'window' context to reference the function */
 window.sendChatMessage = sendChatMessage;
-
 /* Enable the Enter Key for the Chat Text Area */
 if (!isNull(document.querySelector('#chat-textarea-input'))) {
     document.querySelector('#chat-textarea-input').addEventListener('keyup', (evt) => {

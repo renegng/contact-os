@@ -100,5 +100,6 @@
         {% block footer %}{% endblock %}
     </div>
     <script src="{{ url_for('static', filename='js/bundle/swing-bundle.js') }}" async></script>
+    {% block body_script_section %}{% endblock %}
 </body>
 </html>

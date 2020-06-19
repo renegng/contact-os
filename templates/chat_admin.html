@@ -1,4 +1,4 @@
-{% extends 'layout_main-footer_topbar.html' %}
+{% extends 'layout_main-drawer_footer_topbar.html' %}
 {% block page_description %}Contact-Os Chat, Mensajes de Texto por Chat, Mensajes{% endblock %}
 {% block page_title %}Contact-Os Chat{% endblock %}
 {% block body %}
@@ -17,10 +17,21 @@
                                         alt="Logo Contact-Os" />
                                 </div>
                                 <div class="container-chat--topbar-info-data">
-                                    <span class="container-chat--topbar-info-data-name mdc-typography--subtitle2">- -</span>
+                                    <span class="container-chat--topbar-info-data-name mdc-typography--subtitle2">Agente
+                                        007</span>
                                     <span
-                                        class="container-chat--topbar-info-data-status mdc-typography--caption s-font-color-secondary">Offline</span>
+                                        class="container-chat--topbar-info-data-status mdc-typography--caption s-font-color-secondary">Online</span>
                                 </div>
+                            </section>
+                            <section class="container-chat--topbar-actions">
+                                <button id="videoCall" class="mdc-icon-button s-font-color-secondary"
+                                    aria-label="Video Call" alt="Video Call">
+                                    <i class="material-icons mdc-icon-button__icon">video_call</i>
+                                </button>
+                                <button id="audioCall" class="mdc-icon-button s-font-color-secondary"
+                                    aria-label="Audio Call" alt="Audio Call">
+                                    <i class="material-icons mdc-icon-button__icon">call</i>
+                                </button>
                             </section>
                         </header>
                     </div>
@@ -28,18 +39,34 @@
                         class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--body">
                         <div class="container-chat--body-messages">
-                            <p class="container-chat--body-messages-auto s-font-align-center">
+                            <p class="container-chat--body-messages-auto">
                                 <span class="mdc-typography--subtitle2 s-font-color-secondary">
-                                    Bienvenid@
+                                    Este es un mensaje automatizado
                                 </span>
-                                <span class="mdc-typography--subtitle2 s-font-color-secondary">
-                                    Esperanos unos instantes en lo que una de nuestras agentes se conecta para atenderte.
+                            </p>
+                            <p class="container-chat--body-messages-me">
+                                <span
+                                    class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-primary container-elevation-s">
+                                    Este es uno de los mensajes que probaremos en este chat 1
                                 </span>
-                                <div id="s-loader-chat" class="s-loader">
-                                    <div class="s-loader-bounce1"></div>
-                                    <div class="s-loader-bounce2"></div>
-                                    <div class="s-loader-bounce3"></div>
-                                </div>
+                                <span
+                                    class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
+                                    12:22am
+                                </span>
+                            </p>
+                            <p class="container-chat--body-messages-others">
+                                <span
+                                    class="container-chat--body-messages-message-user mdc-typography--caption s-font-color-secondary">
+                                    Agente 007
+                                </span>
+                                <span
+                                    class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-secondary container-elevation-s">
+                                    Este es uno de los mensajes que probaremos en este chat 1
+                                </span>
+                                <span
+                                    class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
+                                    12:22am
+                                </span>
                             </p>
                         </div>
                     </div>
@@ -73,5 +100,5 @@
 <script src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
 <script src="{{ url_for('static', filename='js/rtc-signal.js') }}"></script>
 <script src="{{ url_for('static', filename='js/simplepeer.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/rtc-receiver.js') }}"></script>
+<script src="{{ url_for('static', filename='js/rtc-initiator.js') }}"></script>
 {% endblock %}

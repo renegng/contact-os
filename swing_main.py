@@ -17,6 +17,7 @@ app.logger.info("** SWING_CMS ** - CONFIG: {}".format(app.config))
 with app.app_context():
     from views.home import home as home_view
     from views.seo import seo as seo_view
+    from views.socketio import sio as sio_view
 
     # Home
     app.register_blueprint(home_view)
@@ -24,8 +25,12 @@ with app.app_context():
     # Search Engine Optimization - SEO
     app.register_blueprint(seo_view)
 
+    # SocketIO Events
+    app.register_blueprint(sio_view)
+
     # Register the Service Worker
     @app.route('/sw.js', methods=['GET'])
     def serviceworker():
         return app.send_static_file('js/sw.js')
 
+    
