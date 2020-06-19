@@ -26,8 +26,18 @@ def _receiveSocketID(json):
 
 
 @socketio.on('connectToUser')
-def _connectToUser(json):
-    socketio.emit('connectUserSocketID', json)
+def _connectToUser(data):
+    socketio.emit('connectUserSocketID', data)
+
+
+@socketio.on('sendOfferToUser')
+def _sendOfferToUser(json):
+    socketio.emit('receiveInitiatorOffer', json)
+
+
+@socketio.on('sendAnswerToUser')
+def _sendAnswerToUser(json):
+    socketio.emit('receiveReceiverAnswer', json)
 
 
 @socketio.on_error()

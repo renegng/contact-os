@@ -7,13 +7,13 @@ const peer = new SimplePeer({
 
 peer.on('error', err => console.log('error', err));
 
-socket.on('addUserSocketID', function (data) {
-    peer.signal(data);
-});
-
 peer.on('signal', (data) => {
     console.log(data);
-    socket.emit('connectToUser', data);
+    socket.emit('sendOfferToUser', JSON.stringify(data));
+});
+
+socket.on('receiveReceiverAnswer', function(data) {
+    peer.signal(data);
 });
 
 peer.on('connect', () => {
