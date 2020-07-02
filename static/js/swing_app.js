@@ -130,7 +130,7 @@ export function createChatMessageContainer(txt, dateTime, user, userName = '') {
     let msgContainerMsg = document.createElement('span');
     let msgContainerTime = document.createElement('span');
 
-    msgContainer.classList.add('animate__animated', 'animate__bounceIn');
+    msgContainer.classList.add('animate__animated', 'animate__headShake');
     msgContainerMsg.classList.add('container-chat--body-messages-message', 'mdc-typography--subtitle1', 'container-elevation-s');
     msgContainerTime.classList.add('container-chat--body-messages-message-time', 'mdc-typography--caption', 's-font-color-on-surface');
 
@@ -166,7 +166,7 @@ export function createChatMessageContainer(txt, dateTime, user, userName = '') {
 
 export function appendChatMessage(txt, dateTime, user, userName = '') {
     let chatContainer = document.querySelector('.container-chat--body-messages');
-    let msgContainer = createChatMessageContainer(txt, dateTime, user);
+    let msgContainer = createChatMessageContainer(txt, dateTime, user, userName);
 
     chatContainer.appendChild(msgContainer);
     chatContainer.scrollTop = chatContainer.scrollHeight;
