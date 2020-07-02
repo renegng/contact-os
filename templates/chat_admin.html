@@ -49,22 +49,25 @@
                     <div
                         class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--footer">
-                        <label
-                            class="mdc-text-field mdc-text-field--with-trailing-icon mdc-text-field--outlined mdc-text-field--textarea">
-                            <textarea id="chat-textarea-input" class="mdc-text-field__input"
-                                aria-label="Message Area"></textarea>
-                            <button id="chat-textarea-button" class="mdc-icon-button mdc-text-field__icon--trailing"
-                                aria-label="Send Message" alt="Send Message" data-action-type="submit" data-action-fn="sendChatMessage">
-                                <i class="material-icons mdc-icon-button__icon s-font-color-primary">send</i>
-                            </button>
-                            <span class="mdc-notched-outline">
-                                <span class="mdc-notched-outline__leading"></span>
-                                <span class="mdc-notched-outline__notch">
-                                    <span class="mdc-floating-label" id="my-label-id">Escribe tu mensaje...</span>
+                        <section class="container-chat--footer-input">
+                            <label class="mdc-text-field mdc-text-field--outlined mdc-text-field--textarea mdc-text-field--disabled">
+                                <textarea id="chat-textarea-input" class="mdc-text-field__input" disabled aria-label="Message Area"></textarea>
+                                <span class="mdc-notched-outline">
+                                    <span class="mdc-notched-outline__leading"></span>
+                                    <span class="mdc-notched-outline__notch">
+                                        <span class="mdc-floating-label" id="my-label-id">Escribe tu mensaje...</span>
+                                    </span>
+                                    <span class="mdc-notched-outline__trailing"></span>
                                 </span>
-                                <span class="mdc-notched-outline__trailing"></span>
-                            </span>
-                        </label>
+                            </label>
+                        </section>
+                        <section class="container-chat--footer-actions">
+                            <button id="chat-textarea-button" class="mdc-fab" aria-label="Send Message"
+                                alt="Send Message" data-action-type="submit" data-action-fn="sendChatMessage">
+                                <div class="mdc-fab__ripple"></div>
+                                <i class="material-icons mdc-fab__icon">send</i>
+                            </button>
+                        </section>
                     </div>
                 </div>
             </div>

@@ -455,21 +455,7 @@ var mdcTextInputsIcons = [].map.call(document.querySelectorAll('.mdc-text-field-
 
 
 // Material Button Element Actions On Click
-document.querySelectorAll('.mdc-button[data-action-type]').forEach(buttonEl => {
-    let actionType = buttonEl.getAttribute('data-action-type');
-    if (actionType == 'redirect') {
-        let actionVal = buttonEl.getAttribute('data-action-val');
-        buttonEl.addEventListener('click', () => (window.location.href = actionVal));
-    } else if (actionType == 'submit') {
-        let actionFn = buttonEl.getAttribute('data-action-fn');
-        let fn = (typeof actionFn == "string") ? window[actionFn] : actionFn;
-        buttonEl.addEventListener('click', fn);
-    }
-});
-
-
-// Material Icon Button Element Actions On Click
-document.querySelectorAll('.mdc-icon-button[data-action-type]').forEach(buttonEl => {
+document.querySelectorAll('.mdc-button[data-action-type], .mdc-icon-button[data-action-type], .mdc-fab[data-action-type]').forEach(buttonEl => {
     let actionType = buttonEl.getAttribute('data-action-type');
     if (actionType == 'redirect') {
         let actionVal = buttonEl.getAttribute('data-action-val');

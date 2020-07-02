@@ -44,6 +44,8 @@ peer.on('data', (data) => {
         document.querySelector('.container-chat--topbar-info-data-status').classList.remove('s-font-color-secondary');
         document.querySelector('.container-chat--topbar-info-data-status').classList.add('s-font-color-primary');
         document.getElementById('s-loader-chat').style.display = 'none';
+        document.querySelector('.mdc-text-field--textarea').classList.remove('mdc-text-field--disabled');
+        document.querySelector('.mdc-text-field__input').disabled = false;
         swcms.appendChatMessage(jMsg.msgUserName + ' Online!', null, 'auto');
     }
 });
