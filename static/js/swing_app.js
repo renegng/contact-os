@@ -208,6 +208,24 @@ export function sendPeerChatMessage(type, text, dateTime, userName) {
 }
 
 
+// Audio/Video Call Functions
+export function startAudioCall() {
+    document.querySelector('.container-avcalls').classList.remove('container--hidden');
+    document.querySelector('.container-avcalls').classList.add('animate__animated', 'animate__faster', 'animate__fadeIn');
+    document.querySelector('.container-chat').classList.add('container--hidden');
+}
+/* Allow 'window' context to reference the function */
+window.startAudioCall = startAudioCall;
+
+export function endAVCall() {
+    document.querySelector('.container-avcalls').classList.add('container--hidden');
+    document.querySelector('.container-avcalls').classList.remove('animate__animated', 'animate__faster', 'animate__fadeIn');
+    document.querySelector('.container-chat').classList.remove('container--hidden');
+}
+/* Allow 'window' context to reference the function */
+window.endAVCall = endAVCall;
+
+
 // Show Tabs Content
 export function showTabContent(e) {
     var tabId = e.target.id;

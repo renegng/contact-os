@@ -89,6 +89,44 @@ body {
 
 /* Container layouts */
 
+.container-avcalls {
+    background: stv.$swing-theme-secondary;
+    min-height: 90vh;
+    width: 100%;
+
+    .container-avcalls--actions {
+        align-items: center;
+        bottom: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: 4rem 0rem;
+        position: absolute;
+        width: 100%;
+
+        button {
+            margin: 0 1.5rem;
+        }
+    }
+
+    .container-avcalls--canvas {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        width: 100%;
+
+        .container-avcalls--callerid-pic {
+            margin: 5rem 0rem;
+
+            img {
+                border: 0.5rem solid stv.$swing-theme-surface;
+                border-radius: 50%;
+                height: 15rem;
+            }
+        }
+    }
+}
+
 @media all and (min-width: 56.25em) {
     // Laptops and Computers
     .container-chat {
@@ -266,7 +304,7 @@ body {
         .container-chat--footer-actions {
             display: inline-flex;
             justify-content: flex-end;
-            margin-left: 0.5rem;
+            margin-left: 1rem;
         }
     }
 }
@@ -299,6 +337,14 @@ body {
 
 .container-elevation-l {
     @include elevation.elevation(16);
+}
+
+.container--hidden {
+    display: none;
+}
+
+.container-justify-center {
+    justify-self: center;
 }
 
 .container-parallax {
