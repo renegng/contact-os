@@ -3,6 +3,60 @@
 {% block page_title %}Contact-Os Chat{% endblock %}
 {% block body %}
 <main class="s-main-content s-main-content--extend-tab-color-primary mdc-top-app-bar--fixed-adjust">
+    <div class="container-avcalls container--hidden">
+        <div class="container-avcalls--canvas">
+            <div class="container-avcalls--callerid s-font-align-center">
+                <div class="container-avcalls--callerid-pic">
+                    <img src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}" alt="Logo Contact-Os"/>
+                </div>
+                <div class="container-avcalls--callerid-data">
+                    <span class="mdc-typography--headline2 s-font-color-on-secondary">Cliente XYZ</span>
+                </div>
+            </div>
+            <video class="container-avcalls--video-big container--hidden" autoplay></video>
+            <video class="container-avcalls--video-small container--hidden" autoplay></video>
+            <audio class="container-avcalls--audio" autoplay></audio>
+            <audio id="sound-fx-calling" class="container-avcalls--fx" preload="metadata" loop>
+                <source src="{{ url_for('static', filename='media/audio/calling_ring.mp3') }}" type="audio/mpeg"/>
+                Tu navegador no soporta este elemento.
+            </audio>
+            <audio id="sound-fx-connected" class="container-avcalls--fx" preload="metadata">
+                <source src="{{ url_for('static', filename='media/audio/call_connected.mp3') }}" type="audio/mpeg"/>
+                Tu navegador no soporta este elemento.
+            </audio>
+            <audio id="sound-fx-ended" class="container-avcalls--fx" preload="metadata">
+                <source src="{{ url_for('static', filename='media/audio/call_ended.mp3') }}" type="audio/mpeg"/>
+                Tu navegador no soporta este elemento.
+            </audio>
+        </div>
+        <div class="container-avcalls--actions">
+            <button id="toggle-video-call" class="mdc-fab container--hidden" aria-label="Toggle Video Call"
+                alt="Toggle Video Call">
+                <div class="mdc-fab__ripple"></div>
+                <i class="material-icons mdc-fab__icon">videocam</i>
+            </button>
+            <button id="answer-call" class="mdc-fab mdc-fab--answer container--hidden" aria-label="Answer Call"
+                alt="Answer Call" data-action-type="submit" data-action-fn="acceptAudioCall">
+                <div class="mdc-fab__ripple"></div>
+                <i class="material-icons mdc-fab__icon">call</i>
+            </button>
+            <button id="hang-up-call" class="mdc-fab mdc-fab--hangup" aria-label="Hang Up Call"
+                alt="Hang Up Call" data-action-type="submit" data-action-fn="endAVCall">
+                <div class="mdc-fab__ripple"></div>
+                <i class="material-icons mdc-fab__icon">call_end</i>
+            </button>
+            <button id="answer-videocall" class="mdc-fab mdc-fab--answer container--hidden" aria-label="Answer Video Call"
+                alt="Answer Video Call" data-action-type="submit" data-action-fn="acceptVideoCall">
+                <div class="mdc-fab__ripple"></div>
+                <i class="material-icons mdc-fab__icon">videocam</i>
+            </button>
+            <button id="mute-mic" class="mdc-fab container--hidden" aria-label="Mute Mic"
+                alt="Mute Mic">
+                <div class="mdc-fab__ripple"></div>
+                <i class="material-icons mdc-fab__icon">mic_off</i>
+            </button>
+        </div>
+    </div>
     <div class="container-chat">
         <div class="container-color-surface container-chat--canvas">
             <div class="mdc-layout-grid container-chat--grid container-elevation-s">

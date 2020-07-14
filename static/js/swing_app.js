@@ -113,14 +113,18 @@ export function postFetch(url, postData) {
 }
 
 
-// Play Audio File
-export function playAudio(detail) {
-    if (detail.isOn) {
-        audio.play();
+// Play/Stop Audio File
+Audio.prototype.stop = function() {
+    this.pause();
+    this.currentTime = 0;
+};
+
+export function playAudio(audioEl, play) {
+    if (play) {
+        audioEl.play();
     } else {
-        audio.pause();
+        audioEl.stop();
     }
-    audio.onended = () => { playAudioButton.click() };
 }
 
 
@@ -174,11 +178,15 @@ export function appendChatMessage(txt, dateTime, user, userName = '') {
 
 export function sendChatMessage() {
     let textElement = document.getElementById('chat-textarea-input');
-    let userName = document.querySelector('.container-chat--topbar-info-data-name').textContent;
     let textMessage = textElement.value;
     let dateTime = Date.now();
     if (textMessage && textMessage.trim() != "") {
-        sendPeerChatMessage('msg', textMessage, dateTime, userName);
+        sendPeerChatMessage(
+            'msg',
+            textMessage,
+            dateTime,
+            document.querySelector('.container-chat--topbar-info-data-name').textContent
+        );
         appendChatMessage(textMessage, dateTime, 'me');
         textElement.value = '';
         textElement.focus();
@@ -206,24 +214,204 @@ export function sendPeerChatMessage(type, text, dateTime, userName) {
         }));
     }
 }
+/* Allow 'window' context to reference the function */
+window.sendPeerChatMessage = sendPeerChatMessage;
 
 
 // Audio/Video Call Functions
-export function startAudioCall() {
-    document.querySelector('.container-avcalls').classList.remove('container--hidden');
-    document.querySelector('.container-avcalls').classList.add('animate__animated', 'animate__faster', 'animate__fadeIn');
-    document.querySelector('.container-chat').classList.add('container--hidden');
+const avStreams = {
+    myStream: null,
+    otherStreams: []
+};
+
+function startUserMedia(av, state) {
+    let constraints = null;
+
+    if (av == 'audio') {
+        // Only Audio is being requested
+        constraints = {
+            audio: true,
+            video: false
+        };
+    } else if (av == 'audiovideo') {
+        // Audio & Video are being requested
+        constraints = {
+            audio: true,
+            video: true
+        };
+    }
+
+    // Request User Devices
+    navigator.mediaDevices.getUserMedia(constraints)
+    .then((stream) => {
+        avStreams.myStream = stream;
+        sendPeerChatMessage(
+            av,
+            (state == 'init') ? 'accept' : state,
+            Date.now(),
+            document.querySelector('.container-chat--topbar-info-data-name').textContent
+        );
+        displayCallUI(state, av);
+    })
+    .catch((err) => {
+        console.log(err);
+        if (err.name == 'NotAllowedError') {
+            displayCallUI('ended');
+            initSnackbar(snackbar, failedGetUserMediaSBDataObj);
+            snackbar.open();
+        }
+    });
+}
+
+// Snackbar Data for Failed Get User Media Devices
+var failedGetUserMediaSBDataObj = {
+    message: 'Por favor habilite el acceso a la cámara y/o micrófono.',
+    actionText: 'OK',
+    timeout: 20000,
+    actionHandler: () => {
+        console.log('GetUserMedia Devices Failed...');
+    }
+};
+
+export function displayCallUI(state, av = '') {
+    switch (state) {
+        case 'init':
+            /************************************************************
+             *
+             * - Call interface displayed
+             * - Hang Up button displayed
+             * - Sound FX Calling Loop
+             * 
+            *************************************************************/
+            document.querySelector('.mdc-fab--hangup').classList.remove('container--hidden');
+            document.querySelector('.mdc-fab--answer').classList.add('container--hidden');
+            document.querySelector('.container-avcalls').classList.remove('container--hidden');
+            document.querySelector('.container-avcalls').classList.add('animate__animated', 'animate__faster', 'animate__fadeIn');
+            document.querySelector('.container-chat').classList.add('container--hidden');
+            playAudio(document.querySelector('#sound-fx-calling'), true);
+            break;
+        case 'accept':
+            /************************************************************
+             *
+             * - Call interface displayed
+             * - Accept Call button displayed
+             * - Sound FX Calling Loop
+             * 
+            *************************************************************/
+            document.querySelector('.mdc-fab--hangup').classList.add('container--hidden');
+            if (av == 'audio') {
+                document.querySelector('#answer-call').classList.remove('container--hidden');
+            } else if (av == 'audiovideo') {
+                document.querySelector('#answer-videocall').classList.remove('container--hidden');
+            }
+            document.querySelector('.container-avcalls').classList.remove('container--hidden');
+            document.querySelector('.container-avcalls').classList.add('animate__animated', 'animate__faster', 'animate__fadeIn');
+            document.querySelector('.container-chat').classList.add('container--hidden');
+            playAudio(document.querySelector('#sound-fx-calling'), true);
+            break;
+        case 'accepted':
+            /************************************************************
+             *
+             * - Call interface displayed
+             * - Hang Up button displayed
+             * - Sound FX Connected Once
+             * - Sound FX Calling Loop Stop
+             * 
+            *************************************************************/
+            document.querySelector('.mdc-fab--hangup').classList.remove('container--hidden');
+            if (av == 'audio') {
+                document.querySelector('#answer-call').classList.add('container--hidden');
+            } else if (av == 'audiovideo') {
+                document.querySelector('#answer-videocall').classList.add('container--hidden');
+            }
+            document.querySelector('.container-avcalls').classList.remove('container--hidden');
+            document.querySelector('.container-avcalls').classList.add('animate__animated', 'animate__faster', 'animate__fadeIn');
+            document.querySelector('.container-chat').classList.add('container--hidden');
+            playAudio(document.querySelector('#sound-fx-calling'), false);
+            playAudio(document.querySelector('#sound-fx-connected'), true);
+            break;
+        case 'ended':
+            /************************************************************
+             *
+             * - Call interface hidden
+             * - Hang Up button displayed
+             * - Sound FX Ended Once
+             * - Sound FX Calling Loop Stop
+             * 
+            *************************************************************/
+            document.querySelector('.mdc-fab--hangup').classList.remove('container--hidden');
+            document.querySelector('.mdc-fab--answer').classList.add('container--hidden');
+            document.querySelector('.container-avcalls').classList.add('container--hidden');
+            document.querySelector('.container-avcalls').classList.remove('animate__animated', 'animate__faster', 'animate__fadeIn');
+            document.querySelector('.container-chat').classList.remove('container--hidden');
+            playAudio(document.querySelector('#sound-fx-calling'), false);
+            playAudio(document.querySelector('#sound-fx-ended'), true);
+            break;
+    }
 }
 /* Allow 'window' context to reference the function */
-window.startAudioCall = startAudioCall;
+window.displayCallUI = displayCallUI;
+
+export function initAudioCall() {
+    startUserMedia('audio', 'init');
+}
+/* Allow 'window' context to reference the function */
+window.initAudioCall = initAudioCall;
+
+export function acceptAudioCall() {
+    startUserMedia('audio', 'accepted');
+}
+/* Allow 'window' context to reference the function */
+window.acceptAudioCall = acceptAudioCall;
+
+export function initVideoCall() {
+    startUserMedia('audiovideo', 'init');
+}
+/* Allow 'window' context to reference the function */
+window.initVideoCall = initVideoCall;
+
+export function acceptVideoCall() {
+    startUserMedia('audiovideo', 'accepted');
+}
+/* Allow 'window' context to reference the function */
+window.acceptVideoCall = acceptVideoCall;
 
 export function endAVCall() {
-    document.querySelector('.container-avcalls').classList.add('container--hidden');
-    document.querySelector('.container-avcalls').classList.remove('animate__animated', 'animate__faster', 'animate__fadeIn');
-    document.querySelector('.container-chat').classList.remove('container--hidden');
+    displayCallUI('ended');
+    managePeerStream('end');
 }
 /* Allow 'window' context to reference the function */
 window.endAVCall = endAVCall;
+
+export function managePeerStream(action) {
+    if (peer) {
+        switch (action) {
+            case 'send':
+                peer.addStream(avStreams.myStream);
+                break;
+            case 'end':
+                peer.removeStream(avStreams.myStream);
+                break;
+        }
+    }
+}
+/* Allow 'window' context to reference the function */
+window.managePeerStream = managePeerStream;
+
+export function setAVStream(otherStream) {
+    let videoTracks = otherStream.getVideoTracks();
+    if (videoTracks.length > 0) {
+        /* The stream is a video stream */
+        document.querySelector('.container-avcalls--video-big').srcObject = otherStream;
+        document.querySelector('.container-avcalls--video-small').srcObject = avStreams.myStream;
+    } else {
+        /* The stream is an audio stream */
+        document.querySelector('.container-avcalls--audio').srcObject = otherStream;
+    }
+    avStreams.otherStreams.push(otherStream);
+}
+/* Allow 'window' context to reference the function */
+window.setAVStream = setAVStream;
 
 
 // Show Tabs Content
@@ -484,21 +672,6 @@ document.querySelectorAll('.mdc-button[data-action-type], .mdc-icon-button[data-
         buttonEl.addEventListener('click', fn);
     }
 });
-
-
-// Audio playback
-var audio = null;
-var playAudioButton = null;
-var playAudioButtonIconToggle = null;
-if (!isNull(document.querySelector('.fab__playbutton'))) {
-    playAudioButton = document.querySelector('.fab__playbutton');
-    playAudioButtonIconToggle = new MDCIconButtonToggle(document.querySelector('.fab__playbutton'));
-    playAudioButton.addEventListener('MDCIconButtonToggle:change', ({ detail }) => playAudio(detail));
-
-    // Autoplay audio
-    audio = document.getElementById('cmsv-vr-audio');
-    audio.oncanplaythrough = () => { playAudioButton.click() };
-}
 
 
 // Google Maps component

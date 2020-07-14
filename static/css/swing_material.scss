@@ -185,6 +185,11 @@
     padding: 2rem;
 }
 
+.mdc-fab--answer {
+    @include fab.container-color(#00c853);
+    padding: 2rem;
+}
+
 .mdc-fab--active {
     @include fab.container-color(stv.$swing-theme-surface);
     @include fab.ink-color(stv.$swing-theme-on-surface);
