@@ -13,8 +13,10 @@
                     <span class="mdc-typography--headline2 s-font-color-on-secondary">Cliente XYZ</span>
                 </div>
             </div>
-            <video class="container-avcalls--video-big container--hidden" autoplay></video>
-            <video class="container-avcalls--video-small container--hidden" autoplay></video>
+            <video class="container-avcalls--video-main container--hidden" autoplay></video>
+            <div class="container-avcalls--videos container-avcalls--videos-16x9 container--hidden">
+                <video class="container-avcalls--video-small container-elevation-s container--hidden" autoplay></video>
+            </div>
             <audio class="container-avcalls--audio" autoplay></audio>
             <audio id="sound-fx-calling" class="container-avcalls--fx" preload="metadata" loop>
                 <source src="{{ url_for('static', filename='media/audio/calling_ring.mp3') }}" type="audio/mpeg"/>

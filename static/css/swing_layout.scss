@@ -113,6 +113,8 @@ body {
         display: flex;
         flex-direction: column;
         flex-wrap: wrap;
+        height: 100%;
+        position: relative;
         width: 100%;
 
         .container-avcalls--callerid-pic {
@@ -123,6 +125,45 @@ body {
                 border-radius: 50%;
                 height: 15rem;
             }
+        }
+
+        .container-avcalls--video-main {
+            height: 90vh;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .container-avcalls--videos {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            margin: 1rem;
+            position: absolute;
+            right: 0;
+            width: 23vh;
+
+            .container-avcalls--video-small {
+                border-radius: 0.5rem;
+                height: 100%;
+                margin-top: 1rem;
+                width: 100%;
+            }
+        }
+
+        .container-avcalls--videos-16x9 {
+            padding-bottom: (9/16) * 100%;
+        }
+
+        .container-avcalls--videos-2x3 {
+            padding-bottom: (3/2) * 100%;
+        }
+
+        .container-avcalls--videos-3x2 {
+            padding-bottom: (2/3) * 100%;
+        }
+
+        .container-avcalls--videos-9x16 {
+            padding-bottom: (16/9) * 100%;
         }
     }
 }

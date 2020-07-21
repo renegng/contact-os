@@ -13,8 +13,10 @@
                     <span class="mdc-typography--headline2 s-font-color-on-secondary">Cliente XYZ</span>
                 </div>
             </div>
-            <video class="container-avcalls--video-big container--hidden" autoplay></video>
-            <video class="container-avcalls--video-small container--hidden" autoplay></video>
+            <video class="container-avcalls--video-main container--hidden" autoplay></video>
+            <div class="container-avcalls--videos container-avcalls--videos-16x9 container--hidden">
+                <video class="container-avcalls--video-small container-elevation-s container--hidden" autoplay></video>
+            </div>
             <audio class="container-avcalls--audio" autoplay></audio>
             <audio id="sound-fx-calling" class="container-avcalls--fx" preload="metadata" loop>
                 <source src="{{ url_for('static', filename='media/audio/calling_ring.mp3') }}" type="audio/mpeg"/>
@@ -78,11 +80,11 @@
                                 </div>
                             </section>
                             <section class="container-chat--topbar-actions">
-                                <button id="videoCall" class="mdc-icon-button s-font-color-secondary"
+                                <button id="videoCall" class="mdc-icon-button s-font-color-secondary" disabled
                                     aria-label="Video Call" alt="Video Call" data-action-type="submit" data-action-fn="initVideoCall">
                                     <i class="material-icons mdc-icon-button__icon">video_call</i>
                                 </button>
-                                <button id="audioCall" class="mdc-icon-button s-font-color-secondary"
+                                <button id="audioCall" class="mdc-icon-button s-font-color-secondary" disabled
                                     aria-label="Audio Call" alt="Audio Call" data-action-type="submit" data-action-fn="initAudioCall">
                                     <i class="material-icons mdc-icon-button__icon">call</i>
                                 </button>

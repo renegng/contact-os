@@ -221,6 +221,7 @@ window.sendPeerChatMessage = sendPeerChatMessage;
 // Audio/Video Call Functions
 const avStreams = {
     myStream: null,
+    myStreamSended: false,
     otherStreams: []
 };
 
@@ -237,27 +238,39 @@ function startUserMedia(av, state) {
         // Audio & Video are being requested
         constraints = {
             audio: true,
-            video: true
+            video: {
+                facingMode: 'user',
+                height: { ideal: 720, max: 1080 },
+                width: { ideal: 1280, max: 1920 }
+            }
         };
     }
 
     // Request User Devices
     navigator.mediaDevices.getUserMedia(constraints)
     .then((stream) => {
-        avStreams.myStream = stream;
+        managePeerStream('save', stream);
+        displayCallUI(state, av);
         sendPeerChatMessage(
             av,
             (state == 'init') ? 'accept' : state,
             Date.now(),
             document.querySelector('.container-chat--topbar-info-data-name').textContent
         );
-        displayCallUI(state, av);
+        if (state == 'accepted') {
+            managePeerStream('send');
+        }
     })
     .catch((err) => {
         console.log(err);
+        displayCallUI('ended');
         if (err.name == 'NotAllowedError') {
-            displayCallUI('ended');
             initSnackbar(snackbar, failedGetUserMediaSBDataObj);
+            snackbar.open();
+        } else {
+            let errMsgSBDataObj = failedGetUserMediaSBDataObj;
+            errMsgSBDataObj.message = err.name;
+            initSnackbar(snackbar, errMsgSBDataObj);
             snackbar.open();
         }
     });
@@ -275,21 +288,6 @@ var failedGetUserMediaSBDataObj = {
 
 export function displayCallUI(state, av = '') {
     switch (state) {
-        case 'init':
-            /************************************************************
-             *
-             * - Call interface displayed
-             * - Hang Up button displayed
-             * - Sound FX Calling Loop
-             * 
-            *************************************************************/
-            document.querySelector('.mdc-fab--hangup').classList.remove('container--hidden');
-            document.querySelector('.mdc-fab--answer').classList.add('container--hidden');
-            document.querySelector('.container-avcalls').classList.remove('container--hidden');
-            document.querySelector('.container-avcalls').classList.add('animate__animated', 'animate__faster', 'animate__fadeIn');
-            document.querySelector('.container-chat').classList.add('container--hidden');
-            playAudio(document.querySelector('#sound-fx-calling'), true);
-            break;
         case 'accept':
             /************************************************************
              *
@@ -309,6 +307,7 @@ export function displayCallUI(state, av = '') {
             document.querySelector('.container-chat').classList.add('container--hidden');
             playAudio(document.querySelector('#sound-fx-calling'), true);
             break;
+
         case 'accepted':
             /************************************************************
              *
@@ -316,6 +315,7 @@ export function displayCallUI(state, av = '') {
              * - Hang Up button displayed
              * - Sound FX Connected Once
              * - Sound FX Calling Loop Stop
+             * - Show Video UI if Video
              * 
             *************************************************************/
             document.querySelector('.mdc-fab--hangup').classList.remove('container--hidden');
@@ -323,6 +323,10 @@ export function displayCallUI(state, av = '') {
                 document.querySelector('#answer-call').classList.add('container--hidden');
             } else if (av == 'audiovideo') {
                 document.querySelector('#answer-videocall').classList.add('container--hidden');
+                document.querySelector('.container-avcalls--callerid').classList.add('container--hidden');
+                document.querySelector('.container-avcalls--video-main').classList.remove('container--hidden');
+                document.querySelector('.container-avcalls--videos').classList.remove('container--hidden');
+                document.querySelector('.container-avcalls--video-small').classList.remove('container--hidden');
             }
             document.querySelector('.container-avcalls').classList.remove('container--hidden');
             document.querySelector('.container-avcalls').classList.add('animate__animated', 'animate__faster', 'animate__fadeIn');
@@ -330,6 +334,7 @@ export function displayCallUI(state, av = '') {
             playAudio(document.querySelector('#sound-fx-calling'), false);
             playAudio(document.querySelector('#sound-fx-connected'), true);
             break;
+
         case 'ended':
             /************************************************************
              *
@@ -341,11 +346,31 @@ export function displayCallUI(state, av = '') {
             *************************************************************/
             document.querySelector('.mdc-fab--hangup').classList.remove('container--hidden');
             document.querySelector('.mdc-fab--answer').classList.add('container--hidden');
+            document.querySelector('.container-avcalls--callerid').classList.remove('container--hidden');
+            document.querySelector('.container-avcalls--video-main').classList.add('container--hidden');
+            document.querySelector('.container-avcalls--videos').classList.add('container--hidden');
+            document.querySelector('.container-avcalls--video-small').classList.add('container--hidden');
             document.querySelector('.container-avcalls').classList.add('container--hidden');
             document.querySelector('.container-avcalls').classList.remove('animate__animated', 'animate__faster', 'animate__fadeIn');
             document.querySelector('.container-chat').classList.remove('container--hidden');
             playAudio(document.querySelector('#sound-fx-calling'), false);
             playAudio(document.querySelector('#sound-fx-ended'), true);
+            break;
+
+        case 'init':
+            /************************************************************
+             *
+             * - Call interface displayed
+             * - Hang Up button displayed
+             * - Sound FX Calling Loop
+             * 
+            *************************************************************/
+            document.querySelector('.mdc-fab--hangup').classList.remove('container--hidden');
+            document.querySelector('.mdc-fab--answer').classList.add('container--hidden');
+            document.querySelector('.container-avcalls').classList.remove('container--hidden');
+            document.querySelector('.container-avcalls').classList.add('animate__animated', 'animate__faster', 'animate__fadeIn');
+            document.querySelector('.container-chat').classList.add('container--hidden');
+            playAudio(document.querySelector('#sound-fx-calling'), true);
             break;
     }
 }
@@ -376,21 +401,57 @@ export function acceptVideoCall() {
 /* Allow 'window' context to reference the function */
 window.acceptVideoCall = acceptVideoCall;
 
-export function endAVCall() {
+export function endAVCall(sendMsg = true) {
     displayCallUI('ended');
+    if (sendMsg) {
+        sendPeerChatMessage(
+            'audiovideo',
+            'ended',
+            Date.now(),
+            document.querySelector('.container-chat--topbar-info-data-name').textContent
+        );
+    }
     managePeerStream('end');
 }
 /* Allow 'window' context to reference the function */
 window.endAVCall = endAVCall;
 
-export function managePeerStream(action) {
+export function managePeerStream(action, stream = null) {
     if (peer) {
         switch (action) {
-            case 'send':
-                peer.addStream(avStreams.myStream);
-                break;
             case 'end':
-                peer.removeStream(avStreams.myStream);
+                /* Finalize my Stream and any other Stream */
+                if (avStreams.myStream) {
+                    avStreams.myStream.getTracks().forEach((track) => {
+                        track.stop();
+                    });
+                }
+                if (avStreams.myStreamSended) {
+                    peer.removeStream(avStreams.myStream);
+                }
+                avStreams.myStream = null;
+                avStreams.myStreamSended = false;
+                avStreams.otherStreams = [];
+                break;
+            
+            case 'save':
+                /* Adds My Stream to avStreams */
+                avStreams.myStream = stream;
+                break;
+
+            case 'saveRemote':
+                /* Adds Remote Stream to avStreams */
+                avStreams.otherStreams.push(stream);
+                break;
+
+            case 'send':
+                /* Sends My Stream to Remote */
+                if (!isNull(avStreams.myStream)) {
+                    peer.addStream(avStreams.myStream);
+                    avStreams.myStreamSended = true;
+                } else {
+                    console.log('SWCMS: No local stream to send.');
+                }
                 break;
         }
     }
@@ -402,13 +463,13 @@ export function setAVStream(otherStream) {
     let videoTracks = otherStream.getVideoTracks();
     if (videoTracks.length > 0) {
         /* The stream is a video stream */
-        document.querySelector('.container-avcalls--video-big').srcObject = otherStream;
         document.querySelector('.container-avcalls--video-small').srcObject = avStreams.myStream;
+        document.querySelector('.container-avcalls--video-main').srcObject = otherStream;
     } else {
         /* The stream is an audio stream */
         document.querySelector('.container-avcalls--audio').srcObject = otherStream;
     }
-    avStreams.otherStreams.push(otherStream);
+    managePeerStream('saveRemote', otherStream);
 }
 /* Allow 'window' context to reference the function */
 window.setAVStream = setAVStream;

@@ -30,16 +30,31 @@ peer.on('close', () => {
     document.querySelector('.container-chat--topbar-info-data-status').textContent = 'Offline';
     document.querySelector('.container-chat--topbar-info-data-status').classList.remove('s-font-color-primary');
     document.querySelector('.container-chat--topbar-info-data-status').classList.add('s-font-color-secondary');
+    document.querySelector('.mdc-text-field--textarea').classList.add('mdc-text-field--disabled');
+    document.querySelector('.mdc-text-field__input').disabled = true;
+    document.querySelector('#audioCall').disabled = true;
+    document.querySelector('#videoCall').disabled = true;
     swcms.appendChatMessage(userName + ' Offline.', null, 'auto');
 });
 
 peer.on('data', (data) => {
-    console.log('Receiver Data Received: ' + data);
+    console.log('Initiator Data Received: ' + data);
     jMsg = JSON.parse(data);
     switch (jMsg.msgType) {
+        case 'audio':
+        case 'audiovideo':
+            if (jMsg.msg == 'accepted') {
+                swcms.managePeerStream('send');
+            } else if (jMsg.msg == 'ended') {
+                swcms.endAVCall(false);
+            }
+            swcms.displayCallUI(jMsg.msg, jMsg.msgType);
+            break;
+
         case 'msg':
             swcms.appendChatMessage(jMsg.msg, jMsg.msgDateTime, 'others', jMsg.msgUserName);
             break;
+
         case 'welcome':
             document.querySelector('.container-chat--topbar-info-data-name').textContent = jMsg.msgUserName;
             document.querySelector('.container-chat--topbar-info-data-status').textContent = 'Online';
@@ -48,14 +63,9 @@ peer.on('data', (data) => {
             document.getElementById('s-loader-chat').style.display = 'none';
             document.querySelector('.mdc-text-field--textarea').classList.remove('mdc-text-field--disabled');
             document.querySelector('.mdc-text-field__input').disabled = false;
+            document.querySelector('#audioCall').disabled = false;
+            document.querySelector('#videoCall').disabled = false;
             swcms.appendChatMessage(jMsg.msgUserName + ' Online!', null, 'auto');
-            break;
-        case 'audio':
-        case 'audiovideo':
-            swcms.displayCallUI(jMsg.msg, jMsg.msgType);
-            if (jMsg.msg == 'accepted') {
-                swcms.managePeerStream('send');
-            }
             break;
     }
 });
