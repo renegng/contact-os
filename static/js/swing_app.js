@@ -293,10 +293,11 @@ export function displayCallUI(state, av = '') {
              *
              * - Call interface displayed
              * - Accept Call button displayed
+             * - Hang Up button displayed
              * - Sound FX Calling Loop
              * 
             *************************************************************/
-            document.querySelector('.mdc-fab--hangup').classList.add('container--hidden');
+            document.querySelector('.mdc-fab--hangup').classList.remove('container--hidden');
             if (av == 'audio') {
                 document.querySelector('#answer-call').classList.remove('container--hidden');
             } else if (av == 'audiovideo') {
