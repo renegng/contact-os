@@ -135,26 +135,26 @@ export function createChatMessageContainer(txt, dateTime, user, userName = '') {
     let msgContainerTime = document.createElement('span');
 
     msgContainer.classList.add('animate__animated', 'animate__headShake');
-    msgContainerMsg.classList.add('container-chat--body-messages-message', 'mdc-typography--subtitle1', 'container-elevation-s');
-    msgContainerTime.classList.add('container-chat--body-messages-message-time', 'mdc-typography--caption', 's-font-color-on-surface');
+    msgContainerMsg.classList.add('container-chat--body-message-message', 'mdc-typography--subtitle1', 'container-elevation-s');
+    msgContainerTime.classList.add('container-chat--body-message-message-time', 'mdc-typography--caption', 's-font-color-on-surface');
 
     if (user == 'me') {
-        msgContainer.classList.add('container-chat--body-messages-me');
+        msgContainer.classList.add('container-chat--body-message-me');
         msgContainerMsg.classList.add('s-font-color-on-primary');
     } else if (user == 'others') {
         let msgContainerUser = document.createElement('span');
 
-        msgContainer.classList.add('container-chat--body-messages-others');
+        msgContainer.classList.add('container-chat--body-message-others');
         msgContainerMsg.classList.add('s-font-color-on-secondary');
-        msgContainerUser.classList.add('container-chat--body-messages-message-user', 'mdc-typography--caption', 's-font-color-secondary');
+        msgContainerUser.classList.add('container-chat--body-message-message-user', 'mdc-typography--caption', 's-font-color-secondary');
 
         msgContainerUser.textContent = userName;
 
         msgContainer.appendChild(msgContainerUser);
     } else if (user == 'auto') {
-        msgContainer.classList.add('container-chat--body-messages-auto', 's-font-align-center');
+        msgContainer.classList.add('container-chat--body-message-auto', 's-font-align-center');
         msgContainerMsg = document.createElement('span');
-        msgContainerMsg.classList.add('mdc-typography--subtitle2', 's-font-color-secondary');
+        msgContainerMsg.classList.add('mdc-typography--caption', 's-font-color-secondary');
     }
 
     msgContainerMsg.textContent = txt;
