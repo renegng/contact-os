@@ -145,7 +145,7 @@ body {
             .container-avcalls--video-small {
                 border-radius: 0.5rem;
                 height: 13vh;
-                margin-top: 1rem;
+                margin-bottom: 1rem;
                 max-height: 23vh;
                 object-fit: cover;
                 width: 100%;
@@ -273,6 +273,7 @@ body {
                 align-self: center;
                 display: flex;
                 flex-direction: column;
+                flex-shrink: 0;
                 margin: 1rem;
             }
 
@@ -285,6 +286,7 @@ body {
                 align-self: flex-end;
                 display: flex;
                 flex-direction: column;
+                flex-shrink: 0;
                 margin: 0.5rem 0rem 0rem 4rem;
 
                 .container-chat--body-message-message {
@@ -304,6 +306,7 @@ body {
                 align-self: flex-start;
                 display: flex;
                 flex-direction: column;
+                flex-shrink: 0;
                 margin: 0.5rem 4rem 0rem 0rem;
 
                 .container-chat--body-message-message {

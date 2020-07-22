@@ -273,6 +273,14 @@ function startUserMedia(av, state) {
             initSnackbar(snackbar, errMsgSBDataObj);
             snackbar.open();
         }
+        if (state != 'init') {
+            sendPeerChatMessage(
+                'audiovideo',
+                'ended',
+                Date.now(),
+                document.querySelector('.container-chat--topbar-info-data-name').textContent
+            );
+        }
     });
 }
 
