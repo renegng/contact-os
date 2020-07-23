@@ -149,7 +149,6 @@ export function createChatMessageContainer(txt, dateTime, user, userName = '') {
         msgContainerUser.classList.add('container-chat--body-message-message-user', 'mdc-typography--caption', 's-font-color-secondary');
 
         msgContainerUser.textContent = userName;
-
         msgContainer.appendChild(msgContainerUser);
     } else if (user == 'auto') {
         msgContainer.classList.add('container-chat--body-message-auto', 's-font-align-center');
@@ -168,18 +167,46 @@ export function createChatMessageContainer(txt, dateTime, user, userName = '') {
     return msgContainer;
 }
 
+var lastMsgUser = '';
 export function appendChatMessage(txt, dateTime, user, userName = '') {
     let chatContainer = document.querySelector('.container-chat--body-messages');
     let msgContainer = createChatMessageContainer(txt, dateTime, user, userName);
 
+    if (lastMsgUser != userName && user != 'auto') {
+        let msgContainerUserHeader = document.createElement('p');
+        let msgContainerUserHeaderPic = document.createElement('img');
+        let msgContainerUserHeaderName = document.createElement('span');
+
+        msgContainerUserHeaderName.classList.add('mdc-typography--overline');
+
+        switch (user) {
+            case 'me':
+                msgContainerUserHeader.classList.add('container-chat--body-header-me');
+                break;
+            case 'others':
+                msgContainerUserHeader.classList.add('container-chat--body-header-others');
+                break;
+        }
+
+        msgContainerUserHeaderName.textContent = userName;
+        msgContainerUserHeaderPic.src = '/static/images/manifest/user-f.svg';
+
+        msgContainerUserHeader.appendChild(msgContainerUserHeaderPic);
+        msgContainerUserHeader.appendChild(msgContainerUserHeaderName);
+
+        chatContainer.appendChild(msgContainerUserHeader);
+
+        lastMsgUser = userName;
+    }
+    
     chatContainer.appendChild(msgContainer);
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
 export function sendChatMessage() {
+    let dateTime = Date.now();
     let textElement = document.getElementById('chat-textarea-input');
     let textMessage = textElement.value;
-    let dateTime = Date.now();
     if (textMessage && textMessage.trim() != "") {
         sendPeerChatMessage(
             'msg',
@@ -187,7 +214,7 @@ export function sendChatMessage() {
             dateTime,
             document.querySelector('.container-chat--topbar-info-data-name').textContent
         );
-        appendChatMessage(textMessage, dateTime, 'me');
+        appendChatMessage(textMessage, dateTime, 'me', 'Anon');
         textElement.value = '';
         textElement.focus();
     }
@@ -325,6 +352,7 @@ export function displayCallUI(state, av = '') {
              * - Sound FX Connected Once
              * - Sound FX Calling Loop Stop
              * - Show Video UI if Video
+             * - Show Mute Button
              * 
             *************************************************************/
             document.querySelector('.mdc-fab--hangup').classList.remove('container--hidden');
@@ -332,11 +360,13 @@ export function displayCallUI(state, av = '') {
                 document.querySelector('#answer-call').classList.add('container--hidden');
             } else if (av == 'audiovideo') {
                 document.querySelector('#answer-videocall').classList.add('container--hidden');
+                document.querySelector('#toggle-video-call').classList.remove('container--hidden');
                 document.querySelector('.container-avcalls--callerid').classList.add('container--hidden');
                 document.querySelector('.container-avcalls--video-main').classList.remove('container--hidden');
                 document.querySelector('.container-avcalls--videos').classList.remove('container--hidden');
                 document.querySelector('.container-avcalls--video-small').classList.remove('container--hidden');
             }
+            document.querySelector('#mute-mic').classList.remove('container--hidden');
             document.querySelector('.container-avcalls').classList.remove('container--hidden');
             document.querySelector('.container-avcalls').classList.add('animate__animated', 'animate__faster', 'animate__fadeIn');
             document.querySelector('.container-chat').classList.add('container--hidden');
@@ -362,6 +392,10 @@ export function displayCallUI(state, av = '') {
             document.querySelector('.container-avcalls').classList.add('container--hidden');
             document.querySelector('.container-avcalls').classList.remove('animate__animated', 'animate__faster', 'animate__fadeIn');
             document.querySelector('.container-chat').classList.remove('container--hidden');
+            document.querySelector('#toggle-video-call').classList.add('mdc-fab--active');
+            document.querySelector('#toggle-video-call').classList.add('container--hidden');
+            document.querySelector('#mute-mic').classList.remove('mdc-fab--active');
+            document.querySelector('#mute-mic').classList.add('container--hidden');
             playAudio(document.querySelector('#sound-fx-calling'), false);
             playAudio(document.querySelector('#sound-fx-ended'), true);
             break;
@@ -482,6 +516,34 @@ export function setAVStream(otherStream) {
 }
 /* Allow 'window' context to reference the function */
 window.setAVStream = setAVStream;
+
+export function muteAudio() {
+    avStreams.myStream.getAudioTracks().forEach((track) => {
+        if (track.enabled) {
+            track.enabled = false;
+            document.querySelector('#mute-mic').classList.add('mdc-fab--active');
+        } else {
+            track.enabled = true;
+            document.querySelector('#mute-mic').classList.remove('mdc-fab--active');
+        }
+    });
+}
+/* Allow 'window' context to reference the function */
+window.muteAudio = muteAudio;
+
+export function stopVideo() {
+    avStreams.myStream.getVideoTracks().forEach((track) => {
+        if (track.enabled) {
+            track.enabled = false;
+            document.querySelector('#toggle-video-call').classList.remove('mdc-fab--active');
+        } else {
+            track.enabled = true;
+            document.querySelector('#toggle-video-call').classList.add('mdc-fab--active');
+        }
+    });
+}
+/* Allow 'window' context to reference the function */
+window.stopVideo = stopVideo;
 
 
 // Show Tabs Content

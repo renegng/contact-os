@@ -32,8 +32,8 @@
             </audio>
         </div>
         <div class="container-avcalls--actions">
-            <button id="toggle-video-call" class="mdc-fab container--hidden" aria-label="Toggle Video Call"
-                alt="Toggle Video Call">
+            <button id="toggle-video-call" class="mdc-fab mdc-fab--active container--hidden" aria-label="Toggle Video Call"
+                alt="Toggle Video Call" data-action-type="submit" data-action-fn="stopVideo">
                 <div class="mdc-fab__ripple"></div>
                 <i class="material-icons mdc-fab__icon">videocam</i>
             </button>
@@ -53,7 +53,7 @@
                 <i class="material-icons mdc-fab__icon">videocam</i>
             </button>
             <button id="mute-mic" class="mdc-fab container--hidden" aria-label="Mute Mic"
-                alt="Mute Mic">
+                alt="Mute Mic" data-action-type="submit" data-action-fn="muteAudio">
                 <div class="mdc-fab__ripple"></div>
                 <i class="material-icons mdc-fab__icon">mic_off</i>
             </button>

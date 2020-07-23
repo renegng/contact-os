@@ -101,3 +101,4 @@ Proper credit for the following people/teams:
 - Ubuntu team, stable OS to work on.
 - Animate.css from <a href="https://animate.style/" title="Animate CSS">animate.style/</a> for their amazing css animations!
 - Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+- Icons made by <a href="https://www.flaticon.com/authors/vitaly-gorbachev" title="Vitaly Gorbachev">Vitaly Gorbachev</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>

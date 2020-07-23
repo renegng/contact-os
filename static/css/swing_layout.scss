@@ -282,12 +282,30 @@ body {
                 flex-direction: column-reverse;
             }
 
+            .container-chat--body-header-me {
+                align-items: flex-end;
+                display: flex;
+                flex-direction: row-reverse;
+                flex-shrink: 0;
+                height: 2.5rem;
+                margin: 0.5rem 0rem;
+
+                img {
+                    border-radius: 50%;
+                    height: 100%;
+                }
+
+                span {
+                    margin: 0rem 0.5rem;
+                }
+            }
+
             .container-chat--body-message-me {
                 align-self: flex-end;
                 display: flex;
                 flex-direction: column;
                 flex-shrink: 0;
-                margin: 0.5rem 0rem 0rem 4rem;
+                margin: 0.5rem 1.5rem 0rem 3rem;
 
                 .container-chat--body-message-message {
                     align-self: flex-end;
@@ -302,12 +320,30 @@ body {
                 }
             }
 
+            .container-chat--body-header-others {
+                align-items: flex-end;
+                display: flex;
+                flex-direction: row;
+                flex-shrink: 0;
+                height: 2.5rem;
+                margin: 0.5rem 0rem;
+
+                img {
+                    border-radius: 50%;
+                    height: 100%;
+                }
+
+                span {
+                    margin: 0rem 0.5rem;
+                }
+            }
+
             .container-chat--body-message-others {
                 align-self: flex-start;
                 display: flex;
                 flex-direction: column;
                 flex-shrink: 0;
-                margin: 0.5rem 4rem 0rem 0rem;
+                margin: 0.5rem 3rem 0rem 1.5rem;
 
                 .container-chat--body-message-message {
                     align-self: flex-start;
