@@ -49,6 +49,28 @@ if (!isNull(document.querySelector('#firebaseui-auth-container'))) {
     firebaseUI.start('#firebaseui-auth-container', firebaseUIConfig);
 }
 
+// Get Signed-In User info
+export function getSignedInUser(){
+    var signedInUser = firebase.auth().currentUser;
+    var user;
+
+    if (signedInUser) {
+        // User is signed in
+        user = {
+            name: signedInUser.displayName,
+            photoURL: signedInUser.photoURL
+        };
+    } else {
+        // User is not signed in
+        user = {
+            name: 'Anonim@',
+            photoURL: '/static/images/manifest/user-f.svg'
+        };
+    }
+
+    return user;
+}
+
 // Track Auth State
 // var fbInitApp = function () {
 //     firebase.auth().onAuthStateChanged(function (user) {

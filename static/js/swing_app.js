@@ -3,6 +3,7 @@
 // import AOS from 'aos';
 import 'core-js';
 import 'regenerator-runtime/runtime';
+import { getSignedInUser } from './swing_firebase';
 import { MDCDrawer } from "@material/drawer";
 import { MDCFloatingLabel } from '@material/floating-label';
 import { MDCIconButtonToggle } from '@material/icon-button';
@@ -246,11 +247,17 @@ window.sendPeerChatMessage = sendPeerChatMessage;
 
 
 // Audio/Video Call Functions
-const avStreams = {
+const advStreams = {
     myStream: null,
     myStreamSended: false,
-    otherStreams: []
+    myUserInfo: null,
+    otherUsersStreams: []
 };
+/* Allow 'window' context to reference the function */
+window.advStreams = advStreams;
+
+/* Get User Signed-In info */
+advStreams.myUserInfo = getSignedInUser();
 
 function startUserMedia(av, state) {
     let constraints = null;
@@ -421,6 +428,8 @@ export function displayCallUI(state, av = '') {
 window.displayCallUI = displayCallUI;
 
 export function initAudioCall() {
+    document.getElementById('chat-textarea-input').value = '- Inicio de Audio llamada';
+    document.querySelector('#chat-textarea-button').click();
     startUserMedia('audio', 'init');
 }
 /* Allow 'window' context to reference the function */
@@ -433,6 +442,8 @@ export function acceptAudioCall() {
 window.acceptAudioCall = acceptAudioCall;
 
 export function initVideoCall() {
+    document.getElementById('chat-textarea-input').value = '- Inicio de Video llamada';
+    document.querySelector('#chat-textarea-button').click();
     startUserMedia('audiovideo', 'init');
 }
 /* Allow 'window' context to reference the function */
@@ -453,6 +464,8 @@ export function endAVCall(sendMsg = true) {
             Date.now(),
             document.querySelector('.container-chat--topbar-info-data-name').textContent
         );
+        document.getElementById('chat-textarea-input').value = '- Fin de llamada';
+        document.querySelector('#chat-textarea-button').click();
     }
     managePeerStream('end');
 }
@@ -464,34 +477,34 @@ export function managePeerStream(action, stream = null) {
         switch (action) {
             case 'end':
                 /* Finalize my Stream and any other Stream */
-                if (avStreams.myStream) {
-                    avStreams.myStream.getTracks().forEach((track) => {
+                if (advStreams.myStream) {
+                    advStreams.myStream.getTracks().forEach((track) => {
                         track.stop();
                     });
                 }
-                if (avStreams.myStreamSended) {
-                    peer.removeStream(avStreams.myStream);
+                if (advStreams.myStreamSended) {
+                    peer.removeStream(advStreams.myStream);
                 }
-                avStreams.myStream = null;
-                avStreams.myStreamSended = false;
-                avStreams.otherStreams = [];
+                advStreams.myStream = null;
+                advStreams.myStreamSended = false;
+                advStreams.otherUsersStreams = [];
                 break;
             
             case 'save':
-                /* Adds My Stream to avStreams */
-                avStreams.myStream = stream;
+                /* Adds My Stream to advStreams */
+                advStreams.myStream = stream;
                 break;
 
             case 'saveRemote':
-                /* Adds Remote Stream to avStreams */
-                avStreams.otherStreams.push(stream);
+                /* Adds Remote Stream to advStreams */
+                advStreams.otherUsersStreams.push(stream);
                 break;
 
             case 'send':
                 /* Sends My Stream to Remote */
-                if (!isNull(avStreams.myStream)) {
-                    peer.addStream(avStreams.myStream);
-                    avStreams.myStreamSended = true;
+                if (!isNull(advStreams.myStream)) {
+                    peer.addStream(advStreams.myStream);
+                    advStreams.myStreamSended = true;
                 } else {
                     console.log('SWCMS: No local stream to send.');
                 }
@@ -506,7 +519,7 @@ export function setAVStream(otherStream) {
     let videoTracks = otherStream.getVideoTracks();
     if (videoTracks.length > 0) {
         /* The stream is a video stream */
-        document.querySelector('.container-avcalls--video-small').srcObject = avStreams.myStream;
+        document.querySelector('.container-avcalls--video-small').srcObject = advStreams.myStream;
         document.querySelector('.container-avcalls--video-main').srcObject = otherStream;
     } else {
         /* The stream is an audio stream */
@@ -518,7 +531,7 @@ export function setAVStream(otherStream) {
 window.setAVStream = setAVStream;
 
 export function muteAudio() {
-    avStreams.myStream.getAudioTracks().forEach((track) => {
+    advStreams.myStream.getAudioTracks().forEach((track) => {
         if (track.enabled) {
             track.enabled = false;
             document.querySelector('#mute-mic').classList.add('mdc-fab--active');
@@ -532,7 +545,7 @@ export function muteAudio() {
 window.muteAudio = muteAudio;
 
 export function stopVideo() {
-    avStreams.myStream.getVideoTracks().forEach((track) => {
+    advStreams.myStream.getVideoTracks().forEach((track) => {
         if (track.enabled) {
             track.enabled = false;
             document.querySelector('#toggle-video-call').classList.remove('mdc-fab--active');
