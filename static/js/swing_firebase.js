@@ -66,8 +66,8 @@ firebase.auth().onAuthStateChanged((user) => {
     }
 
     // When there is an Initiator Peer, it executes signaling
-    if (peer) {
-        if (peer.initiator) {
+    if (document.querySelector('.container-chat')) {
+        if (peer && peer.initiator) {
             initSignaling();
         }
     }
