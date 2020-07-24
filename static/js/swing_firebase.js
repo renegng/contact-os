@@ -1,5 +1,5 @@
 import { isNull } from 'util';
-import { postFetch } from './swing_app';
+import { advStreams, postFetch } from './swing_app';
 
 // FirebaseUI config.
 var firebaseUIConfig = {
@@ -50,26 +50,28 @@ if (!isNull(document.querySelector('#firebaseui-auth-container'))) {
 }
 
 // Get Signed-In User info
-export function getSignedInUser(){
-    var signedInUser = firebase.auth().currentUser;
-    var user;
-
-    if (signedInUser) {
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
         // User is signed in
-        user = {
-            name: signedInUser.displayName,
-            photoURL: signedInUser.photoURL
+        advStreams.myUserInfo = {
+            name: user.displayName,
+            photoURL: (user.photoURL) ? user.photoURL : '/static/images/manifest/user-f.svg'
         };
     } else {
         // User is not signed in
-        user = {
+        advStreams.myUserInfo = {
             name: 'Anonim@',
             photoURL: '/static/images/manifest/user-f.svg'
         };
     }
 
-    return user;
-}
+    // When there is an Initiator Peer, it executes signaling
+    if (peer) {
+        if (peer.initiator) {
+            initSignaling();
+        }
+    }
+});
 
 // Track Auth State
 // var fbInitApp = function () {

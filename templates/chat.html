@@ -7,18 +7,18 @@
         <div class="container-avcalls--canvas">
             <div class="container-avcalls--callerid s-font-align-center">
                 <div class="container-avcalls--callerid-pic">
-                    <img src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}" alt="Logo Contact-Os"/>
+                    <img id="callerid-pic" src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}" alt="Logo Contact-Os"/>
                 </div>
                 <div class="container-avcalls--callerid-data">
-                    <span class="mdc-typography--headline2 s-font-color-on-secondary">Cliente XYZ</span>
+                    <span id="callerid-name" class="mdc-typography--headline2 s-font-color-on-secondary">- -</span>
                 </div>
             </div>
-            <video class="container-avcalls--video-main container--hidden" autoplay></video>
+            <video class="container-avcalls--video-main container--hidden" playsinline></video>
             <div class="container-avcalls--videos container-avcalls--videos-16x9 container--hidden">
-                <video class="container-avcalls--video-small container-elevation-s container--hidden" autoplay muted></video>
+                <video class="container-avcalls--video-small container-elevation-s container--hidden" playsinline></video>
             </div>
-            <audio class="container-avcalls--audio" autoplay></audio>
-            <audio id="sound-fx-calling" class="container-avcalls--fx" preload="metadata" loop>
+            <audio class="container-avcalls--audio"></audio>
+            <audio id="sound-fx-calling" class="container-avcalls--fx" preload="metadata" onended="this.play();">
                 <source src="{{ url_for('static', filename='media/audio/calling_ring.mp3') }}" type="audio/mpeg"/>
                 Tu navegador no soporta este elemento.
             </audio>
@@ -69,14 +69,19 @@
                         <header class="container-chat--topbar-header">
                             <section class="container-chat--topbar-info">
                                 <div class="container-chat--topbar-info-pic">
-                                    <img src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}"
+                                    <img id="chat-pic" src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}"
                                         alt="Logo Contact-Os" />
                                 </div>
                                 <div class="container-chat--topbar-info-data">
-                                    <span class="container-chat--topbar-info-data-name mdc-typography--subtitle2">-
-                                        -</span>
-                                    <span
-                                        class="container-chat--topbar-info-data-status mdc-typography--caption s-font-color-secondary">Offline</span>
+                                    <span class="container-chat--topbar-info-data-name mdc-typography--subtitle2">
+                                        - -
+                                    </span>
+                                    <div class="container-chat--topbar-info-data-status">
+                                        <i class="material-icons container-chat--topbar-info-data-status-icon s-font-color-secondary">stop_circle</i>
+                                        <span class="container-chat--topbar-info-data-status-text mdc-typography--caption s-font-color-secondary">
+                                            Offline
+                                        </span>
+                                    </div>
                                 </div>
                             </section>
                         </header>

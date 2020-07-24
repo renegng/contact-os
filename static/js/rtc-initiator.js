@@ -7,29 +7,51 @@ const peer = new SimplePeer({
 
 peer.on('error', err => console.log('error', err));
 
-peer.on('signal', (data) => {
-    console.log(data);
-    socket.emit('sendOfferToUser', JSON.stringify(data));
-});
+function initSignaling() {
+    peer.on('signal', (data) => {
+        console.log('Initiator Signaling Started');
+        console.log(data);
+        socket.emit('sendOfferToUser', JSON.stringify(data));
+    });
+}
 
-socket.on('receiveReceiverAnswer', function(data) {
+socket.on('receiveReceiverAnswer', (data) => {
     peer.signal(data);
 });
 
 peer.on('connect', () => {
     console.log('Initiator Connected');
+    /***
+     * 
+     * - Welcome signal is sent after receiving the user's welcome signal,
+     * - this is done in order to validate if the user is anonymous or not
+     * - so that we send the appropriate info to the user.
+     * 
+    ***/
+});
+
+function sentWelcomeData(anon = '') {
+    let userData = swcms.advStreams.myUserInfo;
+    
+    if (anon == 'anonAgent') {
+        userData.name = 'Agente Contact-Os';
+        userData.photoURL = '/static/images/manifest/agent-f.svg';
+    }
+
     peer.send(JSON.stringify({
         msgType: 'welcome',
-        msgUserName: 'Agente 007'
+        msgUserInfo: userData
     }));
-});
+}
 
 peer.on('close', () => {
     console.log('Receiver Disconnected');
     let userName = document.querySelector('.container-chat--topbar-info-data-name').textContent;
-    document.querySelector('.container-chat--topbar-info-data-status').textContent = 'Offline';
-    document.querySelector('.container-chat--topbar-info-data-status').classList.remove('s-font-color-primary');
-    document.querySelector('.container-chat--topbar-info-data-status').classList.add('s-font-color-secondary');
+    document.querySelector('.container-chat--topbar-info-data-status-icon').classList.remove('s-font-color-green-confirm');
+    document.querySelector('.container-chat--topbar-info-data-status-icon').classList.add('s-font-color-secondary');
+    document.querySelector('.container-chat--topbar-info-data-status-text').textContent = 'Offline';
+    document.querySelector('.container-chat--topbar-info-data-status-text').classList.remove('s-font-color-primary');
+    document.querySelector('.container-chat--topbar-info-data-status-text').classList.add('s-font-color-secondary');
     document.querySelector('.mdc-text-field--textarea').classList.add('mdc-text-field--disabled');
     document.querySelector('.mdc-text-field__input').disabled = true;
     document.querySelector('#audioCall').disabled = true;
@@ -56,16 +78,27 @@ peer.on('data', (data) => {
             break;
 
         case 'welcome':
-            document.querySelector('.container-chat--topbar-info-data-name').textContent = jMsg.msgUserName;
-            document.querySelector('.container-chat--topbar-info-data-status').textContent = 'Online';
-            document.querySelector('.container-chat--topbar-info-data-status').classList.remove('s-font-color-secondary');
-            document.querySelector('.container-chat--topbar-info-data-status').classList.add('s-font-color-primary');
+            if (jMsg.msgUserInfo.name == 'Anonim@') {
+                sentWelcomeData('anonAgent');
+            } else {
+                sentWelcomeData();
+            }
+            swcms.advStreams.otherUserInfo = jMsg.msgUserInfo;
+            document.querySelector('#chat-pic').src = jMsg.msgUserInfo.photoURL;
+            document.querySelector('#callerid-pic').src = jMsg.msgUserInfo.photoURL;
+            document.querySelector('#callerid-name').textContent = jMsg.msgUserInfo.name;
+            document.querySelector('.container-chat--topbar-info-data-name').textContent = jMsg.msgUserInfo.name;
+            document.querySelector('.container-chat--topbar-info-data-status-icon').classList.remove('s-font-color-secondary');
+            document.querySelector('.container-chat--topbar-info-data-status-icon').classList.add('s-font-color-green-confirm');
+            document.querySelector('.container-chat--topbar-info-data-status-text').textContent = 'Online';
+            document.querySelector('.container-chat--topbar-info-data-status-text').classList.remove('s-font-color-secondary');
+            document.querySelector('.container-chat--topbar-info-data-status-text').classList.add('s-font-color-primary');
             document.getElementById('s-loader-chat').style.display = 'none';
             document.querySelector('.mdc-text-field--textarea').classList.remove('mdc-text-field--disabled');
             document.querySelector('.mdc-text-field__input').disabled = false;
             document.querySelector('#audioCall').disabled = false;
             document.querySelector('#videoCall').disabled = false;
-            swcms.appendChatMessage(jMsg.msgUserName + ' Online!', null, 'auto');
+            swcms.appendChatMessage(jMsg.msgUserInfo.name + ' Online.', null, 'auto');
             break;
     }
 });

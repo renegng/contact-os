@@ -237,6 +237,17 @@ body {
                     display: flex;
                     flex-flow: column;
                     margin: 0rem 1rem;
+
+                    .container-chat--topbar-info-data-status {
+                        align-items: center;
+                        display: flex;
+                        flex-shrink: 0;
+
+                        .container-chat--topbar-info-data-status-icon {
+                            font-size: 0.55rem;
+                            margin-right: 0.25rem;
+                        }
+                    }
                 }
 
                 .container-chat--topbar-info-pic {
@@ -466,6 +477,10 @@ body {
 
 .s-font-align-justify {
     text-align: justify;
+}
+
+.s-font-color-green-confirm {
+    color: #35ac19;
 }
 
 .s-font-color-primary {

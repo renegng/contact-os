@@ -183,14 +183,15 @@ export function appendChatMessage(txt, dateTime, user, userName = '') {
         switch (user) {
             case 'me':
                 msgContainerUserHeader.classList.add('container-chat--body-header-me');
+                msgContainerUserHeaderPic.src = advStreams.myUserInfo.photoURL;
+                msgContainerUserHeaderName.textContent = userName;
                 break;
             case 'others':
                 msgContainerUserHeader.classList.add('container-chat--body-header-others');
+                msgContainerUserHeaderPic.src = advStreams.otherUserInfo.photoURL;
+                msgContainerUserHeaderName.textContent = userName;
                 break;
         }
-
-        msgContainerUserHeaderName.textContent = userName;
-        msgContainerUserHeaderPic.src = '/static/images/manifest/user-f.svg';
 
         msgContainerUserHeader.appendChild(msgContainerUserHeaderPic);
         msgContainerUserHeader.appendChild(msgContainerUserHeaderName);
@@ -213,9 +214,9 @@ export function sendChatMessage() {
             'msg',
             textMessage,
             dateTime,
-            document.querySelector('.container-chat--topbar-info-data-name').textContent
+            advStreams.myUserInfo.name
         );
-        appendChatMessage(textMessage, dateTime, 'me', 'Anon');
+        appendChatMessage(textMessage, dateTime, 'me', advStreams.myUserInfo.name);
         textElement.value = '';
         textElement.focus();
     }
@@ -247,17 +248,15 @@ window.sendPeerChatMessage = sendPeerChatMessage;
 
 
 // Audio/Video Call Functions
-const advStreams = {
+export const advStreams = {
     myStream: null,
     myStreamSended: false,
     myUserInfo: null,
-    otherUsersStreams: []
+    otherUserInfo: null,
+    otherUserStream: null
 };
 /* Allow 'window' context to reference the function */
 window.advStreams = advStreams;
-
-/* Get User Signed-In info */
-advStreams.myUserInfo = getSignedInUser();
 
 function startUserMedia(av, state) {
     let constraints = null;
@@ -265,13 +264,17 @@ function startUserMedia(av, state) {
     if (av == 'audio') {
         // Only Audio is being requested
         constraints = {
-            audio: true,
+            audio: {
+                volume: 1
+            },
             video: false
         };
     } else if (av == 'audiovideo') {
         // Audio & Video are being requested
         constraints = {
-            audio: true,
+            audio: {
+                volume: 1
+            },
             video: {
                 facingMode: 'user',
                 height: { ideal: 720, max: 1080 },
@@ -289,7 +292,7 @@ function startUserMedia(av, state) {
             av,
             (state == 'init') ? 'accept' : state,
             Date.now(),
-            document.querySelector('.container-chat--topbar-info-data-name').textContent
+            advStreams.myUserInfo.name
         );
         if (state == 'accepted') {
             managePeerStream('send');
@@ -312,7 +315,7 @@ function startUserMedia(av, state) {
                 'audiovideo',
                 'ended',
                 Date.now(),
-                document.querySelector('.container-chat--topbar-info-data-name').textContent
+                advStreams.myUserInfo.name
             );
         }
     });
@@ -462,7 +465,7 @@ export function endAVCall(sendMsg = true) {
             'audiovideo',
             'ended',
             Date.now(),
-            document.querySelector('.container-chat--topbar-info-data-name').textContent
+            advStreams.myUserInfo.name
         );
         document.getElementById('chat-textarea-input').value = '- Fin de llamada';
         document.querySelector('#chat-textarea-button').click();
@@ -487,7 +490,7 @@ export function managePeerStream(action, stream = null) {
                 }
                 advStreams.myStream = null;
                 advStreams.myStreamSended = false;
-                advStreams.otherUsersStreams = [];
+                advStreams.otherUserStream = null;
                 break;
             
             case 'save':
@@ -497,7 +500,7 @@ export function managePeerStream(action, stream = null) {
 
             case 'saveRemote':
                 /* Adds Remote Stream to advStreams */
-                advStreams.otherUsersStreams.push(stream);
+                advStreams.otherUserStream = stream;
                 break;
 
             case 'send':
@@ -520,10 +523,14 @@ export function setAVStream(otherStream) {
     if (videoTracks.length > 0) {
         /* The stream is a video stream */
         document.querySelector('.container-avcalls--video-small').srcObject = advStreams.myStream;
+        document.querySelector('.container-avcalls--video-small').muted = true;
+        document.querySelector('.container-avcalls--video-small').play();
         document.querySelector('.container-avcalls--video-main').srcObject = otherStream;
+        document.querySelector('.container-avcalls--video-main').play();
     } else {
         /* The stream is an audio stream */
         document.querySelector('.container-avcalls--audio').srcObject = otherStream;
+        document.querySelector('.container-avcalls--audio').play();
     }
     managePeerStream('saveRemote', otherStream);
 }
