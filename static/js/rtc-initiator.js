@@ -7,13 +7,11 @@ const peer = new SimplePeer({
 
 peer.on('error', err => console.log('error', err));
 
-function initSignaling() {
-    peer.on('signal', (data) => {
-        console.log('Initiator Signaling Started');
-        console.log(data);
-        socket.emit('sendOfferToUser', JSON.stringify(data));
-    });
-}
+peer.on('signal', (data) => {
+    console.log('Initiator Signaling Started');
+    console.log(data);
+    socket.emit('sendOfferToUser', JSON.stringify(data));
+});
 
 socket.on('receiveReceiverAnswer', (data) => {
     peer.signal(data);
@@ -78,11 +76,6 @@ peer.on('data', (data) => {
             break;
 
         case 'welcome':
-            if (jMsg.msgUserInfo.name == 'Anonim@') {
-                sentWelcomeData('anonAgent');
-            } else {
-                sentWelcomeData();
-            }
             swcms.advStreams.otherUserInfo = jMsg.msgUserInfo;
             document.querySelector('#chat-pic').src = jMsg.msgUserInfo.photoURL;
             document.querySelector('#callerid-pic').src = jMsg.msgUserInfo.photoURL;

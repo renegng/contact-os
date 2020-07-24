@@ -251,7 +251,7 @@ window.sendPeerChatMessage = sendPeerChatMessage;
 export const advStreams = {
     myStream: null,
     myStreamSended: false,
-    myUserInfo: null,
+    myUserInfo: {name: '', photoURL: ''},
     otherUserInfo: null,
     otherUserStream: null
 };

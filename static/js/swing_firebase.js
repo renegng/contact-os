@@ -53,12 +53,14 @@ if (!isNull(document.querySelector('#firebaseui-auth-container'))) {
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
         // User is signed in
+        console.log('Firebase User Info found');
         advStreams.myUserInfo = {
             name: user.displayName,
             photoURL: (user.photoURL) ? user.photoURL : '/static/images/manifest/user-f.svg'
         };
     } else {
         // User is not signed in
+        console.log('Firebase User Info not found');
         advStreams.myUserInfo = {
             name: 'Anonim@',
             photoURL: '/static/images/manifest/user-f.svg'
@@ -68,7 +70,7 @@ firebase.auth().onAuthStateChanged((user) => {
     // When there is an Initiator Peer, it executes signaling
     if (document.querySelector('.container-chat')) {
         if (peer && peer.initiator) {
-            initSignaling();
+            console.log('Sending Welcome Messages');
         }
     }
 });
