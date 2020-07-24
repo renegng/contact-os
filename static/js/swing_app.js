@@ -3,7 +3,6 @@
 // import AOS from 'aos';
 import 'core-js';
 import 'regenerator-runtime/runtime';
-import { getSignedInUser } from './swing_firebase';
 import { MDCDrawer } from "@material/drawer";
 import { MDCFloatingLabel } from '@material/floating-label';
 import { MDCIconButtonToggle } from '@material/icon-button';
