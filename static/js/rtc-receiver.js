@@ -1,11 +1,11 @@
 /************************** WEBRTC RECEIVER **************************/
-const peer = new SimplePeer({
-    initiator: false,
-    trickle: false
-});
-
 function initializePeer () {
     console.log('Initializing Peer');
+    const peer = new SimplePeer({
+        initiator: false,
+        trickle: false
+    });
+    window.peer = peer;
 
     peer.on('error', err => console.log('error', err));
     
