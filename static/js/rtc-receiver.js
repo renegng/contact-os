@@ -5,6 +5,7 @@ function initializePeer () {
         initiator: false,
         trickle: false
     });
+    /* Allow 'window' context to reference the function */
     window.peer = peer;
 
     peer.on('error', err => console.log('error', err));

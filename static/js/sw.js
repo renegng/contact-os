@@ -4,16 +4,18 @@
 
 const filesToPreCache = [
     // Web pages
-    { url: '/', revision: '2020-07-24-5' },
+    { url: '/', revision: '2020-07-24-1' },
     { url: '/acercade/', revision: '2020-06-08-1' },
-    { url: '/chat/', revision: '2020-07-24-5' },
+    { url: '/chat/', revision: '2020-07-24-1' },
     { url: '/login/', revision: '2020-07-09-1' },
     { url: '/politicaprivacidad/', revision: '2020-06-08-1' },
     { url: '/terminosdelservicio/', revision: '2020-06-08-1' },
     // Images
+    { url: '/static/images/manifest/agent-f.svg', revision: '2020-07-26-1' },
     { url: '/static/images/manifest/bid_slogan.png', revision: '2020-06-08-1' },
     { url: '/static/images/manifest/contact-os.svg', revision: '2020-06-08-1' },
     { url: '/static/images/manifest/icon-512x512.png', revision: '2020-06-08-1' },
+    { url: '/static/images/manifest/user-f.svg', revision: '2020-07-26-1' },
     // Audio Files
     { url: '/static/media/audio/call_connected.mp3', revision: '2020-07-13-1' },
     { url: '/static/media/audio/call_ended.mp3', revision: '2020-07-13-1' },

@@ -20,7 +20,7 @@
                         personal calificado en diferentes servicios pensados para ti.
                     </p>
                     <p>
-                        <button class="mdc-button mdc-button--raised" aria-label="Try Chat" alt="Try Chat"
+                        <button class="mdc-button mdc-button--raised animate__animated animate__tada" aria-label="Try Chat" alt="Try Chat"
                             data-action-type="redirect" data-action-val="/chat/">
                             <div class="mdc-button__ripple"></div>
                             <span class="mdc-button__label">Pruebalo ahora</span>
@@ -118,4 +118,11 @@
         </div>
     </div>
 </main>
+{% endblock %}
+{% block bottombar %}
+<button id="floatingButton" class="mdc-fab mdc-fab--fixed mdc-fab--whatsapp"
+        aria-label="WhatsApp Contact Center" onclick="window.open('https://wa.me/911');">
+    <div class="mdc-fab__ripple"></div>
+    <span class="mdc-fab__icon fa fa-whatsapp"></span>
+</button>
 {% endblock %}

@@ -3,6 +3,62 @@
 {% block page_title %}Contact-Os Chat{% endblock %}
 {% block body %}
 <main class="s-main-content s-main-content--extend-tab-color-primary mdc-top-app-bar--fixed-adjust">
+    <div class="container-avcalls container--hidden">
+        <div class="container-avcalls--canvas">
+            <div class="container-avcalls--callerid s-font-align-center">
+                <div class="container-avcalls--callerid-pic">
+                    <img id="callerid-pic" src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}" alt="Logo Contact-Os"/>
+                </div>
+                <div class="container-avcalls--callerid-data">
+                    <span id="callerid-name" class="mdc-typography--headline2 s-font-color-on-secondary">- -</span>
+                </div>
+            </div>
+            <video class="container-avcalls--video-main container--hidden" playsinline></video>
+            <div class="container-avcalls--videos container-avcalls--videos-16x9 container--hidden">
+                <video class="container-avcalls--video-small container-elevation-s container--hidden" playsinline></video>
+            </div>
+            <audio class="container-avcalls--audio"></audio>
+            <audio id="sound-fx-calling" class="container-avcalls--fx" preload="metadata" onended="this.play();">
+                <source src="{{ url_for('static', filename='media/audio/calling_ring.mp3') }}" type="audio/mpeg"/>
+                Tu navegador no soporta este elemento.
+            </audio>
+            <audio id="sound-fx-connected" class="container-avcalls--fx" preload="metadata">
+                <source src="{{ url_for('static', filename='media/audio/call_connected.mp3') }}" type="audio/mpeg"/>
+                Tu navegador no soporta este elemento.
+            </audio>
+            <audio id="sound-fx-ended" class="container-avcalls--fx" preload="metadata">
+                <source src="{{ url_for('static', filename='media/audio/call_ended.mp3') }}" type="audio/mpeg"/>
+                Tu navegador no soporta este elemento.
+            </audio>
+        </div>
+        <div class="container-avcalls--actions">
+            <button id="toggle-video-call" class="mdc-fab mdc-fab--active container--hidden" aria-label="Toggle Video Call"
+                alt="Toggle Video Call" data-action-type="submit" data-action-fn="stopVideo">
+                <div class="mdc-fab__ripple"></div>
+                <i class="material-icons mdc-fab__icon">videocam</i>
+            </button>
+            <button id="answer-call" class="mdc-fab mdc-fab--answer container--hidden" aria-label="Answer Call"
+                alt="Answer Call" data-action-type="submit" data-action-fn="acceptAudioCall">
+                <div class="mdc-fab__ripple"></div>
+                <i class="material-icons mdc-fab__icon">call</i>
+            </button>
+            <button id="hang-up-call" class="mdc-fab mdc-fab--hangup" aria-label="Hang Up Call"
+                alt="Hang Up Call" data-action-type="submit" data-action-fn="endAVCall">
+                <div class="mdc-fab__ripple"></div>
+                <i class="material-icons mdc-fab__icon">call_end</i>
+            </button>
+            <button id="answer-videocall" class="mdc-fab mdc-fab--answer container--hidden" aria-label="Answer Video Call"
+                alt="Answer Video Call" data-action-type="submit" data-action-fn="acceptVideoCall">
+                <div class="mdc-fab__ripple"></div>
+                <i class="material-icons mdc-fab__icon">videocam</i>
+            </button>
+            <button id="mute-mic" class="mdc-fab container--hidden" aria-label="Mute Mic"
+                alt="Mute Mic" data-action-type="submit" data-action-fn="muteAudio">
+                <div class="mdc-fab__ripple"></div>
+                <i class="material-icons mdc-fab__icon">mic_off</i>
+            </button>
+        </div>
+    </div>
     <div class="container-chat">
         <div class="container-color-surface container-chat--canvas">
             <div class="mdc-layout-grid container-chat--grid container-elevation-s">
@@ -13,23 +69,28 @@
                         <header class="container-chat--topbar-header">
                             <section class="container-chat--topbar-info">
                                 <div class="container-chat--topbar-info-pic">
-                                    <img src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}"
+                                    <img id="chat-pic" src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}"
                                         alt="Logo Contact-Os" />
                                 </div>
                                 <div class="container-chat--topbar-info-data">
-                                    <span class="container-chat--topbar-info-data-name mdc-typography--subtitle2">Agente
-                                        007</span>
-                                    <span
-                                        class="container-chat--topbar-info-data-status mdc-typography--caption s-font-color-secondary">Online</span>
+                                    <span class="container-chat--topbar-info-data-name mdc-typography--subtitle2">
+                                        - -
+                                    </span>
+                                    <div class="container-chat--topbar-info-data-status">
+                                        <i class="material-icons container-chat--topbar-info-data-status-icon s-font-color-secondary">stop_circle</i>
+                                        <span class="container-chat--topbar-info-data-status-text mdc-typography--caption s-font-color-secondary">
+                                            Online
+                                        </span>
+                                    </div>
                                 </div>
                             </section>
                             <section class="container-chat--topbar-actions">
-                                <button id="videoCall" class="mdc-icon-button s-font-color-secondary"
-                                    aria-label="Video Call" alt="Video Call">
+                                <button id="videoCall" class="mdc-icon-button s-font-color-secondary" disabled
+                                    aria-label="Video Call" alt="Video Call" data-action-type="submit" data-action-fn="initVideoCall">
                                     <i class="material-icons mdc-icon-button__icon">video_call</i>
                                 </button>
-                                <button id="audioCall" class="mdc-icon-button s-font-color-secondary"
-                                    aria-label="Audio Call" alt="Audio Call">
+                                <button id="audioCall" class="mdc-icon-button s-font-color-secondary" disabled
+                                    aria-label="Audio Call" alt="Audio Call" data-action-type="submit" data-action-fn="initAudioCall">
                                     <i class="material-icons mdc-icon-button__icon">call</i>
                                 </button>
                             </section>
@@ -39,108 +100,45 @@
                         class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--body">
                         <div class="container-chat--body-messages">
-                            <p class="container-chat--body-messages-auto">
-                                <span class="mdc-typography--subtitle2 s-font-color-secondary">
-                                    Este es un mensaje automatizado
-                                </span>
-                            </p>
-                            <p class="container-chat--body-messages-me">
-                                <span
-                                    class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-primary container-elevation-s">
-                                    Este es uno de los mensajes que probaremos en este chat 1
-                                </span>
-                                <span
-                                    class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
-                                    12:22am
-                                </span>
-                            </p>
-                            <p class="container-chat--body-messages-me">
-                                <span
-                                    class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-primary container-elevation-s">
-                                    Este es uno de los mensajes que probaremos en este chat 2
-                                </span>
-                                <span
-                                    class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
-                                    12:22am
-                                </span>
-                            </p>
-                            <p class="container-chat--body-messages-me">
-                                <span
-                                    class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-primary container-elevation-s">
-                                    Este es uno de los mensajes que probaremos en este chat 3
-                                </span>
-                                <span
-                                    class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
-                                    12:22am
-                                </span>
-                            </p>
-                            <p class="container-chat--body-messages-others">
-                                <span
-                                    class="container-chat--body-messages-message-user mdc-typography--caption s-font-color-secondary">
-                                    Agente 007
-                                </span>
-                                <span
-                                    class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-secondary container-elevation-s">
-                                    Este es uno de los mensajes que probaremos en este chat 1
-                                </span>
-                                <span
-                                    class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
-                                    12:22am
-                                </span>
-                            </p>
-                            <p class="container-chat--body-messages-others">
-                                <span
-                                    class="container-chat--body-messages-message-user mdc-typography--caption s-font-color-secondary">
-                                    Agente 007
-                                </span>
-                                <span
-                                    class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-secondary container-elevation-s">
-                                    Este es uno de los mensajes que probaremos en este chat 2
-                                </span>
-                                <span
-                                    class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
-                                    12:22am
-                                </span>
-                            </p>
-                            <p class="container-chat--body-messages-others">
-                                <span
-                                    class="container-chat--body-messages-message-user mdc-typography--caption s-font-color-secondary">
-                                    Agente 007
-                                </span>
-                                <span
-                                    class="container-chat--body-messages-message mdc-typography--subtitle1 s-font-color-on-secondary container-elevation-s">
-                                    Este es uno de los mensajes que probaremos en este chat 3
-                                </span>
-                                <span
-                                    class="container-chat--body-messages-message-time mdc-typography--caption s-font-color-on-surface">
-                                    12:22am
-                                </span>
-                            </p>
+                            <div id="s-loader-chat" class="s-loader">
+                                <div class="s-loader-bounce1"></div>
+                                <div class="s-loader-bounce2"></div>
+                                <div class="s-loader-bounce3"></div>
+                            </div>
                         </div>
                     </div>
                     <div
                         class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--footer">
-                        <label
-                            class="mdc-text-field mdc-text-field--with-trailing-icon mdc-text-field--outlined mdc-text-field--textarea">
-                            <textarea id="chat-textarea-input" class="mdc-text-field__input"
-                                aria-label="Message Area"></textarea>
-                            <button id="chat-textarea-button" class="mdc-icon-button mdc-text-field__icon--trailing"
-                                aria-label="Send Message" alt="Send Message" data-action-type="submit" data-action-fn="sendChatMessage">
-                                <i class="material-icons mdc-icon-button__icon s-font-color-primary">send</i>
-                            </button>
-                            <span class="mdc-notched-outline">
-                                <span class="mdc-notched-outline__leading"></span>
-                                <span class="mdc-notched-outline__notch">
-                                    <span class="mdc-floating-label" id="my-label-id">Escribe tu mensaje...</span>
+                        <section class="container-chat--footer-input">
+                            <label class="mdc-text-field mdc-text-field--outlined mdc-text-field--textarea mdc-text-field--disabled">
+                                <textarea id="chat-textarea-input" class="mdc-text-field__input" disabled aria-label="Message Area"></textarea>
+                                <span class="mdc-notched-outline">
+                                    <span class="mdc-notched-outline__leading"></span>
+                                    <span class="mdc-notched-outline__notch">
+                                        <span class="mdc-floating-label" id="my-label-id">Escribe tu mensaje...</span>
+                                    </span>
+                                    <span class="mdc-notched-outline__trailing"></span>
                                 </span>
-                                <span class="mdc-notched-outline__trailing"></span>
-                            </span>
-                        </label>
+                            </label>
+                        </section>
+                        <section class="container-chat--footer-actions">
+                            <button id="chat-textarea-button" class="mdc-fab" aria-label="Send Message"
+                                alt="Send Message" data-action-type="submit" data-action-fn="sendChatMessage">
+                                <div class="mdc-fab__ripple"></div>
+                                <i class="material-icons mdc-fab__icon">send</i>
+                            </button>
+                        </section>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </main>
+{% endblock %}
+{% block body_script_section %}
+<script src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
+<script src="{{ url_for('static', filename='js/rtc-signal.js') }}"></script>
+<script src="{{ url_for('static', filename='js/simplepeer.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/rtc-receiver.js') }}"></script>
 {% endblock %}
