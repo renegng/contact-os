@@ -12,10 +12,7 @@ import { MDCMenu, Corner } from '@material/menu';
 import { MDCNotchedOutline } from '@material/notched-outline';
 import { MDCRipple } from '@material/ripple';
 import { MDCSnackbar } from '@material/snackbar';
-import { MDCTab } from '@material/tab';
 import { MDCTabBar } from '@material/tab-bar';
-import { MDCTabIndicator } from '@material/tab-indicator';
-import { MDCTabScroller } from '@material/tab-scroller';
 import { MDCTextField } from '@material/textfield';
 import { MDCTextFieldHelperText } from '@material/textfield/helper-text';
 import { MDCTextFieldIcon } from '@material/textfield/icon';
@@ -755,17 +752,10 @@ const snackbar = new MDCSnackbar(document.querySelector('.mdc-snackbar'));
 
 
 // Material Tab
-var mdcTab = null;
-var mdcTabBar = null;
-var mdcTabIndicator = null;
-var mdcTabScroller = null;
-if (!isNull(document.querySelector('.mdc-tab-bar'))) {
-    mdcTab = new MDCTab(document.querySelector('.mdc-tab'));
-    mdcTabBar = new MDCTabBar(document.querySelector('.mdc-tab-bar'));
-    mdcTabIndicator = new MDCTabIndicator(document.querySelector('.mdc-tab-indicator'));
-    mdcTabScroller = new MDCTabScroller(document.querySelector('.mdc-tab-scroller'));
-    document.querySelector('#mdc-tab-bar__id-noticias').addEventListener('MDCTabBar:activated', evt => showTabContent(evt));
-}
+var mdcTabBars = [].map.call(document.querySelectorAll('.mdc-tab-bar'), function (el) {
+    return new MDCTabBar(el);
+});
+// document.querySelector('#mdc-tab-bar__id-noticias').addEventListener('MDCTabBar:activated', evt => showTabContent(evt));
 
 
 // Material Floating Labels

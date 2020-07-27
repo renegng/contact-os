@@ -7,7 +7,8 @@
         <div class="container-avcalls--canvas">
             <div class="container-avcalls--callerid s-font-align-center">
                 <div class="container-avcalls--callerid-pic">
-                    <img id="callerid-pic" src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}" alt="Logo Contact-Os"/>
+                    <img id="callerid-pic" src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}"
+                        alt="Logo Contact-Os" />
                 </div>
                 <div class="container-avcalls--callerid-data">
                     <span id="callerid-name" class="mdc-typography--headline2 s-font-color-on-secondary">- -</span>
@@ -15,25 +16,27 @@
             </div>
             <video class="container-avcalls--video-main container--hidden" playsinline></video>
             <div class="container-avcalls--videos container-avcalls--videos-16x9 container--hidden">
-                <video class="container-avcalls--video-small container-elevation-s container--hidden" playsinline></video>
+                <video class="container-avcalls--video-small container-elevation-s container--hidden"
+                    playsinline></video>
             </div>
             <audio class="container-avcalls--audio"></audio>
             <audio id="sound-fx-calling" class="container-avcalls--fx" preload="metadata" onended="this.play();">
-                <source src="{{ url_for('static', filename='media/audio/calling_ring.mp3') }}" type="audio/mpeg"/>
+                <source src="{{ url_for('static', filename='media/audio/calling_ring.mp3') }}" type="audio/mpeg" />
                 Tu navegador no soporta este elemento.
             </audio>
             <audio id="sound-fx-connected" class="container-avcalls--fx" preload="metadata">
-                <source src="{{ url_for('static', filename='media/audio/call_connected.mp3') }}" type="audio/mpeg"/>
+                <source src="{{ url_for('static', filename='media/audio/call_connected.mp3') }}" type="audio/mpeg" />
                 Tu navegador no soporta este elemento.
             </audio>
             <audio id="sound-fx-ended" class="container-avcalls--fx" preload="metadata">
-                <source src="{{ url_for('static', filename='media/audio/call_ended.mp3') }}" type="audio/mpeg"/>
+                <source src="{{ url_for('static', filename='media/audio/call_ended.mp3') }}" type="audio/mpeg" />
                 Tu navegador no soporta este elemento.
             </audio>
         </div>
         <div class="container-avcalls--actions">
-            <button id="toggle-video-call" class="mdc-fab mdc-fab--active container--hidden" aria-label="Toggle Video Call"
-                alt="Toggle Video Call" data-action-type="submit" data-action-fn="stopVideo">
+            <button id="toggle-video-call" class="mdc-fab mdc-fab--active container--hidden"
+                aria-label="Toggle Video Call" alt="Toggle Video Call" data-action-type="submit"
+                data-action-fn="stopVideo">
                 <div class="mdc-fab__ripple"></div>
                 <i class="material-icons mdc-fab__icon">videocam</i>
             </button>
@@ -42,18 +45,19 @@
                 <div class="mdc-fab__ripple"></div>
                 <i class="material-icons mdc-fab__icon">call</i>
             </button>
-            <button id="hang-up-call" class="mdc-fab mdc-fab--hangup" aria-label="Hang Up Call"
-                alt="Hang Up Call" data-action-type="submit" data-action-fn="endAVCall">
+            <button id="hang-up-call" class="mdc-fab mdc-fab--hangup" aria-label="Hang Up Call" alt="Hang Up Call"
+                data-action-type="submit" data-action-fn="endAVCall">
                 <div class="mdc-fab__ripple"></div>
                 <i class="material-icons mdc-fab__icon">call_end</i>
             </button>
-            <button id="answer-videocall" class="mdc-fab mdc-fab--answer container--hidden" aria-label="Answer Video Call"
-                alt="Answer Video Call" data-action-type="submit" data-action-fn="acceptVideoCall">
+            <button id="answer-videocall" class="mdc-fab mdc-fab--answer container--hidden"
+                aria-label="Answer Video Call" alt="Answer Video Call" data-action-type="submit"
+                data-action-fn="acceptVideoCall">
                 <div class="mdc-fab__ripple"></div>
                 <i class="material-icons mdc-fab__icon">videocam</i>
             </button>
-            <button id="mute-mic" class="mdc-fab container--hidden" aria-label="Mute Mic"
-                alt="Mute Mic" data-action-type="submit" data-action-fn="muteAudio">
+            <button id="mute-mic" class="mdc-fab container--hidden" aria-label="Mute Mic" alt="Mute Mic"
+                data-action-type="submit" data-action-fn="muteAudio">
                 <div class="mdc-fab__ripple"></div>
                 <i class="material-icons mdc-fab__icon">mic_off</i>
             </button>
@@ -63,13 +67,72 @@
         <div class="container-color-surface container-chat--canvas">
             <div class="mdc-layout-grid container-chat--grid container-elevation-s">
                 <div class="mdc-layout-grid__inner container-chat--grid__inner">
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 container-chat--sidemenu">
+                        <header class="container-chat--sidemenu-header">
+                            <span class="mdc-typography--headline5">
+                                Mensajes
+                            </span>
+                        </header>
+                        <div class="mdc-tab-bar container-chat--sidemenu-tabs" role="tablist">
+                            <div class="mdc-tab-scroller">
+                                <div class="mdc-tab-scroller__scroll-area">
+                                    <div class="mdc-tab-scroller__scroll-content">
+                                        <button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true"
+                                            tabindex="0">
+                                            <span class="mdc-tab__content">
+                                                <span class="mdc-tab__text-label">Todos</span>
+                                            </span>
+                                            <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                                                <span
+                                                    class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                            </span>
+                                            <span class="mdc-tab__ripple"></span>
+                                        </button>
+                                        <button class="mdc-tab" role="tab" aria-selected="false" tabindex="1">
+                                            <span class="mdc-tab__content">
+                                                <span class="mdc-tab__text-label">Míos</span>
+                                            </span>
+                                            <span class="mdc-tab-indicator">
+                                                <span
+                                                    class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                            </span>
+                                            <span class="mdc-tab__ripple"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-chat--sidemenu-rooms">
+                            <ul id="no-active-room" class="mdc-list mdc-list--avatar-list mdc-list--two-line">
+                                <li class="mdc-list-item">
+                                    <span class="mdc-list-item__ripple"></span>
+                                    <span class="mdc-list-item__graphic material-icons" aria-hidden="true">nights_stay</span>
+                                    <span class="mdc-list-item__text">
+                                        <span class="mdc-list-item__primary-text">0 mensajes.</span>
+                                        <span class="mdc-list-item__secondary-text">No hay actividad.</span>
+                                    </span>
+                                </li>
+                            </ul>
+                            <ul class="mdc-list mdc-list--avatar-list mdc-list--two-line">
+                                <li class="mdc-list-item">
+                                    <span class="mdc-list-item__ripple"></span>
+                                    <img class="mdc-list-item__graphic" src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}"/>
+                                    <span class="mdc-list-item__text">
+                                        <span class="mdc-list-item__primary-text">0 mensajes.</span>
+                                        <span class="mdc-list-item__secondary-text">No hay actividad.</span>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                     <div
-                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
+                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--topbar">
                         <header class="container-chat--topbar-header">
                             <section class="container-chat--topbar-info">
                                 <div class="container-chat--topbar-info-pic">
-                                    <img id="chat-pic" src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}"
+                                    <img id="chat-pic"
+                                        src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}"
                                         alt="Logo Contact-Os" />
                                 </div>
                                 <div class="container-chat--topbar-info-data">
@@ -77,8 +140,10 @@
                                         - -
                                     </span>
                                     <div class="container-chat--topbar-info-data-status">
-                                        <i class="material-icons container-chat--topbar-info-data-status-icon s-font-color-secondary">stop_circle</i>
-                                        <span class="container-chat--topbar-info-data-status-text mdc-typography--caption s-font-color-secondary">
+                                        <i
+                                            class="material-icons container-chat--topbar-info-data-status-icon s-font-color-secondary">stop_circle</i>
+                                        <span
+                                            class="container-chat--topbar-info-data-status-text mdc-typography--caption s-font-color-secondary">
                                             Online
                                         </span>
                                     </div>
@@ -86,18 +151,20 @@
                             </section>
                             <section class="container-chat--topbar-actions">
                                 <button id="videoCall" class="mdc-icon-button s-font-color-secondary" disabled
-                                    aria-label="Video Call" alt="Video Call" data-action-type="submit" data-action-fn="initVideoCall">
+                                    aria-label="Video Call" alt="Video Call" data-action-type="submit"
+                                    data-action-fn="initVideoCall">
                                     <i class="material-icons mdc-icon-button__icon">video_call</i>
                                 </button>
                                 <button id="audioCall" class="mdc-icon-button s-font-color-secondary" disabled
-                                    aria-label="Audio Call" alt="Audio Call" data-action-type="submit" data-action-fn="initAudioCall">
+                                    aria-label="Audio Call" alt="Audio Call" data-action-type="submit"
+                                    data-action-fn="initAudioCall">
                                     <i class="material-icons mdc-icon-button__icon">call</i>
                                 </button>
                             </section>
                         </header>
                     </div>
                     <div
-                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
+                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--body">
                         <div class="container-chat--body-messages">
                             <div id="s-loader-chat" class="s-loader">
@@ -108,11 +175,13 @@
                         </div>
                     </div>
                     <div
-                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
+                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--footer">
                         <section class="container-chat--footer-input">
-                            <label class="mdc-text-field mdc-text-field--outlined mdc-text-field--textarea mdc-text-field--disabled">
-                                <textarea id="chat-textarea-input" class="mdc-text-field__input" disabled aria-label="Message Area"></textarea>
+                            <label
+                                class="mdc-text-field mdc-text-field--outlined mdc-text-field--textarea mdc-text-field--disabled">
+                                <textarea id="chat-textarea-input" class="mdc-text-field__input" disabled
+                                    aria-label="Message Area"></textarea>
                                 <span class="mdc-notched-outline">
                                     <span class="mdc-notched-outline__leading"></span>
                                     <span class="mdc-notched-outline__notch">

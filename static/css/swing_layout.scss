@@ -219,56 +219,6 @@ body {
         height: 100%;
     }
 
-    .container-chat--topbar {
-        max-height: 3rem;
-
-        .container-chat--topbar-header {
-            align-items: center;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-
-            .container-chat--topbar-info {
-                display: inline-flex;
-                flex: 1 1 auto;
-                justify-content: flex-start;
-
-                .container-chat--topbar-info-data {
-                    display: flex;
-                    flex-flow: column;
-                    margin: 0rem 1rem;
-
-                    .container-chat--topbar-info-data-status {
-                        align-items: center;
-                        display: flex;
-                        flex-shrink: 0;
-
-                        .container-chat--topbar-info-data-status-icon {
-                            font-size: 0.55rem;
-                            margin-right: 0.25rem;
-                        }
-                    }
-                }
-
-                .container-chat--topbar-info-pic {
-                    border-radius: 50%;
-                    height: 2.5rem;
-
-                    img {
-                        border-radius: 50%;
-                        height: 100%;
-                    }
-                }
-            }
-
-            .container-chat--topbar-actions {
-                display: inline-flex;
-                flex: 1 1 auto;
-                justify-content: flex-end;
-            }
-        }
-    }
-
     .container-chat--body {
         height: 50vh;
         min-height: 100%;
@@ -397,6 +347,82 @@ body {
             display: inline-flex;
             justify-content: flex-end;
             margin-left: 1rem;
+        }
+    }
+
+    .container-chat--sidemenu {
+        border-right: 0.0625rem dotted stv.$swing-theme-background;
+        grid-row: span 3;
+        height: 100%;
+
+        .container-chat--sidemenu-header {
+            padding: 1rem 0.5rem 2rem 0.5rem;
+        }
+
+        .container-chat--sidemenu-rooms {
+            .mdc-list {
+                padding: 0;
+
+                .mdc-list-item__graphic {
+                    margin-right: 1rem;
+                }
+            }
+        }
+
+        .container-chat--sidemenu-tabs {
+            display: flex;
+            flex-direction: row;
+            flex-shrink: 0;
+        }
+    }
+
+    .container-chat--topbar {
+        max-height: 3rem;
+
+        .container-chat--topbar-header {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+
+            .container-chat--topbar-info {
+                display: inline-flex;
+                flex: 1 1 auto;
+                justify-content: flex-start;
+
+                .container-chat--topbar-info-data {
+                    display: flex;
+                    flex-flow: column;
+                    margin: 0rem 1rem;
+
+                    .container-chat--topbar-info-data-status {
+                        align-items: center;
+                        display: flex;
+                        flex-shrink: 0;
+
+                        .container-chat--topbar-info-data-status-icon {
+                            font-size: 0.55rem;
+                            margin-right: 0.25rem;
+                        }
+                    }
+                }
+
+                .container-chat--topbar-info-pic {
+                    border-radius: 50%;
+                    height: 2.5rem;
+
+                    img {
+                        border-radius: 50%;
+                        height: 100%;
+                    }
+                }
+            }
+
+            .container-chat--topbar-actions {
+                display: inline-flex;
+                flex: 1 1 auto;
+                justify-content: flex-end;
+            }
         }
     }
 }
