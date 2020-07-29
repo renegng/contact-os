@@ -66,14 +66,19 @@ def _loginuser():
         if current_user.is_authenticated:
             # If it has a valid Session, verifies the Firebase Cookie Session
             if isFirebaseCookieSessionValid():
-                return createJsonResponse('success', 'redirectURL', '/chat/admin/')
+                # Set URL depending on role
+                url = '/chat/admin/' if current_user.email == 'renegng@gmail.com' else '/chat/home/'
+
+                return createJsonResponse('success', 'redirectURL', url)
             else:
                 # If the Firebase Cookie Session is invalid, user is logged out and Login Process continues
                 logout_user()
         else:
             # If user doesnt have a Valid Session, validate if it has a Firebase Cookie Session
             if verifyFirebaseCookieCreateSession():
-                return createJsonResponse('success', 'redirectURL', '/chat/admin/')
+                # Set URL depending on role
+                url = '/chat/admin/' if current_user.email == 'renegng@gmail.com' else '/chat/home/'
+                return createJsonResponse('success', 'redirectURL', url)
         
         # Login Process
         # Retrieve the uid from the JWT idToken
@@ -103,7 +108,10 @@ def _loginuser():
         createLoginSession(user)
         
         # Return Session Cookie
-        response = createCookieSession(idToken, 'redirectURL', '/chat/admin/')
+        # Set URL depending on role
+        url = '/chat/admin/' if user.email == 'renegng@gmail.com' else '/chat/home/'
+        
+        response = createCookieSession(idToken, 'redirectURL', url)
         return response
 
     except Exception as e:

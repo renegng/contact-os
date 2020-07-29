@@ -173,7 +173,7 @@ body {
 @media all and (min-width: 56.25em) {
     // Laptops and Computers
     .container-chat {
-        margin: 0rem 10%;
+        margin: 0rem 5%;
         min-height: 80vh;
         padding: 1rem;
         width: 80%;
@@ -360,11 +360,21 @@ body {
         }
 
         .container-chat--sidemenu-rooms {
-            .mdc-list {
+            .mdc-list--avatar-list {
                 padding: 0;
 
                 .mdc-list-item__graphic {
                     margin-right: 1rem;
+                }
+
+                .mdc-list-item__meta {
+                    i {
+                        font-size: 0.55rem;
+                    }
+                }
+
+                .mdc-list-item__secondary-text {
+                    font-size: 0.75rem;
                 }
             }
         }
