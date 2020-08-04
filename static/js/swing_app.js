@@ -688,15 +688,15 @@ if (!isNull(drawerEl) && !isNull(topAppBarEl)) {
         return permDrawerList;
     }
 
-    let drawer = window.matchMedia("(max-width: 56.24em)").matches ?
+    let drawer = window.matchMedia("(max-width: 52.49em)").matches ?
         initModalDrawer() : initPermanentDrawer();
 
-    // Toggle between permanent drawer and modal drawer at breakpoint 50em
+    // Toggle between permanent drawer and modal drawer at breakpoint 52.49em
     const resizeHandler = () => {
-        if (window.matchMedia("(max-width: 56.24em)").matches && drawer instanceof MDCList) {
+        if (window.matchMedia("(max-width: 52.49em)").matches && drawer instanceof MDCList) {
             drawer.destroy();
             drawer = initModalDrawer();
-        } else if (window.matchMedia("(min-width: 56.25em)").matches && drawer instanceof MDCDrawer) {
+        } else if (window.matchMedia("(min-width: 52.5em)").matches && drawer instanceof MDCDrawer) {
             drawer.destroy();
             drawer = initPermanentDrawer();
         }

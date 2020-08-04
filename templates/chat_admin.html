@@ -7,8 +7,7 @@
         <div class="container-avcalls--canvas">
             <div class="container-avcalls--callerid s-font-align-center">
                 <div class="container-avcalls--callerid-pic">
-                    <img id="callerid-pic" src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}"
-                        alt="Logo Contact-Os" />
+                    <img id="callerid-pic" src="{{ url_for('static', filename='images/manifest/agent_f.svg') }}" alt="Avatar" />
                 </div>
                 <div class="container-avcalls--callerid-data">
                     <span id="callerid-name" class="mdc-typography--headline2 s-font-color-on-secondary">- -</span>
@@ -67,7 +66,8 @@
         <div class="container-color-surface container-chat--canvas">
             <div class="mdc-layout-grid container-chat--grid container-elevation-s">
                 <div class="mdc-layout-grid__inner container-chat--grid__inner">
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 container-chat--sidemenu">
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4-desktop mdc-layout-grid__cell--span-3-tablet
+                                mdc-layout-grid__cell--span-4-phone container-chat--sidemenu">
                         <header class="container-chat--sidemenu-header">
                             <span class="mdc-typography--headline5">
                                 Mensajes
@@ -116,7 +116,7 @@
                             <ul class="mdc-list mdc-list--avatar-list mdc-list--two-line">
                                 <li class="mdc-list-item">
                                     <span class="mdc-list-item__ripple"></span>
-                                    <img class="mdc-list-item__graphic" src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}"/>
+                                    <img class="mdc-list-item__graphic" src="{{ url_for('static', filename='images/manifest/agent_f.svg') }}"/>
                                     <span class="mdc-list-item__text">
                                         <span class="mdc-list-item__primary-text">Agente Contact-Os</span>
                                         <span class="mdc-list-item__secondary-text mdc-typography--caption">01/01/2020</span>
@@ -131,13 +131,16 @@
                         </div>
                     </div>
                     <div
-                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8
+                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--topbar">
                         <header class="container-chat--topbar-header">
                             <section class="container-chat--topbar-info">
+                                <button class="material-icons mdc-icon-button container-chat--topbar-info-back" aria-label="Back">
+                                    arrow_back
+                                </button>
                                 <div class="container-chat--topbar-info-pic">
                                     <img id="chat-pic"
-                                        src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}"
+                                        src="{{ url_for('static', filename='images/manifest/wifi_antenna.svg') }}"
                                         alt="Logo Contact-Os" />
                                 </div>
                                 <div class="container-chat--topbar-info-data">
@@ -170,7 +173,7 @@
                         </header>
                     </div>
                     <div
-                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8
+                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--body">
                         <div class="container-chat--body-messages">
                             <div id="s-loader-chat" class="s-loader">
@@ -181,7 +184,7 @@
                         </div>
                     </div>
                     <div
-                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8
+                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--footer">
                         <section class="container-chat--footer-input">
                             <label

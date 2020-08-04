@@ -57,7 +57,7 @@ function initializePeer () {
         
         if (anon == 'anonAgent') {
             userData.name = 'Agente Contact-Os';
-            userData.photoURL = '/static/images/manifest/agent-f.svg';
+            userData.photoURL = '/static/images/manifest/agent_f.svg';
         }
     
         peer.send(JSON.stringify({
@@ -128,4 +128,31 @@ function initializePeer () {
     peer.on('stream', (stream) => {
         swcms.setAVStream(stream);
     });
+}
+
+// Side menu responsive UI
+if (document.querySelector('.container-chat--sidemenu')) {
+
+    const initCollapsibleSideMenu = () => {
+        document.querySelector('.container-chat--topbar-info-back').classList.remove('container--hidden');
+        document.querySelector('.container-chat--sidemenu').classList.add('container--hidden');
+    }
+
+    const initPermanentSideMenu = () => {
+        document.querySelector('.container-chat--topbar-info-back').classList.add('container--hidden');
+        document.querySelector('.container-chat--sidemenu').classList.remove('container--hidden');
+    }
+
+    let sidemenu = window.matchMedia("(max-width: 37.49em)").matches ? initCollapsibleSideMenu() : initPermanentSideMenu();
+
+    // Toggle between permanent sidemenu and collapsible sidemenu at breakpoint 37.5em
+    const resizeSideMenuHandler = () => {
+        if (window.matchMedia("(max-width: 37.49em)").matches) {
+            sidemenu = initCollapsibleSideMenu();
+        } else if (window.matchMedia("(min-width: 37.5em)").matches) {
+            sidemenu = initPermanentSideMenu();
+        }
+    }
+
+    window.addEventListener('resize', resizeSideMenuHandler);
 }

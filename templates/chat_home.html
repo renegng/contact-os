@@ -7,7 +7,7 @@
         <div class="container-avcalls--canvas">
             <div class="container-avcalls--callerid s-font-align-center">
                 <div class="container-avcalls--callerid-pic">
-                    <img id="callerid-pic" src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}" alt="Logo Contact-Os"/>
+                    <img id="callerid-pic" src="{{ url_for('static', filename='images/manifest/agent_f.svg') }}" alt="Avatar"/>
                 </div>
                 <div class="container-avcalls--callerid-data">
                     <span id="callerid-name" class="mdc-typography--headline2 s-font-color-on-secondary">- -</span>
@@ -69,7 +69,7 @@
                         <header class="container-chat--topbar-header">
                             <section class="container-chat--topbar-info">
                                 <div class="container-chat--topbar-info-pic">
-                                    <img id="chat-pic" src="{{ url_for('static', filename='images/manifest/agent-f.svg') }}"
+                                    <img id="chat-pic" src="{{ url_for('static', filename='images/manifest/wifi_antenna.svg') }}"
                                         alt="Logo Contact-Os" />
                                 </div>
                                 <div class="container-chat--topbar-info-data">
@@ -79,7 +79,7 @@
                                     <div class="container-chat--topbar-info-data-status">
                                         <i class="material-icons container-chat--topbar-info-data-status-icon s-font-color-secondary">stop_circle</i>
                                         <span class="container-chat--topbar-info-data-status-text mdc-typography--caption s-font-color-secondary">
-                                            Online
+                                            Offline
                                         </span>
                                     </div>
                                 </div>
@@ -90,11 +90,20 @@
                         class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--body">
                         <div class="container-chat--body-messages">
-                            <div id="s-loader-chat" class="s-loader">
-                                <div class="s-loader-bounce1"></div>
-                                <div class="s-loader-bounce2"></div>
-                                <div class="s-loader-bounce3"></div>
-                            </div>
+                            <p class="container-chat--body-message-auto s-font-align-center">
+                                <span class="mdc-typography--caption s-font-color-secondary">
+                                    Bienvenid@
+                                </span>
+                                <span class="mdc-typography--caption s-font-color-secondary">
+                                    Esperanos unos instantes en lo que una de nuestras agentes se conecta para
+                                    atenderte.
+                                </span>
+                                <div id="s-loader-chat" class="s-loader">
+                                    <div class="s-loader-bounce1"></div>
+                                    <div class="s-loader-bounce2"></div>
+                                    <div class="s-loader-bounce3"></div>
+                                </div>
+                            </p>
                         </div>
                     </div>
                     <div

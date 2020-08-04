@@ -98,7 +98,7 @@ def _loginuser():
             user.email = fbUser.email
             user.name = fbUser.display_name
             user.datecreated = datetime.datetime.utcnow()
-            user.cmuserid = 'CNOS-' + user.name.strip().upper()[0:1] + user.datecreated.strftime('-%y%m%d-%H%M%S')
+            user.cmuserid = 'CTOS-' + user.name.strip().upper()[0:1] + user.datecreated.strftime('-%y%m%d-%H%M%S')
             
             db.session.add(user)
             db.session.commit()

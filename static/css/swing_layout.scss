@@ -4,15 +4,15 @@
 - Reusable Media Queries Sentences
 
 // Laptops and Computers
-@media all and (min-width: 56.25em) {
+@media all and (min-width: 52.5em) {
 }
 
 // Tablets
-@media all and (max-width: 56.24em) {
+@media all and (max-width: 52.49em) {
 }
 
 // Smartphones
-@media all and (max-width: 39.99em) {
+@media all and (max-width: 37.49em) {
 }
 
 ********************** */
@@ -170,7 +170,7 @@ body {
     }
 }
 
-@media all and (min-width: 56.25em) {
+@media all and (min-width: 52.5em) {
     // Laptops and Computers
     .container-chat {
         margin: 0rem 5%;
@@ -184,7 +184,7 @@ body {
         }
     }
 }
-@media all and (max-width: 56.24em) {
+@media all and (max-width: 52.49em) {
     // Tablets
     .container-chat {
         margin: 0;
@@ -198,7 +198,7 @@ body {
         }
     }
 }
-@media all and (max-width: 39.99em) {
+@media all and (max-width: 37.49em) {
     // Smartphones
     .container-chat {
         margin: 0;
@@ -367,9 +367,14 @@ body {
                     margin-right: 1rem;
                 }
 
+                .mdc-list-item {
+                    padding-left: 0rem;
+                }
+
                 .mdc-list-item__meta {
                     i {
                         font-size: 0.55rem;
+                        margin-left: 1rem;
                     }
                 }
 
@@ -399,6 +404,10 @@ body {
                 display: inline-flex;
                 flex: 1 1 auto;
                 justify-content: flex-start;
+
+                .container-chat--topbar-info-back {
+                    margin-right: 1rem;
+                }
 
                 .container-chat--topbar-info-data {
                     display: flex;

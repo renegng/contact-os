@@ -56,14 +56,14 @@ firebase.auth().onAuthStateChanged((user) => {
         console.log('Firebase User Info found');
         advStreams.myUserInfo = {
             name: user.displayName,
-            photoURL: (user.photoURL) ? user.photoURL : '/static/images/manifest/user-f.svg'
+            photoURL: (user.photoURL) ? user.photoURL : '/static/images/manifest/user_f.svg'
         };
     } else {
         // User is not signed in
         console.log('Firebase User Info not found');
         advStreams.myUserInfo = {
             name: 'Anonim@',
-            photoURL: '/static/images/manifest/user-f.svg'
+            photoURL: '/static/images/manifest/user_f.svg'
         };
     }
 
