@@ -77,6 +77,7 @@ function initializePeer () {
         document.querySelector('.mdc-text-field--textarea').classList.add('mdc-text-field--disabled');
         document.querySelector('.mdc-text-field__input').disabled = true;
         document.querySelector('#audioCall').disabled = true;
+        document.querySelector('#moreOptionsButton').disabled = true;
         document.querySelector('#videoCall').disabled = true;
         swcms.appendChatMessage(userName + ' Offline.', null, 'auto');
     });
@@ -119,6 +120,7 @@ function initializePeer () {
                 document.querySelector('.mdc-text-field--textarea').classList.remove('mdc-text-field--disabled');
                 document.querySelector('.mdc-text-field__input').disabled = false;
                 document.querySelector('#audioCall').disabled = false;
+                document.querySelector('#moreOptionsButton').disabled = false;
                 document.querySelector('#videoCall').disabled = false;
                 swcms.appendChatMessage(jMsg.msgUserInfo.name + ' Online.', null, 'auto');
                 break;
@@ -132,27 +134,55 @@ function initializePeer () {
 
 // Side menu responsive UI
 if (document.querySelector('.container-chat--sidemenu')) {
+    let backButtonEl = document.querySelector('.container-chat--topbar-info-back');
+    let chatBodyEl = document.querySelector('.container-chat--body');
+    let chatFooterEl = document.querySelector('.container-chat--footer');
+    let chatTopBarEl = document.querySelector('.container-chat--topbar');
+    let sideMenuEl = document.querySelector('.container-chat--sidemenu');
 
     const initCollapsibleSideMenu = () => {
-        document.querySelector('.container-chat--topbar-info-back').classList.remove('container--hidden');
-        document.querySelector('.container-chat--sidemenu').classList.add('container--hidden');
+        backButtonEl.classList.remove('container--hidden');
+        if (chatBodyEl.classList.contains('container--hidden')) {
+            chatBodyEl.classList.remove('container--hidden');
+            chatFooterEl.classList.remove('container--hidden');
+            chatTopBarEl.classList.remove('container--hidden');
+        }
+        sideMenuEl.classList.add('container--hidden');
     }
 
     const initPermanentSideMenu = () => {
-        document.querySelector('.container-chat--topbar-info-back').classList.add('container--hidden');
-        document.querySelector('.container-chat--sidemenu').classList.remove('container--hidden');
+        backButtonEl.classList.add('container--hidden');
+        if (chatBodyEl.classList.contains('container--hidden')) {
+            chatBodyEl.classList.remove('container--hidden');
+            chatFooterEl.classList.remove('container--hidden');
+            chatTopBarEl.classList.remove('container--hidden');
+        }
+        sideMenuEl.classList.remove('container--hidden');
     }
 
-    let sidemenu = window.matchMedia("(max-width: 37.49em)").matches ? initCollapsibleSideMenu() : initPermanentSideMenu();
+    let sideMenu = window.matchMedia("(max-width: 37.49em)").matches ? initCollapsibleSideMenu() : initPermanentSideMenu();
 
     // Toggle between permanent sidemenu and collapsible sidemenu at breakpoint 37.5em
     const resizeSideMenuHandler = () => {
         if (window.matchMedia("(max-width: 37.49em)").matches) {
-            sidemenu = initCollapsibleSideMenu();
+            sideMenu = initCollapsibleSideMenu();
         } else if (window.matchMedia("(min-width: 37.5em)").matches) {
-            sidemenu = initPermanentSideMenu();
+            sideMenu = initPermanentSideMenu();
         }
     }
 
     window.addEventListener('resize', resizeSideMenuHandler);
+}
+
+// Show Contacts List
+function showContactsList() {
+    let chatBodyEl = document.querySelector('.container-chat--body');
+    let chatFooterEl = document.querySelector('.container-chat--footer');
+    let chatTopBarEl = document.querySelector('.container-chat--topbar');
+    let sideMenuEl = document.querySelector('.container-chat--sidemenu');
+
+    chatBodyEl.classList.add('container--hidden');
+    chatFooterEl.classList.add('container--hidden');
+    chatTopBarEl.classList.add('container--hidden');
+    sideMenuEl.classList.remove('container--hidden');
 }

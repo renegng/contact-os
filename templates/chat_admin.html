@@ -7,7 +7,8 @@
         <div class="container-avcalls--canvas">
             <div class="container-avcalls--callerid s-font-align-center">
                 <div class="container-avcalls--callerid-pic">
-                    <img id="callerid-pic" src="{{ url_for('static', filename='images/manifest/agent_f.svg') }}" alt="Avatar" />
+                    <img id="callerid-pic" src="{{ url_for('static', filename='images/manifest/agent_f.svg') }}"
+                        alt="Avatar" />
                 </div>
                 <div class="container-avcalls--callerid-data">
                     <span id="callerid-name" class="mdc-typography--headline2 s-font-color-on-secondary">- -</span>
@@ -73,42 +74,52 @@
                                 Mensajes
                             </span>
                         </header>
-                        <div class="mdc-tab-bar container-chat--sidemenu-tabs" role="tablist">
-                            <div class="mdc-tab-scroller">
-                                <div class="mdc-tab-scroller__scroll-area">
-                                    <div class="mdc-tab-scroller__scroll-content">
-                                        <button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true"
-                                            tabindex="0">
-                                            <span class="mdc-tab__content">
-                                                <span class="mdc-tab__text-label">Todos</span>
-                                            </span>
-                                            <span class="mdc-tab-indicator mdc-tab-indicator--active">
-                                                <span
-                                                    class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-                                            </span>
-                                            <span class="mdc-tab__ripple"></span>
-                                        </button>
-                                        <button class="mdc-tab" role="tab" aria-selected="false" tabindex="1">
-                                            <span class="mdc-tab__content">
-                                                <span class="mdc-tab__text-label">Míos</span>
-                                            </span>
-                                            <span class="mdc-tab-indicator">
-                                                <span
-                                                    class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-                                            </span>
-                                            <span class="mdc-tab__ripple"></span>
-                                        </button>
-                                    </div>
-                                </div>
+                        <div class="mdc-select container-chat--sidemenu-filters" role="filters">
+                            <div class="mdc-select__anchor">
+                                <span class="mdc-select__ripple"></span>
+                                <input type="text" disabled readonly class="mdc-select__selected-text">
+                                <i class="mdc-select__dropdown-icon"></i>
+                                <span class="mdc-floating-label">Filtrar personas</span>
+                                <span class="mdc-line-ripple"></span>
+                            </div>
+                            <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox">
+                                <ul class="mdc-list">
+                                    <li class="mdc-list-item" data-value="anon">
+                                        <span class="mdc-list-item__text">
+                                            Anonim@s
+                                        </span>
+                                    </li>
+                                    <li class="mdc-list-item mdc-list-item--selected" data-value="mine">
+                                        <span class="mdc-list-item__text">
+                                            Asignados a mí
+                                        </span>
+                                    </li>
+                                    <li class="mdc-list-item" data-value="agents">
+                                        <span class="mdc-list-item__text">
+                                            Funcionari@s
+                                        </span>
+                                    </li>
+                                    <li class="mdc-list-item" data-value="registered">
+                                        <span class="mdc-list-item__text">
+                                            Registrad@s
+                                        </span>
+                                    </li>
+                                    <li class="mdc-list-item" data-value="all">
+                                        <span class="mdc-list-item__text">
+                                            Tod@s
+                                        </span>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                         <div class="container-chat--sidemenu-rooms">
                             <ul id="no-active-room" class="mdc-list mdc-list--avatar-list mdc-list--two-line">
                                 <li class="mdc-list-item">
                                     <span class="mdc-list-item__ripple"></span>
-                                    <span class="mdc-list-item__graphic material-icons" aria-hidden="true">nights_stay</span>
+                                    <span class="mdc-list-item__graphic material-icons"
+                                        aria-hidden="true">nights_stay</span>
                                     <span class="mdc-list-item__text">
-                                        <span class="mdc-list-item__primary-text">0 mensajes nuevos.</span>
+                                        <span class="mdc-list-item__primary-text">0 contactos.</span>
                                         <span class="mdc-list-item__secondary-text">No hay actividad.</span>
                                     </span>
                                 </li>
@@ -116,10 +127,12 @@
                             <ul class="mdc-list mdc-list--avatar-list mdc-list--two-line">
                                 <li class="mdc-list-item">
                                     <span class="mdc-list-item__ripple"></span>
-                                    <img class="mdc-list-item__graphic" src="{{ url_for('static', filename='images/manifest/agent_f.svg') }}"/>
+                                    <img class="mdc-list-item__graphic"
+                                        src="{{ url_for('static', filename='images/manifest/agent_f.svg') }}" />
                                     <span class="mdc-list-item__text">
                                         <span class="mdc-list-item__primary-text">Agente Contact-Os</span>
-                                        <span class="mdc-list-item__secondary-text mdc-typography--caption">01/01/2020</span>
+                                        <span
+                                            class="mdc-list-item__secondary-text mdc-typography--caption">01/01/2020</span>
                                     </span>
                                     <span class="mdc-list-item__meta" aria-hidden="true">
                                         <i class="material-icons s-font-color-secondary">
@@ -135,7 +148,8 @@
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--topbar">
                         <header class="container-chat--topbar-header">
                             <section class="container-chat--topbar-info">
-                                <button class="material-icons mdc-icon-button container-chat--topbar-info-back" aria-label="Back">
+                                <button class="material-icons mdc-icon-button container-chat--topbar-info-back"
+                                        aria-label="Back" data-action-type="submit" data-action-fn="showContactsList">
                                     arrow_back
                                 </button>
                                 <div class="container-chat--topbar-info-pic">
@@ -151,8 +165,7 @@
                                         <i class="material-icons container-chat--topbar-info-data-status-icon s-font-color-secondary">
                                             stop_circle
                                         </i>
-                                        <span
-                                            class="container-chat--topbar-info-data-status-text mdc-typography--caption s-font-color-secondary">
+                                        <span class="container-chat--topbar-info-data-status-text mdc-typography--caption s-font-color-secondary">
                                             Online
                                         </span>
                                     </div>
@@ -169,6 +182,30 @@
                                     data-action-fn="initAudioCall">
                                     <i class="material-icons mdc-icon-button__icon">call</i>
                                 </button>
+                                <div class="mdc-menu-surface--anchor">
+                                    <button id="moreOptionsButton" class="mdc-icon-button s-font-color-secondary" disabled
+                                        aria-label="More" alt="More">
+                                        <i class="material-icons mdc-icon-button__icon">more_vert</i>
+                                    </button>
+                                    <div id="moreOptionsMenu" class="mdc-menu mdc-menu-surface" tabindex="-1">
+                                        <ul class="mdc-list mdc-menu__items" role="menu" aria-hidden="true">
+                                            <li class="mdc-list-item" role="menuitem" tabindex="0">
+                                                <span class="mdc-list-item__ripple"></span>
+                                                <i class="material-icons mdc-list-item__graphic s-font-color-secondary" aria-hidden="true">
+                                                    forward
+                                                </i>
+                                                <span class="mdc-list-item__text">Transferir</span>
+                                            </li>
+                                            <li class="mdc-list-item" role="menuitem" tabindex="0">
+                                                <span class="mdc-list-item__ripple"></span>
+                                                <i class="material-icons mdc-list-item__graphic s-font-color-secondary" aria-hidden="true">
+                                                    voice_over_off
+                                                </i>
+                                                <span class="mdc-list-item__text">Finalizar Chat</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </section>
                         </header>
                     </div>

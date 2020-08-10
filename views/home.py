@@ -46,7 +46,7 @@ def _components():
 
 
 @home.route('/home/')
-@login_required
+# @login_required
 def _home():
     app.logger.debug('** SWING_CMS ** - Home')
     return render_template('acercade.html')
@@ -120,7 +120,7 @@ def _loginuser():
 
 
 @home.route('/logoutuser/')
-@login_required
+# @login_required
 def _logoutuser():
     app.logger.debug('** SWING_CMS ** - Logout')
     try:

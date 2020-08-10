@@ -1,8 +1,10 @@
 /************************** IMPORTS **************************/
 
 // import AOS from 'aos';
+import anchorme from 'anchorme';
 import 'core-js';
 import 'regenerator-runtime/runtime';
+import { accountRedirect } from './swing_firebase';
 import { MDCDrawer } from "@material/drawer";
 import { MDCFloatingLabel } from '@material/floating-label';
 import { MDCIconButtonToggle } from '@material/icon-button';
@@ -11,6 +13,7 @@ import { MDCList } from "@material/list";
 import { MDCMenu, Corner } from '@material/menu';
 import { MDCNotchedOutline } from '@material/notched-outline';
 import { MDCRipple } from '@material/ripple';
+import { MDCSelect } from '@material/select';
 import { MDCSnackbar } from '@material/snackbar';
 import { MDCTabBar } from '@material/tab-bar';
 import { MDCTextField } from '@material/textfield';
@@ -153,7 +156,16 @@ export function createChatMessageContainer(txt, dateTime, user, userName = '') {
         msgContainerMsg.classList.add('mdc-typography--caption', 's-font-color-secondary');
     }
 
-    msgContainerMsg.textContent = txt;
+    // Anchorme detects and replaces text with proper link tags
+    let amtxt = anchorme({
+        input: txt,
+        options: {
+            attributes: {
+                target: "_blank"
+            }
+        }
+    });
+    msgContainerMsg.innerHTML = amtxt;
     msgContainer.appendChild(msgContainerMsg);
     
     if (user != 'auto') {
@@ -241,6 +253,15 @@ export function sendPeerChatMessage(type, text, dateTime, userName) {
 }
 /* Allow 'window' context to reference the function */
 window.sendPeerChatMessage = sendPeerChatMessage;
+
+/* Scroll Conversation to bottom on window resize */
+const chatResizeObserver = new ResizeObserver(entries => {
+    let chatContainer = document.querySelector('.container-chat--body-messages');
+    if (chatContainer){
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+});
+chatResizeObserver.observe(document.body);
 
 
 // Audio/Video Call Functions
@@ -614,12 +635,12 @@ export function shareRedirect(e) {
     shareTitle = encodeURIComponent(shareTitle);
 
     // Open a new window to share the content
-    var shareAppName = e.detail.item.lastChild.textContent;
+    var shareAppName = e.detail.item.getElementsByClassName('mdc-list-item__text')[0].textContent;
     shareAppName = shareAppName.toLowerCase().trim();
 
     switch (shareAppName) {
         case 'email':
-            window.location.href(emailShareUrl + shareTitle + " - " + shareMyURL + "&subject=" + shareText + " - " + shareTitle);
+            window.open(emailShareUrl + shareTitle + " - " + shareMyURL + "&subject=" + shareText + " - " + shareTitle);
             break;
         case 'facebook':
             window.open(facebookShareUrl + shareMyURL);
@@ -722,6 +743,30 @@ if (!isNull(drawerEl) && !isNull(topAppBarEl)) {
 
 
 // Material Menu
+var accountMenu = null;
+var accountMenuButton = null;
+if (!isNull(document.querySelector('#accountMenu'))) {
+    accountMenu = new MDCMenu(document.querySelector('#accountMenu'));
+    accountMenuButton = document.querySelector('#accountButton');
+}
+if (accountMenuButton != null) {
+    accountMenuButton.addEventListener('click', () => (accountMenu.open = !accountMenu.open));
+    accountMenu.setAnchorCorner(Corner.BOTTOM_START);
+    document.querySelector('#accountMenu').addEventListener('MDCMenu:selected', evt => accountRedirect(evt));
+}
+
+var moreOptionMenu = null;
+var moreOptionMenuButton = null;
+if (!isNull(document.querySelector('#moreOptionsMenu'))) {
+    moreOptionMenu = new MDCMenu(document.querySelector('#moreOptionsMenu'));
+    moreOptionMenuButton = document.querySelector('#moreOptionsButton');
+}
+if (moreOptionMenuButton != null) {
+    moreOptionMenuButton.addEventListener('click', () => (moreOptionMenu.open = !moreOptionMenu.open));
+    moreOptionMenu.setAnchorCorner(Corner.BOTTOM_START);
+    // document.querySelector('#moreOptionsMenu').addEventListener('MDCMenu:selected', evt => shareRedirect(evt));
+}
+
 var shareMenu = null;
 var shareMenuButton = null;
 if (!isNull(document.querySelector('#shareMenu'))) {
@@ -771,7 +816,7 @@ var mdcLineRipples = [].map.call(document.querySelectorAll('.mdc-line-ripple'), 
 
 
 // Material Lists
-var mdcLists = [].map.call(document.querySelectorAll('.mdc-list'), function (el) {
+var mdcLists = [].map.call(document.querySelectorAll('.mdc-list:not(.mdc-menu__items)'), function (el) {
     let elList = new MDCList(el);
     return elList.listElements.map((listItemEl) => new MDCRipple(listItemEl));
 });
@@ -780,6 +825,11 @@ var mdcLists = [].map.call(document.querySelectorAll('.mdc-list'), function (el)
 // Material Notched Ouline
 var mdcNotchedOutlines = [].map.call(document.querySelectorAll('.mdc-notched-outline'), function (el) {
     return new MDCNotchedOutline(el);
+});
+
+// Material Selects
+var mdcSelects = [].map.call(document.querySelectorAll('.mdc-select'), function (el) {
+    return new MDCSelect(el);
 });
 
 

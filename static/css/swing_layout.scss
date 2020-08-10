@@ -87,6 +87,12 @@ body {
     }
 }
 
+.s-topbar {
+    #accountImage {
+        border-radius: 50%;
+    }
+}
+
 /* Container layouts */
 
 .container-avcalls {
@@ -273,6 +279,10 @@ body {
                     background: stv.$swing-theme-primary;
                     border-radius: 0.75rem 0rem 0.75rem 0.75rem;
                     padding: 0.75rem 0.5rem;
+
+                    a {
+                        color: stv.$swing-theme-on-primary;
+                    }
                 }
 
                 .container-chat--body-message-message-time {
@@ -311,6 +321,10 @@ body {
                     background: stv.$swing-theme-secondary;
                     border-radius: 0rem 0.75rem 0.75rem 0.75rem;
                     padding: 0.75rem 0.5rem;
+
+                    a {
+                        color: stv.$swing-theme-on-secondary;
+                    }
                 }
 
                 .container-chat--body-message-message-time {
@@ -384,7 +398,7 @@ body {
             }
         }
 
-        .container-chat--sidemenu-tabs {
+        .container-chat--sidemenu-filters {
             display: flex;
             flex-direction: row;
             flex-shrink: 0;
@@ -477,7 +491,7 @@ body {
 }
 
 .container--hidden {
-    display: none;
+    display: none !important;
 }
 
 .container-justify-center {

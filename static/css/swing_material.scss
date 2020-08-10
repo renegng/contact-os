@@ -65,6 +65,8 @@
 @use "@material/ripple";
 @use "@material/rtl";
 @use "@material/rtl/mixins";
+@use "@material/select";
+@use "@material/select/mdc-select";
 @use "@material/snackbar";
 @use "@material/shape";
 @use "@material/switch";
@@ -99,6 +101,7 @@
 @include menu-surface.core-styles;
 @include notched-outline.core-styles;
 @include ripple.core-styles;
+@include select.core-styles;
 @include snackbar.core-styles;
 @include tab.core-styles;
 @include tab-bar.core-styles;
@@ -265,7 +268,12 @@
 
 /* Select */
 .mdc-select {
-    width: 10rem;
+    @include select.container-fill-color(stv.$swing-theme-surface);
+
+    .mdc-select__anchor, .mdc-select__menu {
+        min-width: 5rem;
+        width: 90%;
+    }
 }
 
 /* Snackbar */

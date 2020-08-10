@@ -58,6 +58,13 @@ firebase.auth().onAuthStateChanged((user) => {
             name: user.displayName,
             photoURL: (user.photoURL) ? user.photoURL : '/static/images/manifest/user_f.svg'
         };
+        if (document.querySelector('#accountIcon')) {
+            document.querySelector('#accountIcon').classList.add('container--hidden');
+            document.querySelector('#accountImage').src = advStreams.myUserInfo.photoURL;
+            document.querySelector('#accountImage').classList.remove('container--hidden');
+            document.querySelector('#accountLogIn').classList.add('container--hidden');
+            document.querySelector('#accountLogOut').classList.remove('container--hidden');
+        }
     } else {
         // User is not signed in
         console.log('Firebase User Info not found');
@@ -72,6 +79,23 @@ firebase.auth().onAuthStateChanged((user) => {
         initializePeer();
     }
 });
+
+// Account LogIn/LogOut Redirect
+export function accountRedirect(e) {
+    if (e.detail.index == 0) {
+        // Log In User
+        window.location.href = '/login/';
+    } else if (e.detail.index == 1) {
+        // Log Out User
+        firebase.auth().signOut().then(function() {
+            // Sign-out successful.
+            window.location.href = '/logoutuser/';
+        }).catch(function(error) {
+            // An error happened.
+            console.log(error);
+        });
+    }
+}
 
 // Track Auth State
 // var fbInitApp = function () {
