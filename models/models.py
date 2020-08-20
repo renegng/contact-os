@@ -70,6 +70,7 @@ class UserRole(db.Model):
     __tablename__ = 'user_role'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), unique=True, nullable=False)
+    name_short = db.Column(db.String(6), unique=True, nullable=True)
     enabled = db.Column(db.Boolean, unique=False, nullable=True, default=True)
     users = db.relationship('UserXRole', lazy='subquery', back_populates='user_role')
 
@@ -77,6 +78,7 @@ class UserRole(db.Model):
         return jsonify(
             id = self.id,
             name = self.name,
+            name_short = self.name_short,
             enabled = self.enabled,
             users = self.users
         )
@@ -90,3 +92,4 @@ class UserXRole(db.Model):
     datecreated = db.Column(db.DateTime, unique=False, nullable=False, index=True, default=datetime.utcnow)
     user_info = db.relationship('UserInfo', back_populates='roles')
     user_role = db.relationship('UserRole', back_populates='users')
+

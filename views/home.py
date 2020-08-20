@@ -1,7 +1,7 @@
 import datetime
 
 from . import auth, createCookieSession, createLoginSession, createJsonResponse, db
-from . import isFirebaseCookieSessionValid, verifyFirebaseCookieCreateSession
+from . import isFirebaseCookieSessionValid, verifyFirebaseCookieCreateSession, getUserRedirectURL
 from flask import Blueprint, redirect, render_template, request, url_for, jsonify, make_response
 from flask import current_app as app
 from flask_login import logout_user, current_user, login_required
@@ -67,7 +67,7 @@ def _loginuser():
             # If it has a valid Session, verifies the Firebase Cookie Session
             if isFirebaseCookieSessionValid():
                 # Set URL depending on role
-                url = '/chat/admin/' if current_user.email == 'renegng@gmail.com' else '/chat/home/'
+                url = getUserRedirectURL(current_user, 'login')
 
                 return createJsonResponse('success', 'redirectURL', url)
             else:
@@ -77,14 +77,16 @@ def _loginuser():
             # If user doesnt have a Valid Session, validate if it has a Firebase Cookie Session
             if verifyFirebaseCookieCreateSession():
                 # Set URL depending on role
-                url = '/chat/admin/' if current_user.email == 'renegng@gmail.com' else '/chat/home/'
+                url = getUserRedirectURL(current_user, 'login')
+
                 return createJsonResponse('success', 'redirectURL', url)
         
         # Login Process
         # Retrieve the uid from the JWT idToken
         idToken = request.json['idToken']
         decoded_token = auth.verify_id_token(idToken)
-        uid = decoded_token['uid']
+        usremail = decoded_token['email']
+        uid = decoded_token['uid'] if usremail != 'admusr@contact-os.com' else 'CTOS-Administrator'
 
         # Search for the user in the DB.
         user = UserInfo.query.filter_by(uid = uid).first()
@@ -97,10 +99,19 @@ def _loginuser():
             user.uid = uid
             user.email = fbUser.email
             user.name = fbUser.display_name
+            user.phonenumber = fbUser.phone_number
             user.datecreated = datetime.datetime.utcnow()
             user.cmuserid = 'CTOS-' + user.name.strip().upper()[0:1] + user.datecreated.strftime('-%y%m%d-%H%M%S')
-            
             db.session.add(user)
+            db.session.flush()
+
+            # Add User Role
+            user_role = UserRole.query.filter_by(name_short='usr').first()
+            user_userxrole = UserXRole()
+            user_userxrole.user_id = user.id
+            user_userxrole.user_role_id = user_role.id
+            db.session.add(user_userxrole)
+
             db.session.commit()
             app.logger.info('** SWING_CMS ** - LoginUser added: {}'.format(user.id))
         
@@ -109,7 +120,7 @@ def _loginuser():
         
         # Return Session Cookie
         # Set URL depending on role
-        url = '/chat/admin/' if user.email == 'renegng@gmail.com' else '/chat/home/'
+        url = getUserRedirectURL(user, 'login')
         
         response = createCookieSession(idToken, 'redirectURL', url)
         return response

@@ -523,6 +523,12 @@ body {
     position: relative;
 }
 
+.container-size-xs {
+    margin: 0rem 10%;
+    min-height: 10vh;
+    position: relative;
+}
+
 /* Font Theming */
 
 .fa {
@@ -571,22 +577,46 @@ body {
 
 /* Image styles */
 
+.s-icon-color-email {
+    color: #ff9932 !important;
+}
+
+.s-icon-color-facebook {
+    color: #3B5998 !important;
+}
+
+.s-icon-color-linkedin {
+    color: #0077B5 !important;
+}
+
+.s-icon-color-twitter {
+    color: #1DA1F2 !important;
+}
+
+.s-icon-color-whatsapp {
+    color: #25d366 !important;
+}
+
 .resize-image-2fit-90 {
+    margin: 1rem;
     max-height: 90%;
     max-width: 90%;
 }
 
 .resize-image-2fit-70 {
+    margin: 1rem;
     max-height: 70%;
     max-width: 70%;
 }
 
 .resize-image-2fit-50 {
+    margin: 1rem;
     max-height: 50%;
     max-width: 50%;
 }
 
 .resize-image-2fit-30 {
+    margin: 1rem;
     max-height: 30%;
     max-width: 30%;
 }

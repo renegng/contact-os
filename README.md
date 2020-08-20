@@ -87,10 +87,27 @@ To install Swing CMS, follow the next steps (under Ubuntu 16.04):
 9 - Execute NodeJS's npm to install all libraries needed:
 
     ~: npm install
-
-10 - Deploy!
+    ~: rm node_modules/aos/.babelrc
+    ~: npm run build-prd-wp
 
 ** - AOS can sometimes generate some issues. To prevent that delete the .babelrc file under the node_modules/aos folder.
+
+10 - Copy/configure the instance folder with all proper credentials and configurations:
+    
+    + firebase-admin-key
+    + firebase-api-init
+    + firebase-key
+    + config_app
+    + config_firebase
+    + config_models
+
+11 - Execute models/ddl.py to generate the database.
+
+12 - Deploy your webserver:
+
+    + Apache HTTPD - swing_cms.apache2.conf
+    OR
+    + Nginx/Gunicorn - swing_cms-socketio.*.conf
 
 
 # Credits to

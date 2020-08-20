@@ -21,7 +21,7 @@ fba = firebase_admin.initialize_app(cred)
 # Enable Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'home_view._welcome'
+login_manager.login_view = 'home._welcome'
 login_manager.login_message = 'Debes Iniciar sesión o Registrarte para ingresar.'
 
 @login_manager.user_loader
@@ -92,6 +92,28 @@ def createCookieSession(idToken, cmd = None, action = None):
         return response
     except Exception as e:
         app.logger.error('** SWING_CMS ** - CreateCookieSession Error: {}'.format(e))
+        return jsonify({ 'status': 'error' })
+
+
+# Get User Redirect URL
+def getUserRedirectURL(user, origin):
+    try:
+        redirectURL = '/'
+
+        # Validate User Login Redirect URL
+        if origin == 'login':
+            # Set URL for regular registered user
+            redirectURL = '/chat/home/'
+
+            # Iterate through the user's roles
+            for role in user.roles:
+                # Check if user has a different role than user
+                if role.user_role.name_short != 'usr':
+                    redirectURL = '/chat/admin/'
+        
+        return redirectURL
+    except Exception as e:
+        app.logger.error('** SWING_CMS ** - GetUserRedirectURL Error: {}'.format(e))
         return jsonify({ 'status': 'error' })
 
 

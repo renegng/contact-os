@@ -4,6 +4,7 @@ from flask import Flask
 from flask_migrate import Migrate
 from models import *
 from pathlib import Path
+from populatedb import initPopulateDB
 
 # Enables Flask instance 
 app = Flask(__name__)
@@ -29,6 +30,7 @@ def main(argv):
             if argv[1] == "create_all":
                 print("Executing SQLAlchemy create_all")
                 db.create_all()
+                initPopulateDB()
 
             # Drops all Database Tables
             elif argv[1] == "drop_all":
