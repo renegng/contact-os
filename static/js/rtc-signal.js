@@ -1,13 +1,15 @@
 /************************** SOCKET-IO INIT **************************/
 
 const socket = io();
+
 socket.on('connect', function() {
-    socket.emit('receiveSocketID', { data: socket.id });
-    console.log('My Socket ID' + socket.id);
+    console.log('Connect My Socket ID: ' + socket.id);
 });
 
 socket.on('disconnect', function() {
-    socket.emit('disconnect', { data: socket.id });
+    // Try to reconnect if the connection stoped for some reason
+    socket.socket.reconnect();
+    console.log('Disconnect My Socket ID: ' + socket.id);
 });
 
 socket.on('userIsConnected', function() {

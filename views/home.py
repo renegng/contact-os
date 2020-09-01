@@ -5,7 +5,7 @@ from . import isFirebaseCookieSessionValid, verifyFirebaseCookieCreateSession, g
 from flask import Blueprint, redirect, render_template, request, url_for, jsonify, make_response
 from flask import current_app as app
 from flask_login import logout_user, current_user, login_required
-from models.models import UserInfo, UserRole, UserXRole
+from models.models import User, CatalogUserRoles, UserXRole
 
 home = Blueprint('home', __name__, template_folder='templates', static_folder='static')
 
@@ -28,12 +28,14 @@ def _chat():
 
 
 @home.route('/chat/admin/')
+@login_required
 def _chat_admin():
     app.logger.debug('** SWING_CMS ** - Chat Admin')
     return render_template('chat_admin.html')
 
 
 @home.route('/chat/home/')
+@login_required
 def _chat_home():
     app.logger.debug('** SWING_CMS ** - Chat Home')
     return render_template('chat_home.html')
@@ -89,13 +91,13 @@ def _loginuser():
         uid = decoded_token['uid'] if usremail != 'admusr@contact-os.com' else 'CTOS-Administrator'
 
         # Search for the user in the DB.
-        user = UserInfo.query.filter_by(uid = uid).first()
+        user = User.query.filter_by(uid = uid).first()
         if user is None:
             # Retrieve Firebase's User info
             fbUser = auth.get_user(uid)
 
             # User is not registered on DB. Insert user in DB.
-            user = UserInfo()
+            user = User()
             user.uid = uid
             user.email = fbUser.email
             user.name = fbUser.display_name
@@ -106,7 +108,7 @@ def _loginuser():
             db.session.flush()
 
             # Add User Role
-            user_role = UserRole.query.filter_by(name_short='usr').first()
+            user_role = CatalogUserRoles.query.filter_by(name_short='usr').first()
             user_userxrole = UserXRole()
             user_userxrole.user_id = user.id
             user_userxrole.user_role_id = user_role.id
@@ -131,7 +133,7 @@ def _loginuser():
 
 
 @home.route('/logoutuser/')
-# @login_required
+@login_required
 def _logoutuser():
     app.logger.debug('** SWING_CMS ** - Logout')
     try:

@@ -2,11 +2,11 @@ import datetime
 import firebase_admin
 
 from firebase_admin import auth, credentials
-from flask import flash, render_template, jsonify, request, redirect
+from flask import flash, render_template, jsonify, request, redirect, url_for
 from flask import current_app as app
 from flask_login import LoginManager, login_user, current_user, logout_user
 from models.models import db
-from models.models import UserInfo
+from models.models import User
 
 
 # Enable instance of SQLAlchemy
@@ -27,7 +27,7 @@ login_manager.login_message = 'Debes Iniciar sesión o Registrarte para ingresar
 @login_manager.user_loader
 def load_user(uid):
     if uid:
-        return UserInfo.query.filter_by(uid = uid).first()
+        return User.query.filter_by(uid = uid).first()
     return None
 
 @login_manager.unauthorized_handler
@@ -39,7 +39,7 @@ def unauthorized():
             return redirect(request.url)
         else:
             flash('Debes Iniciar sesión o Registrarte para ingresar.', 'error')
-            return redirect(url_for('home_view._welcome'))
+            return redirect(url_for('home._welcome'))
     except Exception as e:
         app.logger.error('** SWING_CMS ** - UnauthorizedHandler Error: {}'.format(e))
         return jsonify({ 'status': 'error' })
@@ -58,8 +58,6 @@ def createJsonResponse(status = 'error', cmd = None, action = None):
 # Creates a Flask-Login Session instance
 def createLoginSession(user):
     try:
-        user.is_active = user.enabled
-        user.is_authenticated = True
         return login_user(user)
     except Exception as e:
         app.logger.error('** SWING_CMS ** - CreateLoginSession Error: {}'.format(e))
@@ -145,7 +143,7 @@ def verifyFirebaseCookieCreateSession():
         if decoded_claims:
             uid = decoded_claims['uid']
             # Search for the user in the DB.
-            user = UserInfo.query.filter_by(uid = uid).first()
+            user = User.query.filter_by(uid = uid).first()
             # Create User Session
             return createLoginSession(user)
         else:
@@ -153,3 +151,10 @@ def verifyFirebaseCookieCreateSession():
     except Exception as e:
         app.logger.error('** SWING_CMS ** - VerifyFirebaseCookieCreateSession Error: {}'.format(e))
         return jsonify({ 'status': 'error' })
+
+
+# Remove Item from List
+def removeItemFromList(list, item):
+    for listItem in list:
+        if listItem.get(item):
+            list.remove(listItem)
