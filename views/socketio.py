@@ -34,7 +34,7 @@ def _connect():
                 'status': 'online',
                 'assignedTo': None,
                 'ip': str(ip),
-                'activity': dt_now.strftime('%d/%m/%Y - %I:%M %p')
+                'activity': int(int(dt_now.strftime('%s%f'))/1000)
             }
         }
         

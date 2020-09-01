@@ -48,7 +48,7 @@ def _components():
 
 
 @home.route('/home/')
-# @login_required
+@login_required
 def _home():
     app.logger.debug('** SWING_CMS ** - Home')
     return render_template('acercade.html')

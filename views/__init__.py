@@ -158,3 +158,4 @@ def removeItemFromList(list, item):
     for listItem in list:
         if listItem.get(item):
             list.remove(listItem)
+
