@@ -65,6 +65,8 @@ export function returnFormatDate(dateTime, type = '') {
 
     return returnDateTime;
 }
+/* Allow 'window' context to reference the function */
+window.returnFormatDate = returnFormatDate;
 
 
 // Fetch API
@@ -268,7 +270,7 @@ chatResizeObserver.observe(document.body);
 export const advStreams = {
     myStream: null,
     myStreamSended: false,
-    myUserInfo: {name: '', photoURL: ''},
+    myUserInfo: {id: '', name: '', photoURL: ''},
     otherUserInfo: null,
     otherUserStream: null
 };

@@ -54,10 +54,8 @@ firebase.auth().onAuthStateChanged((user) => {
     if (user) {
         // User is signed in
         console.log('Firebase User Info found');
-        advStreams.myUserInfo = {
-            name: user.displayName,
-            photoURL: (user.photoURL) ? user.photoURL : '/static/images/manifest/user_f.svg'
-        };
+        advStreams.myUserInfo.name = user.displayName;
+        advStreams.myUserInfo.photoURL = (user.photoURL) ? user.photoURL : '/static/images/manifest/user_f.svg';
         if (document.querySelector('#accountIcon')) {
             document.querySelector('#accountIcon').classList.add('container--hidden');
             document.querySelector('#accountImage').src = advStreams.myUserInfo.photoURL;
@@ -68,15 +66,13 @@ firebase.auth().onAuthStateChanged((user) => {
     } else {
         // User is not signed in
         console.log('Firebase User Info not found');
-        advStreams.myUserInfo = {
-            name: 'Anonim@',
-            photoURL: '/static/images/manifest/user_f.svg'
-        };
+        advStreams.myUserInfo.name = 'Anonim@';
+        advStreams.myUserInfo.photoURL = '/static/images/manifest/user_f.svg';
     }
 
     // When an Initiator Peer exists, it executes signaling
     if (document.querySelector('.container-chat')) {
-        initializePeer();
+        initializeRTC();
     }
 });
 

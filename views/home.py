@@ -1,7 +1,6 @@
 import datetime
 
-from . import auth, createCookieSession, createLoginSession, createJsonResponse, db
-from . import isFirebaseCookieSessionValid, verifyFirebaseCookieCreateSession, getUserRedirectURL
+from . import auth, createCookieSession, createLoginSession, createJsonResponse, db, getUserRedirectURL, isUserLoggedInRedirect
 from flask import Blueprint, redirect, render_template, request, url_for, jsonify, make_response
 from flask import current_app as app
 from flask_login import logout_user, current_user, login_required
@@ -24,7 +23,15 @@ def _acercade():
 @home.route('/chat/')
 def _chat():
     app.logger.debug('** SWING_CMS ** - Try Chat')
-    return render_template('chat.html')
+    try:
+        # Validate if the user has a Valid Session and Redirects
+        response = isUserLoggedInRedirect('chat', 'redirect')
+        if response is not None: return response
+        
+        return render_template('chat.html')
+    except Exception as e:
+        app.logger.error('** SWING_CMS ** - Try Chat Error: {}'.format(e))
+        return jsonify({ 'status': 'error' })
 
 
 @home.route('/chat/admin/')
@@ -64,24 +71,9 @@ def _login():
 def _loginuser():
     app.logger.debug('** SWING_CMS ** - Login')
     try:
-        # Validate if the user has a Valid Session
-        if current_user.is_authenticated:
-            # If it has a valid Session, verifies the Firebase Cookie Session
-            if isFirebaseCookieSessionValid():
-                # Set URL depending on role
-                url = getUserRedirectURL(current_user, 'login')
-
-                return createJsonResponse('success', 'redirectURL', url)
-            else:
-                # If the Firebase Cookie Session is invalid, user is logged out and Login Process continues
-                logout_user()
-        else:
-            # If user doesnt have a Valid Session, validate if it has a Firebase Cookie Session
-            if verifyFirebaseCookieCreateSession():
-                # Set URL depending on role
-                url = getUserRedirectURL(current_user, 'login')
-
-                return createJsonResponse('success', 'redirectURL', url)
+        # Validate if the user has a Valid Session and Redirects
+        response = isUserLoggedInRedirect('loginuser', 'jsonResponse')
+        if response is not None: return response
         
         # Login Process
         # Retrieve the uid from the JWT idToken
@@ -122,7 +114,7 @@ def _loginuser():
         
         # Return Session Cookie
         # Set URL depending on role
-        url = getUserRedirectURL(user, 'login')
+        url = getUserRedirectURL(user, 'loginuser')
         
         response = createCookieSession(idToken, 'redirectURL', url)
         return response

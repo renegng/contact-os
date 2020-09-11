@@ -44,6 +44,7 @@ def populateDefaultRTC_OUL():
                 'reg_users': []
             }
         }
+        rtc_oul.enabled = True
         db.session.add(rtc_oul)
 
         db.session.commit()

@@ -70,7 +70,7 @@
                     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4-desktop mdc-layout-grid__cell--span-3-tablet
                                 mdc-layout-grid__cell--span-4-phone container-chat--sidemenu">
                         <header class="container-chat--sidemenu-header">
-                            <span class="mdc-typography--headline5">
+                            <span class="mdc-typography--headline5 s-font-color-primary">
                                 Mensajes
                             </span>
                         </header>
@@ -124,28 +124,27 @@
                                     </span>
                                 </li>
                             </ul>
-                            <ul class="mdc-list mdc-list--avatar-list mdc-list--two-line">
-                                <li class="mdc-list-item">
-                                    <span class="mdc-list-item__ripple"></span>
-                                    <img class="mdc-list-item__graphic"
-                                        src="{{ url_for('static', filename='images/manifest/agent_f.svg') }}" />
-                                    <span class="mdc-list-item__text">
-                                        <span class="mdc-list-item__primary-text">Agente Contact-Os</span>
-                                        <span
-                                            class="mdc-list-item__secondary-text mdc-typography--caption">01/01/2020</span>
-                                    </span>
-                                    <span class="mdc-list-item__meta" aria-hidden="true">
-                                        <i class="material-icons s-font-color-secondary">
-                                            stop_circle
-                                        </i>
-                                    </span>
-                                </li>
+                            <ul id="active-rooms" class="mdc-list mdc-list--avatar-list mdc-list--two-line">
                             </ul>
                         </div>
                     </div>
-                    <div
-                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
-                                mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--topbar">
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
+                                mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-justify-center
+                                s-font-align-center container-chat--no-conversation">
+                        <p>
+                            <i class="material-icons s-font-size-xl s-font-color-primary">
+                                question_answer
+                            </i>
+                        </p>
+                        <p class="mdc-typography--body1">
+                            Selecciona una persona para iniciar una conversación.
+                        </p>
+                        <p class="mdc-typography--caption s-font-color-secondary">
+                            Recuerda que puedes filtrar la lista de personas.
+                        </p>
+                    </div>
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
+                                mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--topbar container--hidden">
                         <header class="container-chat--topbar-header">
                             <section class="container-chat--topbar-info">
                                 <button class="material-icons mdc-icon-button container-chat--topbar-info-back"
@@ -162,7 +161,7 @@
                                         - -
                                     </span>
                                     <div class="container-chat--topbar-info-data-status">
-                                        <i class="material-icons container-chat--topbar-info-data-status-icon s-font-color-secondary">
+                                        <i class="material-icons container-chat--topbar-info-data-status-icon s-font-color-chat-offline">
                                             stop_circle
                                         </i>
                                         <span class="container-chat--topbar-info-data-status-text mdc-typography--caption s-font-color-secondary">
@@ -211,7 +210,7 @@
                     </div>
                     <div
                         class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
-                                mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--body">
+                                mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--body container--hidden">
                         <div class="container-chat--body-messages">
                             <div id="s-loader-chat" class="s-loader">
                                 <div class="s-loader-bounce1"></div>
@@ -222,7 +221,7 @@
                     </div>
                     <div
                         class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
-                                mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--footer">
+                                mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--footer container--hidden">
                         <section class="container-chat--footer-input">
                             <label
                                 class="mdc-text-field mdc-text-field--outlined mdc-text-field--textarea mdc-text-field--disabled">
@@ -253,7 +252,6 @@
 {% endblock %}
 {% block body_script_section %}
 <script src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
-<script src="{{ url_for('static', filename='js/rtc-signal.js') }}"></script>
 <script src="{{ url_for('static', filename='js/simplepeer.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/rtc-initiator.js') }}"></script>
 {% endblock %}

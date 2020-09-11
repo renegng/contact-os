@@ -364,6 +364,10 @@ body {
         }
     }
 
+    .container-chat--no-conversation {
+        grid-row: span 3;
+    }
+
     .container-chat--sidemenu {
         border-right: 0.0625rem dotted stv.$swing-theme-background;
         grid-row: span 3;
@@ -374,20 +378,29 @@ body {
         }
 
         .container-chat--sidemenu-rooms {
+            max-height: 65vh;
+            overflow: auto;
+
             .mdc-list--avatar-list {
                 padding: 0;
-
-                .mdc-list-item__graphic {
-                    margin-right: 1rem;
-                }
 
                 .mdc-list-item {
                     padding-left: 0rem;
                 }
 
+                .mdc-list-item__graphic {
+                    margin-right: 1rem;
+                }
+
+                .mdc-list-item__graphic-status {
+                    font-size: 0.6rem;
+                    margin: 2rem 0 0 2rem;
+                    position: absolute;
+                }
+
                 .mdc-list-item__meta {
                     i {
-                        font-size: 0.55rem;
+                        font-size: 1.35rem;
                         margin-left: 1rem;
                     }
                 }
@@ -434,7 +447,7 @@ body {
                         flex-shrink: 0;
 
                         .container-chat--topbar-info-data-status-icon {
-                            font-size: 0.55rem;
+                            font-size: 0.6rem;
                             margin-right: 0.25rem;
                         }
                     }
@@ -541,6 +554,22 @@ body {
 
 .s-font-align-justify {
     text-align: justify;
+}
+
+.s-font-color-chat-busy {
+    color: #dc143c;
+}
+
+.s-font-color-chat-offline {
+    color: #bcb8b1;
+}
+
+.s-font-color-chat-online {
+    color: #54a72a;
+}
+
+.s-font-color-chat-transferred {
+    color: #f77f00;
 }
 
 .s-font-color-green-confirm {

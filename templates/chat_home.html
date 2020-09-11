@@ -77,7 +77,7 @@
                                         - -
                                     </span>
                                     <div class="container-chat--topbar-info-data-status">
-                                        <i class="material-icons container-chat--topbar-info-data-status-icon s-font-color-secondary">stop_circle</i>
+                                        <i class="material-icons container-chat--topbar-info-data-status-icon s-font-color-chat-offline">stop_circle</i>
                                         <span class="container-chat--topbar-info-data-status-text mdc-typography--caption s-font-color-secondary">
                                             Offline
                                         </span>
@@ -137,7 +137,6 @@
 {% endblock %}
 {% block body_script_section %}
 <script src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
-<script src="{{ url_for('static', filename='js/rtc-signal.js') }}"></script>
 <script src="{{ url_for('static', filename='js/simplepeer.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/rtc-receiver.js') }}"></script>
 {% endblock %}

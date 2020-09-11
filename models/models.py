@@ -67,12 +67,14 @@ class RTCOnlineUsers(db.Model):
     id = db.Column(db.DateTime, primary_key=True, default=datetime.utcnow)
     userlist = db.Column(db.JSON, nullable=False)
     operation_id = db.Column(db.Integer, db.ForeignKey('catalog_operations.id'), nullable=False)
+    enabled = db.Column(db.Boolean, unique=False, nullable=True, default=True)
 
     def __repr__(self):
         return jsonify(
             id = self.id,
             userlist = self.userlist,
-            operation_id = self.operation_id
+            operation_id = self.operation_id,
+            enabled = self.enabled
         )
 
 
