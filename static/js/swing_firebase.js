@@ -70,7 +70,7 @@ firebase.auth().onAuthStateChanged((user) => {
         advStreams.myUserInfo.photoURL = '/static/images/manifest/user_f.svg';
     }
 
-    // When an Initiator Peer exists, it executes signaling
+    // When a RTC Connection Intent exists, it executes signaling
     if (document.querySelector('.container-chat')) {
         initializeRTC();
     }

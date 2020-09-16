@@ -179,8 +179,11 @@ export function createChatMessageContainer(txt, dateTime, user, userName = '') {
 }
 
 var lastMsgUser = '';
-export function appendChatMessage(txt, dateTime, user, userName = '') {
-    let chatContainer = document.querySelector('.container-chat--body-messages');
+export function appendChatMessage(txt, dateTime, user, userName = '', chatMsgElem = '') {
+    let chatContainer = document.querySelector('.container-chat--body-messages-active');
+    if (chatMsgElem) {
+        chatContainer = document.getElementById('m_' + chatMsgElem);
+    }
     let msgContainer = createChatMessageContainer(txt, dateTime, user, userName);
 
     if (lastMsgUser != userName && user != 'auto') {
@@ -258,7 +261,7 @@ window.sendPeerChatMessage = sendPeerChatMessage;
 
 /* Scroll Conversation to bottom on window resize */
 const chatResizeObserver = new ResizeObserver(entries => {
-    let chatContainer = document.querySelector('.container-chat--body-messages');
+    let chatContainer = document.querySelector('.container-chat--body-messages-active');
     if (chatContainer){
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
@@ -270,7 +273,7 @@ chatResizeObserver.observe(document.body);
 export const advStreams = {
     myStream: null,
     myStreamSended: false,
-    myUserInfo: {id: '', name: '', photoURL: ''},
+    myUserInfo: {id: '', name: '', photoURL: '', roles: ''},
     otherUserInfo: null,
     otherUserStream: null
 };
@@ -500,30 +503,42 @@ export function managePeerStream(action, stream = null) {
             case 'end':
                 /* Finalize my Stream and any other Stream */
                 if (advStreams.myStream) {
-                    advStreams.myStream.getTracks().forEach((track) => {
+                    advStreams.myStream.getAudioTracks().forEach((track) => {
                         track.stop();
+                        if (advStreams.myStreamSended) {
+                            peer.removeTrack(track, advStreams.myStream);
+                        }
+                    });
+                    advStreams.myStream.getVideoTracks().forEach((track) => {
+                        track.stop();
+                        if (advStreams.myStreamSended) {
+                            peer.removeTrack(track, advStreams.myStream);
+                        }
                     });
                 }
-                if (advStreams.myStreamSended) {
-                    peer.removeStream(advStreams.myStream);
-                }
-                advStreams.myStream = null;
+                // if (advStreams.myStreamSended) {
+                //     peer.removeStream(advStreams.myStream);
+                // }
+                // advStreams.myStream = null;
                 advStreams.myStreamSended = false;
                 advStreams.otherUserStream = null;
                 break;
             
             case 'save':
                 /* Adds My Stream to advStreams */
+                console.log('Saving My Stream');
                 advStreams.myStream = stream;
                 break;
 
             case 'saveRemote':
                 /* Adds Remote Stream to advStreams */
+                console.log('Saving Remote Stream');
                 advStreams.otherUserStream = stream;
                 break;
 
             case 'send':
                 /* Sends My Stream to Remote */
+                console.log('Sending My Stream');
                 if (!isNull(advStreams.myStream)) {
                     peer.addStream(advStreams.myStream);
                     advStreams.myStreamSended = true;

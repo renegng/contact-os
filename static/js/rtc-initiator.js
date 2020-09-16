@@ -3,6 +3,12 @@ var peer;
 /* Allow 'window' context to reference the function */
 window.peer = peer;
 
+// RTC Connections
+var rtcConnections = [];
+
+// Initiator Room ID
+const iRID = { 'id' : '' };
+
 function initializeRTC () {
     console.log('Initializing SocketIO/SimplePeer');
 
@@ -23,17 +29,140 @@ function initializeRTC () {
     socket.on('userIsConnected', (data) => {
         console.log('I am online: ' + data.id);
         advStreams.myUserInfo.id = data.id;
+        advStreams.myUserInfo.roles = data.roles;
     });
 
     socket.on('RTCUserList', (data) => {
+        console.log('RTC User List Received');
         console.log(data);
         showRTCUserList(data);
     });
 
+    // When connecting to a Receiver Peer
     socket.on('receiveReceiverAnswer', (data) => {
         console.log('Received Answer');
         console.log(data);
         peer.signal(data.data);
+    });
+
+    // When connecting to an Initiator Peer
+    socket.on('receiveInitiatorOffer', (data) => {
+        console.log('Received Offer');
+        console.log(data);
+        iRID.id = data.r_id;
+        stablishRTC(false);
+        peer.signal(data.data);
+    });
+}
+
+// Stablish WebRTC with Selected User
+function stablishRTC(init = true) {
+    // Check if assigned to someone else - BUSY status
+    // Check if peer is as receiver
+    //
+    showConversationUI(true, this);
+
+    // Check if peer connection already exists
+    console.log('Creating Initiator Peer');
+    peer = new SimplePeer({
+        config: {
+            iceServers: [
+                {
+                    urls: [
+                        'stun:stun.l.google.com:19302',
+                        'stun:global.stun.twilio.com:3478'
+                    ]
+                },{
+                    urls: [
+                        'turn:relay.backups.cz',
+                        'turn:relay.backups.cz?transport=tcp'
+                    ],
+                    credential: 'webrtc',
+                    username: 'webrtc'
+                }
+            ]
+        },
+        initiator: init,
+        trickle: false
+    });
+
+    peer.on('signal', (data) => {
+        console.log('Initiator Signaling Started');
+        console.log(data);
+        if (init) {
+            console.log('Send Offer To User');
+            socket.emit('sendOfferToUser', JSON.stringify({ 'r_id' : this.getAttribute('data-meta-rid'), 'data' : data}));
+        } else {
+            console.log('Send Answer To User');
+            socket.emit('sendAnswerToUser', JSON.stringify({ 'r_id' : iRID.id, 'data' : data}));
+        }
+    });
+
+    peer.on('error', err => console.log('error', err));
+    
+    peer.on('connect', () => {
+        console.log('Initiator Connected');
+        if (this.getAttribute('data-meta-uid') == 2) {
+            sendWelcomeData('anonAgent');
+        } else {
+            sendWelcomeData();
+        }
+    });
+    
+    function sendWelcomeData(anon = '') {
+        let userData = swcms.advStreams.myUserInfo;
+        
+        if (anon == 'anonAgent') {
+            userData.name = 'Agente Contact-Os';
+            userData.photoURL = '/static/images/manifest/agent_f.svg';
+        }
+    
+        peer.send(JSON.stringify({
+            msgType: 'welcome',
+            msgUserInfo: userData
+        }));
+    }
+    
+    peer.on('close', () => {
+        console.log('Peer Disconnected');
+    });
+    
+    peer.on('data', (data) => {
+        console.log('Initiator Data Received: ' + data);
+        let uid = (this.getAttribute('data-meta-utype') != 'anon')? this.getAttribute('data-meta-uid') : this.getAttribute('data-meta-rid');
+        let jMsg = JSON.parse(data);
+        switch (jMsg.msgType) {
+            case 'audio':
+            case 'audiovideo':
+                if (jMsg.msg == 'accepted') {
+                    swcms.managePeerStream('send');
+                } else if (jMsg.msg == 'ended') {
+                    swcms.endAVCall(false);
+                }
+                swcms.displayCallUI(jMsg.msg, jMsg.msgType);
+                break;
+    
+            case 'msg':
+                swcms.appendChatMessage(jMsg.msg, jMsg.msgDateTime, 'others', jMsg.msgUserName, uid);
+                break;
+    
+            case 'welcome':
+                hideRTCMessagesLoader(uid);
+                swcms.advStreams.otherUserInfo = jMsg.msgUserInfo;
+                swcms.appendChatMessage(jMsg.msgUserInfo.name + ' Online.', null, 'auto', '', uid);
+                socket.emit('updateUsersStatus', JSON.stringify({
+                    'e_id' : advStreams.myUserInfo.id,
+                    's_type' : 'busy',
+                    'u_id' : this.getAttribute('data-meta-rid'),
+                    'u_type' : this.getAttribute('data-meta-utype') 
+                }));
+                break;
+        }
+    });
+    
+    peer.on('stream', (stream) => {
+        console.log('Setting Remote Stream');
+        swcms.setAVStream(stream);
     });
 }
 
@@ -47,21 +176,39 @@ if (document.querySelector('.container-chat--sidemenu')) {
     let sideMenuEl = document.querySelector('.container-chat--sidemenu');
 
     const initCollapsibleSideMenu = () => {
-        backButtonEl.classList.remove('container--hidden');
-        chatBodyEl.classList.add('container--hidden');
-        chatFooterEl.classList.add('container--hidden');
-        chatNoConver.classList.add('container--hidden');
-        chatTopBarEl.classList.add('container--hidden');
-        sideMenuEl.classList.remove('container--hidden');
+        if (document.querySelector('.container-chat--body-messages-active')){
+            chatNoConver.classList.add('container--hidden');
+            chatBodyEl.classList.remove('container--hidden');
+            chatFooterEl.classList.remove('container--hidden');
+            chatTopBarEl.classList.remove('container--hidden');
+            backButtonEl.classList.remove('container--hidden');
+            sideMenuEl.classList.add('container--hidden');
+        } else {
+            chatBodyEl.classList.add('container--hidden');
+            chatFooterEl.classList.add('container--hidden');
+            chatNoConver.classList.add('container--hidden');
+            chatTopBarEl.classList.add('container--hidden');
+            backButtonEl.classList.remove('container--hidden');
+            sideMenuEl.classList.remove('container--hidden');
+        }
     }
 
     const initPermanentSideMenu = () => {
-        backButtonEl.classList.add('container--hidden');
-        chatBodyEl.classList.add('container--hidden');
-        chatFooterEl.classList.add('container--hidden');
-        chatNoConver.classList.remove('container--hidden');
-        chatTopBarEl.classList.add('container--hidden');
-        sideMenuEl.classList.remove('container--hidden');
+        if (document.querySelector('.container-chat--body-messages-active')){
+            backButtonEl.classList.add('container--hidden');
+            chatNoConver.classList.add('container--hidden');
+            chatBodyEl.classList.remove('container--hidden');
+            chatFooterEl.classList.remove('container--hidden');
+            chatTopBarEl.classList.remove('container--hidden');
+            sideMenuEl.classList.remove('container--hidden');
+        } else {
+            backButtonEl.classList.add('container--hidden');
+            chatBodyEl.classList.add('container--hidden');
+            chatFooterEl.classList.add('container--hidden');
+            chatTopBarEl.classList.add('container--hidden');
+            chatNoConver.classList.remove('container--hidden');
+            sideMenuEl.classList.remove('container--hidden');
+        }
     }
 
     let sideMenu = window.matchMedia("(max-width: 37.49em)").matches ? initCollapsibleSideMenu() : initPermanentSideMenu();
@@ -78,54 +225,28 @@ if (document.querySelector('.container-chat--sidemenu')) {
     window.addEventListener('resize', resizeSideMenuHandler);
 }
 
-// Show Contacts List
-function showContactsList() {
-    let chatBodyEl = document.querySelector('.container-chat--body');
-    let chatFooterEl = document.querySelector('.container-chat--footer');
-    let chatTopBarEl = document.querySelector('.container-chat--topbar');
-    let sideMenuEl = document.querySelector('.container-chat--sidemenu');
-
-    chatBodyEl.classList.add('container--hidden');
-    chatFooterEl.classList.add('container--hidden');
-    chatTopBarEl.classList.add('container--hidden');
-    sideMenuEl.classList.remove('container--hidden');
-}
-
-// Show Conversation UI
-function showConversationUI(showOrHide, usrElem) {
-    let chatBodyEl = document.querySelector('.container-chat--body');
-    let chatFooterEl = document.querySelector('.container-chat--footer');
-    let chatNoConver = document.querySelector('.container-chat--no-conversation');
-    let chatTopBarEl = document.querySelector('.container-chat--topbar');
-    let sideMenuEl = document.querySelector('.container-chat--sidemenu');
-
-    if (showOrHide) {
-        chatNoConver.classList.add('container--hidden');
-        chatBodyEl.classList.remove('container--hidden');
-        chatFooterEl.classList.remove('container--hidden');
-        chatTopBarEl.classList.remove('container--hidden');
-        sideMenuEl.classList.remove('container--hidden');
+// Add RTC User to User List
+function appendRTCUser(room_id, user, uType) {
+    let uid;
+    let userContainer;
+    // Anonymous containers ID are Room IDs, all others are IDs
+    if (uType == 'anon') {
+        uid = room_id;
     } else {
-        chatNoConver.classList.remove('container--hidden');
-        chatBodyEl.classList.add('container--hidden');
-        chatFooterEl.classList.add('container--hidden');
-        chatTopBarEl.classList.add('container--hidden');
-        sideMenuEl.classList.remove('container--hidden');
+        uid = user.id;
     }
-}
-
-// Show RTC User List
-function appendRTCUser(room_id, user, isEmp = false) {
-    let userListContainer = document.querySelector('#active-rooms');
-    let userContainer = document.getElementById(room_id);
+    userContainer = document.getElementById('l_' + uid);
+    // If there is no container, user is a new one
     if (!userContainer) {
-        userContainer = createRTCUserContainer();
-        userListContainer.appendChild(userContainer);
+        userContainer = createRTCListUserContainer();
+        createRTCMessagesUserContainer(room_id, user, uType);
+        setRTCUserContainer(userContainer, room_id, user, uType);
     }
-    updateRTCUserContainer(userContainer, room_id, user, isEmp);
+    updateRTCUserStatus(uid, user.userInfo.status);
 }
 
-function createRTCUserContainer() {
+// Create RTC User List Element
+function createRTCListUserContainer() {
     let userContainer = document.createElement('li');
     let ripple = document.createElement('span');
     let userPhoto = document.createElement('img');
@@ -139,7 +260,7 @@ function createRTCUserContainer() {
     userContainer.classList.add('mdc-list-item');
     ripple.classList.add('mdc-list-item__ripple');
     userPhoto.classList.add('mdc-list-item__graphic');
-    userStatus.classList.add('material-icons', 'mdc-list-item__graphic-status');
+    userStatus.classList.add('material-icons', 'mdc-list-item__graphic-status', 's-font-color-chat-online');
     textContainer.classList.add('mdc-list-item__text');
     userName.classList.add('mdc-list-item__primary-text');
     userInfo.classList.add('mdc-list-item__secondary-text', 'mdc-typography--caption');
@@ -160,32 +281,209 @@ function createRTCUserContainer() {
 
     userContainer.addEventListener('click', stablishRTC);
 
+    document.querySelector('#active-rooms').appendChild(userContainer);
+
     return userContainer;
 }
 
+// Create RTC User Messages Element
+function createRTCMessagesUserContainer(room_id, user, uType) {
+    let userContainer = document.createElement('div');
+    let loader = document.createElement('div');
+    let bounce1 = document.createElement('div');
+    let bounce2 = document.createElement('div');
+    let bounce3 = document.createElement('div');
+
+    userContainer.classList.add('container-chat--body-messages', 'container-chat--body-messages-hidden');
+    loader.classList.add('s-loader');
+    bounce1.classList.add('s-loader-bounce1');
+    bounce2.classList.add('s-loader-bounce2');
+    bounce3.classList.add('s-loader-bounce3');
+
+    loader.appendChild(bounce1);
+    loader.appendChild(bounce2);
+    loader.appendChild(bounce3);
+    userContainer.appendChild(loader);
+
+    userContainer.id = (uType == 'anon')? 'm_' + room_id : 'm_' + user.id;
+
+    document.querySelector('.container-chat--body').appendChild(userContainer);
+
+    return userContainer;
+}
+
+// Hide RTC User Message Container Loader
+function hideRTCMessagesLoader(uid) {
+    let msgContainer = document.getElementById('m_' + uid);
+    let loaderElem = msgContainer.querySelector('.s-loader');
+    
+    loaderElem.classList.add('container--hidden');
+}
+
+// Set RTC User List Container Data
+function setRTCUserContainer(container, room_id, user, uType) {
+    let userInfo = user.userInfo;
+    let activityTime = returnFormatDate(new Date(userInfo.activity - (new Date().getTimezoneOffset()*60000)));
+    let userName = (uType != 'anon')? userInfo.name : userInfo.name + ' - ' + userInfo.ip;
+    let userPhoto = (userInfo.photoURL)? decodeURIComponent(userInfo.photoURL) : '/static/images/manifest/user_f.svg';
+
+    container.id = (uType == 'anon')? 'l_' + room_id : 'l_' + user.id;
+    container.setAttribute('data-meta-assigned', userInfo.assignedTo);
+    container.setAttribute('data-meta-ip', userInfo.ip);
+    container.setAttribute('data-meta-rid', room_id);
+    container.setAttribute('data-meta-roles', userInfo.roles);
+    container.setAttribute('data-meta-status', userInfo.status);
+    container.setAttribute('data-meta-uid', user.id);
+    container.setAttribute('data-meta-utime', activityTime);
+    container.setAttribute('data-meta-utype', uType);
+    container.querySelector('.mdc-list-item__graphic').src = userPhoto;
+    container.querySelector('.mdc-list-item__primary-text').textContent = userName;
+}
+
+// Set User Status Icon Element Color
+function setUserStatusIconColor(elm, usrStatus) {
+    elm.classList.remove('s-font-color-chat-busy', 's-font-color-chat-offline');
+    elm.classList.remove('s-font-color-chat-online', 's-font-color-chat-transferred');
+    switch (usrStatus) {
+        case 'Atendido':
+        case 'Atendiendo':
+            elm.classList.add('s-font-color-chat-busy');
+            break;
+        case 'Disponible':
+            elm.classList.add('s-font-color-chat-online');
+            break;
+        case 'Offline':
+            elm.classList.add('s-font-color-chat-offline');
+            break;
+        case 'Transferid@':
+            elm.classList.add('s-font-color-chat-transferred');
+            break;
+    }
+}
+
+// Show Contacts List - Back Button
+function showContactsList() {
+    let chatBodyEl = document.querySelector('.container-chat--body');
+    let chatFooterEl = document.querySelector('.container-chat--footer');
+    let chatNoConver = document.querySelector('.container-chat--no-conversation');
+    let chatTopBarEl = document.querySelector('.container-chat--topbar');
+    let sideMenuEl = document.querySelector('.container-chat--sidemenu');
+
+    chatBodyEl.classList.add('container--hidden');
+    chatFooterEl.classList.add('container--hidden');
+    chatNoConver.classList.add('container--hidden');
+    chatTopBarEl.classList.add('container--hidden');
+    sideMenuEl.classList.remove('container--hidden');
+}
+
+// Show Conversation UI
+function showConversationUI(showOrHide, usrElem) {
+    let chatBodyEl = document.querySelector('.container-chat--body');
+    let chatFooterEl = document.querySelector('.container-chat--footer');
+    let chatNoConver = document.querySelector('.container-chat--no-conversation');
+    let chatTopBarEl = document.querySelector('.container-chat--topbar');
+    let sideMenuEl = document.querySelector('.container-chat--sidemenu');
+    let elemFocus = false;
+    if (usrElem) {
+        elemFocus = usrElem.classList.contains('mdc-list-item--selected');
+    }
+    
+    // True: shows UI IF the element is not already displayed
+    if (showOrHide && !elemFocus) {
+        let uType = usrElem.getAttribute('data-meta-utype');
+        let uid = (uType == 'anon')? usrElem.getAttribute('data-meta-rid') : usrElem.getAttribute('data-meta-uid');
+        let chatMessagesEl = document.getElementById('m_' + uid);
+        let currentElemFocus = document.querySelector('.container-chat--sidemenu-rooms').querySelector('.mdc-list-item--selected');
+
+        chatBodyEl.classList.remove('container--hidden');
+        chatFooterEl.classList.remove('container--hidden');
+        chatTopBarEl.classList.remove('container--hidden');
+        chatNoConver.classList.add('container--hidden');
+
+        if (currentElemFocus) {
+            currentElemFocus.classList.remove('mdc-list-item--selected');
+        }
+        usrElem.classList.add('mdc-list-item--selected');
+        
+        // Mobile UI - Hide SideMenu
+        if (window.matchMedia("(max-width: 37.49em)").matches) {
+            sideMenuEl.classList.add('container--hidden');
+        }
+        
+        // Show User's Messages Section
+        let activeMsgEl = document.querySelector('.container-chat--body-messages-active');
+        if (activeMsgEl) {
+            activeMsgEl.classList.remove('container-chat--body-messages-active');
+            activeMsgEl.classList.add('container-chat--body-messages-hidden');
+        }
+        chatMessagesEl.classList.remove('container-chat--body-messages-hidden');
+        chatMessagesEl.classList.add('container-chat--body-messages-active');
+        
+        // Update User's Topbar info
+        let usrName = usrElem.querySelector('.mdc-list-item__primary-text').textContent;
+        let usrPhoto = usrElem.querySelector('.mdc-list-item__graphic').src;
+        let usrStatus = usrElem.getAttribute('data-meta-status');
+        document.querySelector('#chat-pic').src = usrPhoto;
+        document.querySelector('.container-chat--topbar-info-data-name').textContent = usrName;
+        updateRTCUserStatus(uid, usrStatus);
+
+        // Update User's Call UI
+        document.querySelector('#callerid-pic').src = usrPhoto;
+        document.querySelector('#callerid-name').textContent = usrName;
+    
+    // False: shows No Conversation UI
+    } else if (!showOrHide) {
+        chatBodyEl.classList.add('container--hidden');
+        chatFooterEl.classList.add('container--hidden');
+        chatTopBarEl.classList.add('container--hidden');
+        
+        // Mobile UI - Show SideMenu
+        if (window.matchMedia("(max-width: 37.49em)").matches) {
+            chatNoConver.classList.add('container--hidden');
+            sideMenuEl.classList.remove('container--hidden');
+        } else {
+            chatNoConver.classList.remove('container--hidden');
+            sideMenuEl.classList.remove('container--hidden');
+        }
+    }
+}
+
+// Show RTC User List
 function showRTCUserList(userlist) {
     let rtcULID = [];
     // Iterate through Anonymous users
     userlist.rtc_online_users.anon_users.forEach((user) => {
-        appendRTCUser(user.r_id, user);
-        rtcULID.push(user.r_id);
+        appendRTCUser(user.r_id, user, 'anon');
+        rtcULID.push('l_' + user.r_id);
     });
     // Iterate through Employees users
     userlist.rtc_online_users.emp_users.forEach((user) => {
         if (user.id != advStreams.myUserInfo.id) {
-            appendRTCUser(user.r_id, user, true);
-            rtcULID.push(r_id);
+            appendRTCUser(user.r_id, user, 'emp');
+            rtcULID.push('l_' + user.id);
         }
     });
     // Iterate through Registered users
     userlist.rtc_online_users.reg_users.forEach((user) => {
-        appendRTCUser(user.r_id, user);
-        rtcULID.push(user.r_id);
+        appendRTCUser(user.r_id, user, 'reg');
+        rtcULID.push('l_' + user.id);
     });
     // Remove users not Online unless focused
     document.querySelectorAll('#active-rooms > li').forEach((elm) => {
         if (!rtcULID.includes(elm.id)) {
-            elm.remove();
+            // Get User Type and ID
+            let uType = elm.getAttribute('data-meta-utype');
+            let id = (uType == 'anon')? elm.getAttribute('data-meta-rid') : elm.getAttribute('data-meta-uid');
+
+            if (!elm.classList.contains('mdc-list-item--selected')){
+                // Remove element if not in focus
+                let m_elm = document.getElementById('m_' + id);
+                elm.remove();
+                m_elm.remove();
+            } else {
+                // Update element to offline if in focus
+                updateRTCUserStatus(id, 'Offline');
+            }
         }
     });
     // Show No Active Room if there are no users
@@ -193,142 +491,60 @@ function showRTCUserList(userlist) {
         document.querySelector('#no-active-room').classList.add('container--hidden');
     } else {
         document.querySelector('#no-active-room').classList.remove('container--hidden');
+        showConversationUI(false, '');
     }
 }
 
-function updateRTCUserContainer(container, room_id, user, isEmp) {
-    let userInfo = user.userInfo;
-    let activeTime = returnFormatDate(new Date(userInfo.activity - (new Date().getTimezoneOffset()*60000)));
-    let userName = (user.id != 2)? userInfo.name : userInfo.name + ' - ' + userInfo.ip;
-    let userPhoto = (userInfo.photoURL)? decodeURIComponent(userInfo.photoURL) : '/static/images/manifest/user_f.svg';
-    let userStatus = (isEmp)? '[' + userInfo.roles + '] ' + userInfo.status + ' - ' + activeTime : userInfo.status + ' - ' + activeTime;
-
-    container.id = room_id;
-    container.querySelector('.mdc-list-item__graphic').src = userPhoto;
-    container.querySelector('.mdc-list-item__primary-text').textContent = userName;
-    container.querySelector('.mdc-list-item__secondary-text').textContent = userStatus;
-
-    switch (userInfo.status) {
-        case 'Online':
-            container.querySelector('.mdc-list-item__graphic-status').classList.add('s-font-color-chat-online');
+// Update RTC User Action Buttons elements
+function updateRTCUserActionButtons(usrStatus) {
+    switch (usrStatus) {
+        case 'Atendido':
+        case 'Atendiendo':
+            document.querySelector('#audioCall').disabled = false;
+            document.querySelector('#videoCall').disabled = false;
+            break;
+        case 'Disponible':
+        case 'Offline':
+            document.querySelector('#audioCall').disabled = true;
+            document.querySelector('#videoCall').disabled = true;
             break;
     }
 }
 
-// Stablish WebRTC with Selected User
-function stablishRTC() {
-    showConversationUI(true, this);
+// Update RTC User Status elements
+function updateRTCUserStatus(id, usrStatus) {
+    let elem = document.getElementById('l_' + id);
+    let elemFocus = elem.classList.contains('mdc-list-item--selected');
+    let uActTime = (usrStatus != 'Offline')? elem.getAttribute('data-meta-utime') : returnFormatDate(Date.now());
+    let uRoles = elem.getAttribute('data-meta-roles');
+    let uType = elem.getAttribute('data-meta-utype');
 
-    peer = new SimplePeer({
-        config: {
-            iceServers: [
-                {
-                    urls: [
-                        'stun:stun.l.google.com:19302',
-                        'stun:global.stun.twilio.com:3478'
-                    ]
-                },{
-                    urls: [
-                        'turn:relay.backups.cz',
-                        'turn:relay.backups.cz?transport=tcp'
-                    ],
-                    credential: 'webrtc',
-                    username: 'webrtc'
-                }
-            ]
-        },
-        initiator: true,
-        trickle: false
-    });
+    let statusText = (uType == 'emp')? '[' + uRoles + '] ' + usrStatus + ' - ' + uActTime : usrStatus + ' - ' + uActTime;
+    elem.querySelector('.mdc-list-item__secondary-text').textContent = statusText;
+    setUserStatusIconColor(elem.querySelector('.mdc-list-item__graphic-status'), usrStatus);
 
-    peer.on('signal', (data) => {
-        console.log('Initiator Signaling Started');
-        console.log(data);
-        socket.emit('sendOfferToUser', JSON.stringify({ 'r_id' : this.id, 'data' : data}));
-    });
+    if (elemFocus) {
+        let tbStatIconElem = document.querySelector('.container-chat--topbar-info-data-status-icon');
+        let tbStatTextElem = document.querySelector('.container-chat--topbar-info-data-status-text');
+        let ftTextAreaElem = document.querySelector('.mdc-text-field--textarea');
+        let ftTextInputElem = document.querySelector('.mdc-text-field__input');
 
-    peer.on('error', err => console.log('error', err));
-    
-    peer.on('connect', () => {
-        console.log('Initiator Connected');
-    });
-    
-    function sentWelcomeData(anon = '') {
-        let userData = swcms.advStreams.myUserInfo;
-        
-        if (anon == 'anonAgent') {
-            userData.name = 'Agente Contact-Os';
-            userData.photoURL = '/static/images/manifest/agent_f.svg';
+        tbStatTextElem.textContent = statusText;
+        switch (usrStatus) {
+            case 'Offline':
+                tbStatTextElem.classList.remove('s-font-color-primary');
+                tbStatTextElem.classList.add('s-font-color-secondary');
+                ftTextAreaElem.classList.add('mdc-text-field--disabled');
+                ftTextInputElem.disabled = true;
+                break;
+            default:
+                tbStatTextElem.classList.remove('s-font-color-secondary');
+                tbStatTextElem.classList.add('s-font-color-primary');
+                ftTextAreaElem.classList.remove('mdc-text-field--disabled');
+                ftTextInputElem.disabled = false;
         }
-    
-        peer.send(JSON.stringify({
-            msgType: 'welcome',
-            msgUserInfo: userData
-        }));
+        setUserStatusIconColor(tbStatIconElem, usrStatus);
+        updateRTCUserActionButtons(usrStatus);
     }
-    
-    peer.on('close', () => {
-        console.log('Receiver Disconnected');
-        let userName = document.querySelector('.container-chat--topbar-info-data-name').textContent;
-        document.querySelector('.container-chat--topbar-info-data-status-icon').classList.remove('s-font-color-chat-online');
-        document.querySelector('.container-chat--topbar-info-data-status-icon').classList.add('s-font-color-chat-offline');
-        document.querySelector('.container-chat--topbar-info-data-status-text').textContent = 'Offline';
-        document.querySelector('.container-chat--topbar-info-data-status-text').classList.remove('s-font-color-primary');
-        document.querySelector('.container-chat--topbar-info-data-status-text').classList.add('s-font-color-secondary');
-        document.querySelector('.mdc-text-field--textarea').classList.add('mdc-text-field--disabled');
-        document.querySelector('.mdc-text-field__input').disabled = true;
-        document.querySelector('#audioCall').disabled = true;
-        document.querySelector('#moreOptionsButton').disabled = true;
-        document.querySelector('#videoCall').disabled = true;
-        swcms.appendChatMessage(userName + ' Offline.', null, 'auto');
-    });
-    
-    peer.on('data', (data) => {
-        console.log('Initiator Data Received: ' + data);
-        jMsg = JSON.parse(data);
-        switch (jMsg.msgType) {
-            case 'audio':
-            case 'audiovideo':
-                if (jMsg.msg == 'accepted') {
-                    swcms.managePeerStream('send');
-                } else if (jMsg.msg == 'ended') {
-                    swcms.endAVCall(false);
-                }
-                swcms.displayCallUI(jMsg.msg, jMsg.msgType);
-                break;
-    
-            case 'msg':
-                swcms.appendChatMessage(jMsg.msg, jMsg.msgDateTime, 'others', jMsg.msgUserName);
-                break;
-    
-            case 'welcome':
-                if (jMsg.msgUserInfo.name == 'Anonim@') {
-                    sentWelcomeData('anonAgent');
-                } else {
-                    sentWelcomeData();
-                }
-                swcms.advStreams.otherUserInfo = jMsg.msgUserInfo;
-                document.querySelector('#chat-pic').src = jMsg.msgUserInfo.photoURL;
-                document.querySelector('#callerid-pic').src = jMsg.msgUserInfo.photoURL;
-                document.querySelector('#callerid-name').textContent = jMsg.msgUserInfo.name;
-                document.querySelector('.container-chat--topbar-info-data-name').textContent = jMsg.msgUserInfo.name;
-                document.querySelector('.container-chat--topbar-info-data-status-icon').classList.remove('s-font-color-chat-offline');
-                document.querySelector('.container-chat--topbar-info-data-status-icon').classList.add('s-font-color-chat-online');
-                document.querySelector('.container-chat--topbar-info-data-status-text').textContent = 'Online';
-                document.querySelector('.container-chat--topbar-info-data-status-text').classList.remove('s-font-color-secondary');
-                document.querySelector('.container-chat--topbar-info-data-status-text').classList.add('s-font-color-primary');
-                document.getElementById('s-loader-chat').style.display = 'none';
-                document.querySelector('.mdc-text-field--textarea').classList.remove('mdc-text-field--disabled');
-                document.querySelector('.mdc-text-field__input').disabled = false;
-                document.querySelector('#audioCall').disabled = false;
-                document.querySelector('#moreOptionsButton').disabled = false;
-                document.querySelector('#videoCall').disabled = false;
-                swcms.appendChatMessage(jMsg.msgUserInfo.name + ' Online.', null, 'auto');
-                break;
-        }
-    });
-    
-    peer.on('stream', (stream) => {
-        swcms.setAVStream(stream);
-    });
 }
+

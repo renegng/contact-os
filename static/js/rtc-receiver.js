@@ -3,6 +3,7 @@ var peer;
 /* Allow 'window' context to reference the function */
 window.peer = peer;
 
+// Initiator Room ID
 const iRID = { 'id' : '' };
 
 function initializeRTC() {
@@ -25,19 +26,23 @@ function initializeRTC() {
     socket.on('userIsConnected', (data) => {
         console.log('I am online: ' + data.id);
         advStreams.myUserInfo.id = data.id;
+        advStreams.myUserInfo.roles = data.roles;
     });
 
     socket.on('receiveInitiatorOffer', (data) => {
         console.log('Received Offer');
         console.log(data);
         iRID.id = data.r_id;
-        stablishRTC();
+        if (peer == null) {
+            stablishRTC();
+        }
         peer.signal(data.data);
     });
 }
 
 // Stablish WebRTC with Selected User
 function stablishRTC() {
+    console.log('Creating Receiver Peer');
     peer = new SimplePeer({
         config: {
             iceServers: [
@@ -83,9 +88,9 @@ function stablishRTC() {
     }
     
     peer.on('close', () => {
-        console.log('Initiator Disconnected');
+        console.log('Peer Disconnected');
         let chatContainer = document.querySelector('.container-chat--body-messages');
-        let loaderElem = document.querySelector('#s-loader-chat');
+        let loaderElem = document.querySelector('.s-loader');
         let userName = document.querySelector('.container-chat--topbar-info-data-name').textContent;
         document.querySelector('.container-chat--topbar-info-data-status-icon').classList.remove('s-font-color-chat-online');
         document.querySelector('.container-chat--topbar-info-data-status-icon').classList.add('s-font-color-chat-offline');
@@ -124,7 +129,7 @@ function stablishRTC() {
                 document.querySelector('#chat-pic').src = jMsg.msgUserInfo.photoURL;
                 document.querySelector('#callerid-pic').src = jMsg.msgUserInfo.photoURL;
                 document.querySelector('#callerid-name').textContent = jMsg.msgUserInfo.name;
-                document.querySelector('#s-loader-chat').classList.add('container--hidden');
+                document.querySelector('.s-loader').classList.add('container--hidden');
                 document.querySelector('.container-chat--topbar-info-data-name').textContent = jMsg.msgUserInfo.name;
                 document.querySelector('.container-chat--topbar-info-data-status-icon').classList.remove('s-font-color-chat-offline');
                 document.querySelector('.container-chat--topbar-info-data-status-icon').classList.add('s-font-color-chat-online');
