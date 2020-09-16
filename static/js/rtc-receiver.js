@@ -33,7 +33,7 @@ function initializeRTC() {
         console.log('Received Offer');
         console.log(data);
         iRID.id = data.r_id;
-        if (peer == null) {
+        if (peer == null || peer.destroyed) {
             stablishRTC();
         }
         peer.signal(data.data);
