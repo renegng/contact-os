@@ -21,7 +21,6 @@ import { MDCTextFieldHelperText } from '@material/textfield/helper-text';
 import { MDCTextFieldIcon } from '@material/textfield/icon';
 import { MDCTopAppBar } from '@material/top-app-bar';
 import { Workbox } from 'workbox-window/Workbox.mjs';
-import { isNull } from 'util';
 
 
 /************************** FUNCTIONS **************************/
@@ -179,7 +178,7 @@ export function createChatMessageContainer(txt, dateTime, user, userName = '') {
 }
 
 var lastMsgUser = '';
-export function appendChatMessage(txt, dateTime, user, userName = '', chatMsgElem = '') {
+export function appendChatMessage(txt, dateTime, user, userName = '', chatMsgElem = '', otherUserPhoto = '') {
     let chatContainer = document.querySelector('.container-chat--body-messages-active');
     if (chatMsgElem) {
         chatContainer = document.getElementById('m_' + chatMsgElem);
@@ -201,7 +200,7 @@ export function appendChatMessage(txt, dateTime, user, userName = '', chatMsgEle
                 break;
             case 'others':
                 msgContainerUserHeader.classList.add('container-chat--body-header-others');
-                msgContainerUserHeaderPic.src = advStreams.otherUserInfo.photoURL;
+                msgContainerUserHeaderPic.src = (otherUserPhoto)? otherUserPhoto : advStreams.otherUserInfo.photoURL;
                 msgContainerUserHeaderName.textContent = userName;
                 break;
         }
@@ -222,7 +221,7 @@ export function sendChatMessage() {
     let dateTime = Date.now();
     let textElement = document.getElementById('chat-textarea-input');
     let textMessage = textElement.value;
-    if (textMessage && textMessage.trim() != "") {
+    if (!textElement.disabled && textMessage && textMessage.trim() != "") {
         sendPeerChatMessage(
             'msg',
             textMessage,
@@ -237,7 +236,7 @@ export function sendChatMessage() {
 /* Allow 'window' context to reference the function */
 window.sendChatMessage = sendChatMessage;
 /* Enable the Enter Key for the Chat Text Area */
-if (!isNull(document.querySelector('#chat-textarea-input'))) {
+if (document.querySelector('#chat-textarea-input')) {
     document.querySelector('#chat-textarea-input').addEventListener('keyup', (evt) => {
         if (evt.keyCode === 13) {
             evt.preventDefault();
@@ -539,7 +538,7 @@ export function managePeerStream(action, stream = null) {
             case 'send':
                 /* Sends My Stream to Remote */
                 console.log('Sending My Stream');
-                if (!isNull(advStreams.myStream)) {
+                if (advStreams.myStream) {
                     peer.addStream(advStreams.myStream);
                     advStreams.myStreamSended = true;
                 } else {
@@ -628,6 +627,9 @@ export function initSnackbar(sb, initObject) {
             initObject.actionHandler();
         }
     });
+    if (sb.isOpen) {
+        sb.close('New snackbar initialization...');
+    }
 }
 
 
@@ -692,7 +694,7 @@ export function shareRedirect(e) {
 const drawerEl = document.querySelector('.mdc-drawer');
 const topAppBarEl = document.querySelector('.mdc-top-app-bar');
 const topAppBarNavEl = document.querySelector('.mdc-top-app-bar__navigation-icon');
-if (!isNull(drawerEl) && !isNull(topAppBarEl)) {
+if (drawerEl && topAppBarEl) {
     const mainContentEl = document.querySelector('.s-main-content');
     const drawerItemsEl = document.querySelector('.mdc-drawer__content .mdc-list');
 
@@ -750,7 +752,7 @@ if (!isNull(drawerEl) && !isNull(topAppBarEl)) {
             child.classList.add("mdc-list-item--activated");
         }
     });
-} else if (!isNull(topAppBarEl)) {
+} else if (topAppBarEl) {
     const topAppBar = MDCTopAppBar.attachTo(topAppBarEl);
     const mainContentEl = document.querySelector('.s-main-content');
 
@@ -762,7 +764,7 @@ if (!isNull(drawerEl) && !isNull(topAppBarEl)) {
 // Material Menu
 var accountMenu = null;
 var accountMenuButton = null;
-if (!isNull(document.querySelector('#accountMenu'))) {
+if (document.querySelector('#accountMenu')) {
     accountMenu = new MDCMenu(document.querySelector('#accountMenu'));
     accountMenuButton = document.querySelector('#accountButton');
 }
@@ -774,7 +776,7 @@ if (accountMenuButton != null) {
 
 var moreOptionMenu = null;
 var moreOptionMenuButton = null;
-if (!isNull(document.querySelector('#moreOptionsMenu'))) {
+if (document.querySelector('#moreOptionsMenu')) {
     moreOptionMenu = new MDCMenu(document.querySelector('#moreOptionsMenu'));
     moreOptionMenuButton = document.querySelector('#moreOptionsButton');
 }
@@ -786,7 +788,7 @@ if (moreOptionMenuButton != null) {
 
 var shareMenu = null;
 var shareMenuButton = null;
-if (!isNull(document.querySelector('#shareMenu'))) {
+if (document.querySelector('#shareMenu')) {
     shareMenu = new MDCMenu(document.querySelector('#shareMenu'));
     shareMenuButton = document.querySelector('#shareButton');
 }
@@ -883,7 +885,7 @@ document.querySelectorAll('.mdc-button[data-action-type], .mdc-icon-button[data-
 
 
 // Google Maps component
-if (!isNull(document.querySelector('.s-googlemaps'))) {
+if (document.querySelector('.s-googlemaps')) {
     var gmComp = document.querySelector('.s-googlemaps');
     var gmURLL = 'https://www.google.com/maps?output=embed&daddr=ciudad+mujer&saddr=';
     var gmIfrS = "<iframe src='";

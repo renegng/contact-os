@@ -34,15 +34,15 @@ function initializeRTC() {
         console.log(data);
         iRID.id = data.r_id;
         if (peer == null || peer.destroyed) {
-            stablishRTC();
+            establishRTC();
         }
         peer.signal(data.data);
     });
 }
 
 // Stablish WebRTC with Selected User
-function stablishRTC() {
-    console.log('Creating Receiver Peer');
+function establishRTC() {
+    console.log('Establish Receiver Peer');
     peer = new SimplePeer({
         config: {
             iceServers: [
@@ -75,17 +75,13 @@ function stablishRTC() {
     
     peer.on('connect', () => {
         console.log('Receiver Connected');
-        sentWelcomeData();
-    });
-    
-    function sentWelcomeData(anon = '') {
         let userData = swcms.advStreams.myUserInfo;
     
         peer.send(JSON.stringify({
             msgType: 'welcome',
             msgUserInfo: userData
         }));
-    }
+    });
     
     peer.on('close', () => {
         console.log('Peer Disconnected');

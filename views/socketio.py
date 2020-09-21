@@ -105,6 +105,18 @@ def _disconnect():
         if current_user.is_authenticated:
             if current_user.is_user_role(['adm', 'emp']):
                 removeItemFromList(new_oul.userlist.get('rtc_online_users', {}).get('emp_users'), 'id', user.id)
+                
+                # Update all users assigned status back to default
+                new_usr_status = 'Disponible'
+
+                # Depending on the type of User, update it's status
+                ulist = new_oul.userlist.get('rtc_online_users', {}).get('anon_users')
+                updateItemFromList(ulist, 'assignedTo', current_user.id, 'userInfo', 'status', new_usr_status, 'userInfo')
+                updateItemFromList(ulist, 'assignedTo', current_user.id, 'userInfo', 'assignedTo', None, 'userInfo')
+                
+                ulist = new_oul.userlist.get('rtc_online_users', {}).get('reg_users')
+                updateItemFromList(ulist, 'assignedTo', current_user.id, 'userInfo', 'status', new_usr_status, 'userInfo')
+                updateItemFromList(ulist, 'assignedTo', current_user.id, 'userInfo', 'assignedTo', None, 'userInfo')
             else:
                 removeItemFromList(new_oul.userlist.get('rtc_online_users', {}).get('reg_users'), 'id', user.id)
         else:
@@ -216,16 +228,19 @@ def _updateUsersStatus(js):
 
         new_oul = cur_oul
         # Update Our Employee Status
-        updateItemFromList(new_oul.userlist.get('rtc_online_users', {}).get('emp_users'), 'id', emp_id, 'status', new_emp_status, 'userInfo')
+        ulist = new_oul.userlist.get('rtc_online_users', {}).get('emp_users')
+        updateItemFromList(ulist, 'id', emp_id, None, 'status', new_emp_status, 'userInfo')
         # Depending on the type of User, update it's status
         if usr_type == 'anon':
-            updateItemFromList(new_oul.userlist.get('rtc_online_users', {}).get('anon_users'), 'r_id', usr_id, 'status', new_usr_status, 'userInfo')
-            updateItemFromList(new_oul.userlist.get('rtc_online_users', {}).get('anon_users'), 'r_id', usr_id, 'assignedTo', emp_id, 'userInfo')
+            ulist = new_oul.userlist.get('rtc_online_users', {}).get('anon_users')
+            updateItemFromList(ulist, 'r_id', usr_id, None, 'status', new_usr_status, 'userInfo')
+            updateItemFromList(ulist, 'r_id', usr_id, None, 'assignedTo', emp_id, 'userInfo')
         elif usr_type == 'emp':
-            updateItemFromList(new_oul.userlist.get('rtc_online_users', {}).get('emp_users'), 'r_id', usr_id, 'status', new_emp_status, 'userInfo')
+            updateItemFromList(ulist, 'r_id', usr_id, None, 'status', new_emp_status, 'userInfo')
         elif usr_type == 'reg':
-            updateItemFromList(new_oul.userlist.get('rtc_online_users', {}).get('reg_users'), 'r_id', usr_id, 'status', new_usr_status, 'userInfo')
-            updateItemFromList(new_oul.userlist.get('rtc_online_users', {}).get('reg_users'), 'r_id', usr_id, 'assignedTo', emp_id, 'userInfo')
+            ulist = new_oul.userlist.get('rtc_online_users', {}).get('reg_users')
+            updateItemFromList(ulist, 'r_id', usr_id, None, 'status', new_usr_status, 'userInfo')
+            updateItemFromList(ulist, 'r_id', usr_id, None, 'assignedTo', emp_id, 'userInfo')
         
         new_userlist = new_oul.userlist
 

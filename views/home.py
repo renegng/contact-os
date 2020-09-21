@@ -50,7 +50,7 @@ def _chat_home():
 
 @home.route('/components/')
 def _components():
-    app.logger.debug('** SWING_CMS ** - Welcome')
+    app.logger.debug('** SWING_CMS ** - Components')
     return render_template('components.html')
 
 

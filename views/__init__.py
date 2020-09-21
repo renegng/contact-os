@@ -187,13 +187,20 @@ def removeItemFromList(lst, k, v):
 
 
 # Update Item from List
-def updateItemFromList(lst, k, v, updK, updV, updObj = None):
+def updateItemFromList(lst, k, v, obj, updK, updV, updObj):
     for listItem in lst:
-        if listItem.get(k) == v:
-            if updObj is not None:
-                listItem.get(updObj, {})[updK] = updV
-            else:
-                listItem[updK] = updV
+        if obj is None:
+            if listItem.get(k) == v:
+                if updObj is not None:
+                    listItem.get(updObj, {})[updK] = updV
+                else:
+                    listItem[updK] = updV
+        else:
+            if listItem.get(obj, {}).get(k) == v:
+                if updObj is not None:
+                    listItem.get(updObj, {})[updK] = updV
+                else:
+                    listItem[updK] = updV
 
 
 # Verifies a Firebase Session Cookie and Creates a Flask Login Session
