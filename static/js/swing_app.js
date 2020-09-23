@@ -246,9 +246,18 @@ if (document.querySelector('#chat-textarea-input')) {
     });
 }
 
+var offlineMsgs = [];
 export function sendPeerChatMessage(type, text, dateTime, userName) {
-    if (peer) {
+    if (peer && !peer.destroyed) {
         peer.send(JSON.stringify({
+            msgType: type,
+            msg: text,
+            msgDateTime: dateTime,
+            msgUserName: userName
+        }));
+    }
+    if (enableOfflineMsgs) {
+        offlineMsgs.push(JSON.stringify({
             msgType: type,
             msg: text,
             msgDateTime: dateTime,
@@ -258,6 +267,20 @@ export function sendPeerChatMessage(type, text, dateTime, userName) {
 }
 /* Allow 'window' context to reference the function */
 window.sendPeerChatMessage = sendPeerChatMessage;
+
+// Send all offline messages once online
+export function sendOfflineMsgs() {
+    if (peer && offlineMsgs.length > 0) {
+        
+        offlineMsgs.forEach((msg) => {
+            peer.send(msg);
+        });
+
+        offlineMsgs = [];
+    }
+}
+/* Allow 'window' context to reference the function */
+window.sendOfflineMsgs = sendOfflineMsgs;
 
 /* Scroll Conversation to bottom on window resize */
 const chatResizeObserver = new ResizeObserver(entries => {
@@ -325,12 +348,10 @@ function startUserMedia(av, state) {
         displayCallUI('ended');
         if (err.name == 'NotAllowedError') {
             initSnackbar(snackbar, failedGetUserMediaSBDataObj);
-            snackbar.open();
         } else {
             let errMsgSBDataObj = failedGetUserMediaSBDataObj;
             errMsgSBDataObj.message = err.name;
             initSnackbar(snackbar, errMsgSBDataObj);
-            snackbar.open();
         }
         if (state != 'init') {
             sendPeerChatMessage(
@@ -344,7 +365,7 @@ function startUserMedia(av, state) {
 }
 
 // Snackbar Data for Failed Get User Media Devices
-var failedGetUserMediaSBDataObj = {
+const failedGetUserMediaSBDataObj = {
     message: 'Por favor habilite el acceso a la cámara y/o micrófono.',
     actionText: 'OK',
     timeout: 20000,
@@ -353,6 +374,27 @@ var failedGetUserMediaSBDataObj = {
     }
 };
 
+// Snackbar Data for Connecting Peers
+const conPeerSBDataObj = {
+    message: 'Conectando con usuario...',
+    actionText: 'OK',
+    timeout: 5000,
+    actionHandler: () => {
+        console.log('Connecting to user...');
+    }
+};
+
+// Snackbar Data for Disconnecting Peers
+const disconPeerSBDataObj = {
+    message: 'Usuario desconectado.',
+    actionText: 'OK',
+    timeout: 5000,
+    actionHandler: () => {
+        console.log('User disconnected.');
+    }
+};
+
+// Show or Hide Audio/Video Call UI
 export function displayCallUI(state, av = '') {
     switch (state) {
         case 'accept':
@@ -498,7 +540,7 @@ export function endAVCall(sendMsg = true) {
 window.endAVCall = endAVCall;
 
 export function managePeerStream(action, stream = null) {
-    if (peer) {
+    if (peer && !peer.destroyed) {
         switch (action) {
             case 'end':
                 /* Finalize my Stream and any other Stream */
@@ -516,10 +558,6 @@ export function managePeerStream(action, stream = null) {
                         }
                     });
                 }
-                // if (advStreams.myStreamSended) {
-                //     peer.removeStream(advStreams.myStream);
-                // }
-                // advStreams.myStream = null;
                 advStreams.myStreamSended = false;
                 advStreams.otherUserStream = null;
                 break;
@@ -631,7 +669,25 @@ export function initSnackbar(sb, initObject) {
     if (sb.isOpen) {
         sb.close('New snackbar initialization...');
     }
+    sb.open();
 }
+/* Allow 'window' context to reference the function */
+window.initSnackbar = initSnackbar;
+
+
+// Show Snackbars of User Connection and Disconnection
+export function showUserRTCConSnackbar(state) {
+    switch (state) {
+        case 'con':
+            initSnackbar(snackbar, conPeerSBDataObj);
+            break;
+        case 'dcon':
+            initSnackbar(snackbar, disconPeerSBDataObj);
+            break;
+    }
+}
+/* Allow 'window' context to reference the function */
+window.showUserRTCConSnackbar = showUserRTCConSnackbar;
 
 
 // Social Media Share Redirect
@@ -949,7 +1005,6 @@ if ('serviceWorker' in navigator) {
         if (event.isUpdate) {
             console.log('App update found...');
             initSnackbar(snackbar, updateSBDataObj);
-            snackbar.open();
         }
     });
     // Registers the Workbox Service Worker
@@ -962,7 +1017,7 @@ let deferredPrompt;
 var appIsInstalled = false;
 
 // Snackbar A2H Data for Install Event
-var installSBDataObj = {
+const installSBDataObj = {
     message: '¿Deseas Instalar nuestra App? (¡Gratis!)',
     actionText: 'Si',
     timeout: 20000,
@@ -986,7 +1041,7 @@ var installSBDataObj = {
 
 
 // Snackbar Data for Update Website Event
-var updateSBDataObj = {
+const updateSBDataObj = {
     message: '¡Nuevo contenido disponible!. Click OK para actualizar.',
     actionText: 'OK',
     timeout: 20000,
@@ -1013,7 +1068,6 @@ window.addEventListener('beforeinstallprompt', (e) => {
     // Show the Snackbar popup to Install
     if (!appIsInstalled) {
         initSnackbar(snackbar, installSBDataObj);
-        snackbar.open();
     }
 });
 

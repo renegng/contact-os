@@ -3,6 +3,10 @@ var peer;
 /* Allow 'window' context to reference the function */
 window.peer = peer;
 
+var enableOfflineMsgs = false;
+/* Allow 'window' context to reference the function */
+window.enableOfflineMsgs = enableOfflineMsgs;
+
 // RTC Connections
 var rtcConnections = [];
 
@@ -59,6 +63,7 @@ function initializeRTC () {
 
 // SimplePeer User Connection Class
 class rtcPeerConnection {
+    #isInitialSignal;
     #isInitiator;
     #rtcSimplePeer;
     #uListElem;
@@ -66,6 +71,7 @@ class rtcPeerConnection {
     constructor(init, uListElem) {
         this.#isInitiator = init;
         this.#uListElem = uListElem;
+        this.#isInitialSignal = true;
 
         this.#rtcSimplePeer = new SimplePeer({
             config: {
@@ -98,6 +104,11 @@ class rtcPeerConnection {
                 console.log('Receiver Signaling Started');
                 socket.emit('sendAnswerToUser', JSON.stringify({ 'r_id' : iRID.id, 'data' : data}));
             }
+            
+            if (this.#isInitialSignal) {
+                this.#isInitialSignal = false;
+                swcms.showUserRTCConSnackbar('con');
+            }
         });
     
         this.#rtcSimplePeer.on('error', (err) => {
@@ -127,6 +138,8 @@ class rtcPeerConnection {
                 msgType: 'welcome',
                 msgUserInfo: userData
             }));
+
+            enableRTCUserList();
         });
         
         this.#rtcSimplePeer.on('close', () => {
@@ -141,6 +154,8 @@ class rtcPeerConnection {
             });
     
             rtcConnections = newRTCConnections;
+            swcms.showUserRTCConSnackbar('dcon');
+            enableRTCUserList();
         });
         
         this.#rtcSimplePeer.on('data', (data) => {
@@ -243,7 +258,9 @@ function establishRTC(init = true, receiverData = null) {
     }
 
     // Create new RTC Simple Peer Connection
+    // Disable RTC User List until Connection to prevent parallel offers/answers
     let newPeer = new rtcPeerConnection(init, uListElem);
+    enableRTCUserList(false);
     
     // If Peer was started as Receiver we send a signal
     if (receiverData) {
@@ -454,6 +471,17 @@ function createRTCMessagesUserContainer(room_id, user, uType) {
     document.querySelector('.container-chat--body').appendChild(userContainer);
 
     return userContainer;
+}
+
+// Enable or Disable RTC User List to prevent connection issues
+function enableRTCUserList(enable = true){
+    document.querySelectorAll('#active-rooms > li').forEach((elm) => {
+        if (enable) {
+            elm.classList.remove('container--disable-click');
+        } else {
+            elm.classList.add('container--disable-click');
+        }
+    });
 }
 
 // End RTC User Session

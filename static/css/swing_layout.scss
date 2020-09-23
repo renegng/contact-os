@@ -521,6 +521,10 @@ body {
     }
 }
 
+.container--disable-click {
+    pointer-events: none;
+}
+
 .container-elevation-s {
     @include elevation.elevation(4);
 }

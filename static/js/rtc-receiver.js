@@ -3,6 +3,10 @@ var peer;
 /* Allow 'window' context to reference the function */
 window.peer = peer;
 
+var enableOfflineMsgs = true;
+/* Allow 'window' context to reference the function */
+window.enableOfflineMsgs = enableOfflineMsgs;
+
 // Initiator Room ID
 const iRID = { 'id' : '' };
 
@@ -44,6 +48,7 @@ function initializeRTC() {
 }
 
 // Stablish WebRTC with Selected User
+var isInitialSignal = true;
 function establishRTC() {
     console.log('Establish Receiver Peer');
     peer = new SimplePeer({
@@ -74,6 +79,10 @@ function establishRTC() {
         console.log('Receiver Signaling Started');
         console.log(data);
         socket.emit('sendAnswerToUser', JSON.stringify({ 'r_id' : iRID.id, 'data' : data}));
+        if (isInitialSignal) {
+            swcms.showUserRTCConSnackbar('con');
+            isInitialSignal = false;
+        }
     });
     
     peer.on('connect', () => {
@@ -96,13 +105,13 @@ function establishRTC() {
         document.querySelector('.container-chat--topbar-info-data-status-text').textContent = 'Offline';
         document.querySelector('.container-chat--topbar-info-data-status-text').classList.remove('s-font-color-primary');
         document.querySelector('.container-chat--topbar-info-data-status-text').classList.add('s-font-color-secondary');
-        document.querySelector('.mdc-text-field--textarea').classList.add('mdc-text-field--disabled');
-        document.querySelector('.mdc-text-field__input').disabled = true;
         swcms.appendChatMessage(userName + ' Offline.', null, 'auto');
         swcms.appendChatMessage('Esperando conexión...', null, 'auto');
         chatContainer.appendChild(loaderElem);
         loaderElem.classList.remove('container--hidden');
         chatContainer.scrollTop = chatContainer.scrollHeight;
+        swcms.showUserRTCConSnackbar('dcon');
+        isInitialSignal = true;
     });
     
     peer.on('data', (data) => {
@@ -143,9 +152,8 @@ function establishRTC() {
                 document.querySelector('.container-chat--topbar-info-data-status-text').textContent = 'Online';
                 document.querySelector('.container-chat--topbar-info-data-status-text').classList.remove('s-font-color-secondary');
                 document.querySelector('.container-chat--topbar-info-data-status-text').classList.add('s-font-color-primary');
-                document.querySelector('.mdc-text-field--textarea').classList.remove('mdc-text-field--disabled');
-                document.querySelector('.mdc-text-field__input').disabled = false;
                 swcms.appendChatMessage(jMsg.msgUserInfo.name + ' Online.', null, 'auto');
+                swcms.sendOfflineMsgs();
                 break;
         }
     });
@@ -157,7 +165,6 @@ function establishRTC() {
 
 
 /************************** FUNCTIONS **************************/
-
 
 // Save user satisfaction ratings
 const usrSatAnswers = { 1: null, 2: null};
