@@ -40,6 +40,8 @@
 @use "@material/animation";
 @use "@material/button";
 @use "@material/card";
+@use "@material/dialog";
+@use "@material/dialog/mdc-dialog";
 @use "@material/drawer";
 @use "@material/drawer/mdc-drawer";
 @use "@material/elevation";
@@ -90,6 +92,7 @@
 /* Default Components Styles */
 @include button.core-styles;
 @include card.core-styles;
+@include dialog.core-styles;
 @include fab.core-styles;
 @include floating-label.core-styles;
 @include icon.icon-core-styles;
@@ -154,13 +157,13 @@
 
 /* Dialog */
 .mdc-dialog {
-    position: relative;
-    justify-content: start;
+    justify-content: center;
+    position: absolute;
     z-index: 1;
 
-    .mdc-dialog__surface {
-        max-width: 100%;
-    }
+    // .mdc-dialog__surface {
+    //     max-width: 100%;
+    // }
 }
 
 /* Drawer */

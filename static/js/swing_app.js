@@ -5,6 +5,7 @@ import anchorme from 'anchorme';
 import 'core-js';
 import 'regenerator-runtime/runtime';
 import { accountRedirect } from './swing_firebase';
+import { MDCDialog } from '@material/dialog';
 import { MDCDrawer } from "@material/drawer";
 import { MDCFloatingLabel } from '@material/floating-label';
 import { MDCIconButtonToggle } from '@material/icon-button';
@@ -690,6 +691,18 @@ export function shareRedirect(e) {
 
 /************************** MATERIAL DESIGN COMPONENTS INIT **************************/
 
+// Material Dialog
+var assignedDialogEl = document.querySelector('#assigned-dialog');
+if (assignedDialogEl) {
+    mdcAssignedDialogEl = new MDCDialog(assignedDialogEl);
+}
+
+var endRTCDialogEl = document.querySelector('#endrtc-dialog');
+if (endRTCDialogEl) {
+    mdcEndRTCDialogEl = new MDCDialog(endRTCDialogEl);
+}
+
+
 // Material Drawer & Top App Bar
 const drawerEl = document.querySelector('.mdc-drawer');
 const topAppBarEl = document.querySelector('.mdc-top-app-bar');
@@ -761,6 +774,31 @@ if (drawerEl && topAppBarEl) {
 }
 
 
+// Material Floating Labels
+var mdcFloatingLabels = [].map.call(document.querySelectorAll('.mdc-floating-label'), function (el) {
+    return new MDCFloatingLabel(el);
+});
+
+
+// Material Line Ripples
+var mdcLineRipples = [].map.call(document.querySelectorAll('.mdc-line-ripple'), function (el) {
+    return new MDCLineRipple(el);
+});
+
+
+// Material Lists
+var mdcLists = [].map.call(document.querySelectorAll('.mdc-list:not(.mdc-menu__items):not(.mdc-select__list)'), function (el) {
+    let elList = new MDCList(el);
+    let elID = el.getAttribute('id');
+    let actionFn = el.getAttribute('data-action-fn');
+    if (actionFn) {
+        let fn = (typeof actionFn == "string") ? window[actionFn] : actionFn;
+        elList.listen('MDCList:action', (evt) => fn(elID, evt.detail.index));
+    }
+    return elList.listElements.map((listItemEl) => new MDCRipple(listItemEl));
+});
+
+
 // Material Menu
 var accountMenu = null;
 var accountMenuButton = null;
@@ -783,7 +821,7 @@ if (document.querySelector('#moreOptionsMenu')) {
 if (moreOptionMenuButton != null) {
     moreOptionMenuButton.addEventListener('click', () => (moreOptionMenu.open = !moreOptionMenu.open));
     moreOptionMenu.setAnchorCorner(Corner.BOTTOM_START);
-    // document.querySelector('#moreOptionsMenu').addEventListener('MDCMenu:selected', evt => shareRedirect(evt));
+    document.querySelector('#moreOptionsMenu').addEventListener('MDCMenu:selected', evt => moreOptionsSelection(evt.detail.index));
 }
 
 var shareMenu = null;
@@ -797,6 +835,12 @@ if (shareMenuButton != null) {
     shareMenu.setAnchorCorner(Corner.BOTTOM_START);
     document.querySelector('#shareMenu').addEventListener('MDCMenu:selected', evt => shareRedirect(evt));
 }
+
+
+// Material Notched Ouline
+var mdcNotchedOutlines = [].map.call(document.querySelectorAll('.mdc-notched-outline'), function (el) {
+    return new MDCNotchedOutline(el);
+});
 
 
 // Material Ripple
@@ -815,41 +859,23 @@ mdcButtonRipples = mdcButtonRipples.concat([].map.call(document.querySelectorAll
 const snackbar = new MDCSnackbar(document.querySelector('.mdc-snackbar'));
 
 
+// Material Selects
+var mdcSelects = [].map.call(document.querySelectorAll('.mdc-select'), function (el) {
+    let mdcSel = new MDCSelect(el);
+    let actionFn = el.getAttribute('data-action-fn');
+    if (actionFn) {
+        let fn = (typeof actionFn == "string") ? window[actionFn] : actionFn;
+        mdcSel.listen('MDCSelect:change', () => fn(mdcSel.value));
+    }
+    return mdcSel;
+});
+
+
 // Material Tab
 var mdcTabBars = [].map.call(document.querySelectorAll('.mdc-tab-bar'), function (el) {
     return new MDCTabBar(el);
 });
 // document.querySelector('#mdc-tab-bar__id-noticias').addEventListener('MDCTabBar:activated', evt => showTabContent(evt));
-
-
-// Material Floating Labels
-var mdcFloatingLabels = [].map.call(document.querySelectorAll('.mdc-floating-label'), function (el) {
-    return new MDCFloatingLabel(el);
-});
-
-
-// Material Line Ripples
-var mdcLineRipples = [].map.call(document.querySelectorAll('.mdc-line-ripple'), function (el) {
-    return new MDCLineRipple(el);
-});
-
-
-// Material Lists
-var mdcLists = [].map.call(document.querySelectorAll('.mdc-list:not(.mdc-menu__items)'), function (el) {
-    let elList = new MDCList(el);
-    return elList.listElements.map((listItemEl) => new MDCRipple(listItemEl));
-});
-
-
-// Material Notched Ouline
-var mdcNotchedOutlines = [].map.call(document.querySelectorAll('.mdc-notched-outline'), function (el) {
-    return new MDCNotchedOutline(el);
-});
-
-// Material Selects
-var mdcSelects = [].map.call(document.querySelectorAll('.mdc-select'), function (el) {
-    return new MDCSelect(el);
-});
 
 
 // Material Textfields

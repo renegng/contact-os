@@ -433,26 +433,42 @@ body {
 
             .container-chat--topbar-info {
                 display: inline-flex;
-                flex: 1 1 auto;
+                flex: 1 1 0;
                 justify-content: flex-start;
+                overflow: hidden;
 
                 .container-chat--topbar-info-back {
-                    margin-right: 1rem;
+                    margin-right: 0.5rem;
                 }
 
                 .container-chat--topbar-info-data {
                     display: flex;
                     flex-flow: column;
                     margin: 0rem 1rem;
+                    overflow: hidden;
+
+                    .container-chat--topbar-info-data-name {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
 
                     .container-chat--topbar-info-data-status {
                         align-items: center;
                         display: flex;
                         flex-shrink: 0;
+                        overflow: hidden;
+                        white-space: nowrap;
 
                         .container-chat--topbar-info-data-status-icon {
                             font-size: 0.6rem;
                             margin-right: 0.25rem;
+                        }
+
+                        .container-chat--topbar-info-data-status-text {
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
                         }
                     }
                 }
@@ -470,7 +486,7 @@ body {
 
             .container-chat--topbar-actions {
                 display: inline-flex;
-                flex: 1 1 auto;
+                flex: 0 1 0;
                 justify-content: flex-end;
             }
         }
@@ -493,6 +509,16 @@ body {
     background: stv.$swing-theme-surface;
     display: block;
     width: 100%;
+}
+
+.container-dialog--satisfaction {
+    display: flex;
+    justify-content: space-around;
+
+    .mdc-list-item__graphic {
+        font-size: 3rem;
+        margin: 0;
+    }
 }
 
 .container-elevation-s {
@@ -561,39 +587,55 @@ body {
 }
 
 .s-font-color-chat-busy {
-    color: #dc143c;
+    color: #dc143c !important;
 }
 
 .s-font-color-chat-offline {
-    color: #bcb8b1;
+    color: #bcb8b1 !important;
 }
 
 .s-font-color-chat-online {
-    color: #54a72a;
+    color: #54a72a !important;
 }
 
 .s-font-color-chat-transferred {
-    color: #f77f00;
+    color: #f77f00 !important;
+}
+
+.s-font-color-dissatisfied {
+    color: #e67f0d !important;
 }
 
 .s-font-color-green-confirm {
-    color: #35ac19;
+    color: #35ac19 !important;
+}
+
+.s-font-color-satisfied {
+    color: #ffae03 !important;
+}
+
+.s-font-color-very-dissatisfied {
+    color: #e71d36 !important;
+}
+
+.s-font-color-very-satisfied {
+    color: #0ead69 !important;
 }
 
 .s-font-color-primary {
-    color: stv.$swing-theme-primary;
+    color: stv.$swing-theme-primary !important;
 }
 
 .s-font-color-secondary {
-    color: stv.$swing-theme-secondary;
+    color: stv.$swing-theme-secondary !important;
 }
 
 .s-font-color-on-primary {
-    color: stv.$swing-theme-on-primary;
+    color: stv.$swing-theme-on-primary !important;
 }
 
 .s-font-color-on-secondary {
-    color: stv.$swing-theme-on-secondary;
+    color: stv.$swing-theme-on-secondary !important;
 }
 
 .s-font-size-xl {

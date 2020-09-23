@@ -124,7 +124,7 @@ def _disconnect():
         
         new_userlist = new_oul.userlist
 
-        oper = CatalogOperations.query.filter_by(name_short='del').first()
+        oper = CatalogOperations.query.filter_by(name_short='dcon').first()
         new_oul.userlist.get('rtc_online_users', {})['id'] = str(dt_now)
         new_rtc_oul = RTCOnlineUsers()
         new_rtc_oul.id = dt_now
@@ -155,6 +155,48 @@ def _disconnect():
         socketio.emit('RTCUserList', new_userlist, room='CTOS-EMPS')
     except Exception as e:
         app.logger.error('** SWING_CMS ** - SocketIO User Disconnected Error: {}'.format(e))
+        return jsonify({ 'status': 'error' })
+
+
+@socketio.on('endRTC')
+def _endrtc(js):
+    app.logger.debug('** SWING_CMS ** - SocketIO EndRTC')
+    try:
+        j = json.loads(js)
+        usr_id = j['u_id']
+        usr_type = j['u_type']
+
+        # Remove User to RTC Online Users List
+        cur_oul = RTCOnlineUsers.query.with_for_update().order_by(RTCOnlineUsers.id.desc()).first()
+        dt_now = datetime.datetime.utcnow()
+        
+        # Depending on the type of User, remove the user
+        new_oul = cur_oul
+        if usr_type == 'anon':
+            ulist = new_oul.userlist.get('rtc_online_users', {}).get('anon_users')
+            removeItemFromList(ulist, 'r_id', usr_id)
+        elif usr_type == 'reg':
+            ulist = new_oul.userlist.get('rtc_online_users', {}).get('reg_users')
+            removeItemFromList(ulist, 'r_id', usr_id)
+        
+        new_userlist = new_oul.userlist
+
+        oper = CatalogOperations.query.filter_by(name_short='del').first()
+        new_oul.userlist.get('rtc_online_users', {})['id'] = str(dt_now)
+        new_rtc_oul = RTCOnlineUsers()
+        new_rtc_oul.id = dt_now
+        new_rtc_oul.operation_id = oper.id
+        new_rtc_oul.userlist = new_userlist
+        db.session.add(new_rtc_oul)
+
+        cur_oul.enabled = False
+        db.session.add(cur_oul)
+
+        db.session.commit()
+
+        socketio.emit('RTCUserList', new_userlist, room='CTOS-EMPS')
+    except Exception as e:
+        app.logger.error('** SWING_CMS ** - SocketIO EndRTC Error: {}'.format(e))
         return jsonify({ 'status': 'error' })
 
 

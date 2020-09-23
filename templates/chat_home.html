@@ -84,6 +84,12 @@
                                     </div>
                                 </div>
                             </section>
+                            <section class="container-chat--topbar-actions">
+                                <button class="mdc-icon-button s-font-color-secondary" aria-label="Exit Chat" alt="Exit Chat"
+                                        data-action-type="redirect" data-action-val="/">
+                                    <i class="material-icons mdc-icon-button__icon s-font-color-very-dissatisfied">cancel</i>
+                                </button>
+                            </section>
                         </header>
                     </div>
                     <div
@@ -134,6 +140,72 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div id="endrtc-dialog" class="mdc-dialog">
+        <div class="mdc-dialog__container">
+            <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true" aria-labelledby="d-endrtc-title" aria-describedby="d-endrtc-content">
+                <h2 class="mdc-dialog__title" id="d-endrtc-title">Conversación finalizada</h2>
+                <div class="mdc-dialog__content" id="d-endrtc-content">
+                    <p class="mdc-typography--body1 s-font-color-primary">Califica tu experiencia:</p>
+                    <p class="mdc-typography--body1">
+                        ¿Cómo calificas tu experiencia con el servicio recibido?
+                    </p>
+                    <ul id="usq_1" class="mdc-list container-dialog--satisfaction" 
+                        data-action-type="submit" data-action-fn="saveRating" data-action-fn-val="1">
+                        <li class="mdc-list-item">
+                            <span class="mdc-list-item__ripple"></span>
+                            <i class="material-icons mdc-list-item__graphic s-font-color-very-dissatisfied" aria-hidden="true">
+                                sentiment_very_dissatisfied
+                            </i>
+                        </li>
+                        <li class="mdc-list-item">
+                            <span class="mdc-list-item__ripple"></span>
+                            <i class="material-icons mdc-list-item__graphic s-font-color-satisfied" aria-hidden="true">
+                                sentiment_satisfied
+                            </i>
+                        </li>
+                        <li class="mdc-list-item">
+                            <span class="mdc-list-item__ripple"></span>
+                            <i class="material-icons mdc-list-item__graphic s-font-color-very-satisfied" aria-hidden="true">
+                                sentiment_very_satisfied
+                            </i>
+                        </li>
+                    </ul>
+                    <p class="mdc-typography--body1">
+                        ¿Cómo calificas tu experiencia con la plataforma?
+                    </p>
+                    <ul id="usq_2" class="mdc-list container-dialog--satisfaction" 
+                        data-action-type="submit" data-action-fn="saveRating" data-action-fn-val="2">
+                        <li class="mdc-list-item">
+                            <span class="mdc-list-item__ripple"></span>
+                            <i class="material-icons mdc-list-item__graphic s-font-color-very-dissatisfied" aria-hidden="true">
+                                sentiment_very_dissatisfied
+                            </i>
+                        </li>
+                        <li class="mdc-list-item">
+                            <span class="mdc-list-item__ripple"></span>
+                            <i class="material-icons mdc-list-item__graphic s-font-color-satisfied" aria-hidden="true">
+                                sentiment_satisfied
+                            </i>
+                        </li>
+                        <li class="mdc-list-item">
+                            <span class="mdc-list-item__ripple"></span>
+                            <i class="material-icons mdc-list-item__graphic s-font-color-very-satisfied" aria-hidden="true">
+                                sentiment_very_satisfied
+                            </i>
+                        </li>
+                    </ul>
+                </div>
+                <div class="mdc-dialog__actions">
+                    <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept" 
+                            data-action-type="redirect" data-action-val="/" data-mdc-dialog-button-default>
+                        <div class="mdc-button__ripple"></div>
+                        <span class="mdc-button__label">OK</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="mdc-dialog__scrim"></div>
     </div>
 </main>
 {% endblock %}

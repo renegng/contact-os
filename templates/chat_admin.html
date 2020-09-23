@@ -74,7 +74,7 @@
                                 Mensajes
                             </span>
                         </header>
-                        <div class="mdc-select container-chat--sidemenu-filters" role="filters">
+                        <div class="mdc-select container-chat--sidemenu-filters" role="filters" data-action-fn="filterRTCUserList">
                             <div class="mdc-select__anchor">
                                 <span class="mdc-select__ripple"></span>
                                 <input type="text" disabled readonly class="mdc-select__selected-text">
@@ -83,28 +83,28 @@
                                 <span class="mdc-line-ripple"></span>
                             </div>
                             <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox">
-                                <ul class="mdc-list">
+                                <ul class="mdc-list mdc-select__list">
                                     <li class="mdc-list-item" data-value="anon">
                                         <span class="mdc-list-item__text">
                                             Anonim@s
                                         </span>
                                     </li>
-                                    <li class="mdc-list-item mdc-list-item--selected" data-value="mine">
+                                    <li class="mdc-list-item" data-value="mine">
                                         <span class="mdc-list-item__text">
                                             Asignados a mí
                                         </span>
                                     </li>
-                                    <li class="mdc-list-item" data-value="agents">
+                                    <li class="mdc-list-item" data-value="emp">
                                         <span class="mdc-list-item__text">
                                             Funcionari@s
                                         </span>
                                     </li>
-                                    <li class="mdc-list-item" data-value="registered">
+                                    <li class="mdc-list-item" data-value="reg">
                                         <span class="mdc-list-item__text">
                                             Registrad@s
                                         </span>
                                     </li>
-                                    <li class="mdc-list-item" data-value="all">
+                                    <li class="mdc-list-item mdc-list-item--selected" data-value="all">
                                         <span class="mdc-list-item__text">
                                             Tod@s
                                         </span>
@@ -190,17 +190,25 @@
                                         <ul class="mdc-list mdc-menu__items" role="menu" aria-hidden="true">
                                             <li class="mdc-list-item" role="menuitem" tabindex="0">
                                                 <span class="mdc-list-item__ripple"></span>
-                                                <i class="material-icons mdc-list-item__graphic s-font-color-secondary" aria-hidden="true">
-                                                    forward
+                                                <i class="s-font-color-secondary material-icons mdc-list-item__graphic" aria-hidden="true">
+                                                    send
                                                 </i>
                                                 <span class="mdc-list-item__text">Transferir</span>
                                             </li>
-                                            <li class="mdc-list-item" role="menuitem" tabindex="0">
+                                            <li class="mdc-list-item" role="menuitem" tabindex="1">
                                                 <span class="mdc-list-item__ripple"></span>
-                                                <i class="material-icons mdc-list-item__graphic s-font-color-secondary" aria-hidden="true">
-                                                    voice_over_off
+                                                <i class="s-font-color-secondary material-icons mdc-list-item__graphic"  aria-hidden="true">
+                                                    exit_to_app
                                                 </i>
                                                 <span class="mdc-list-item__text">Finalizar Chat</span>
+                                            </li>
+                                            <hr class="mdc-list-divider s-mdc-list-divider">
+                                            <li class="mdc-list-item" role="menuitem" tabindex="2">
+                                                <span class="mdc-list-item__ripple"></span>
+                                                <i class="s-font-color-secondary material-icons mdc-list-item__graphic"  aria-hidden="true">
+                                                    cancel
+                                                </i>
+                                                <span class="mdc-list-item__text">Cerrar Conexión</span>
                                             </li>
                                         </ul>
                                     </div>
@@ -240,6 +248,24 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div id="assigned-dialog" class="mdc-dialog">
+        <div class="mdc-dialog__container">
+            <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true" aria-labelledby="d-assigned-title" aria-describedby="d-assigned-content">
+                <h2 class="mdc-dialog__title" id="d-assigned-title">Usuari@ en sesión</h2>
+                <div class="mdc-dialog__content" id="d-assigned-content">
+                    <span id="d-assigned-usrname" class="s-font-color-primary"></span>, con estado <span id="d-assigned-status"></span>, 
+                    se encuentra asignad@ a <span id="d-assigned-empname" class="s-font-color-primary"></span>
+                </div>
+                <div class="mdc-dialog__actions">
+                    <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept" data-mdc-dialog-button-default>
+                        <div class="mdc-button__ripple"></div>
+                        <span class="mdc-button__label">OK</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="mdc-dialog__scrim"></div>
     </div>
 </main>
 {% endblock %}

@@ -9,6 +9,9 @@ var rtcConnections = [];
 // Initiator Room ID
 const iRID = { 'id' : '' };
 
+// MDC Dialog - Assigned
+var mdcAssignedDialogEl = null;
+
 function initializeRTC () {
     console.log('Initializing SocketIO/SimplePeer');
 
@@ -159,6 +162,10 @@ class rtcPeerConnection {
                     }
                     swcms.displayCallUI(jMsg.msg, jMsg.msgType);
                     break;
+                
+                case 'endRTC':
+                    this.#rtcSimplePeer.destroy();
+                    break;
         
                 case 'msg':
                     let rtcUserList = document.querySelector('#active-rooms');
@@ -203,19 +210,26 @@ class rtcPeerConnection {
 function establishRTC(init = true, receiverData = null) {
     console.log('Establish Initiator Peer');
     let uListElem;
-    // Check if assigned to someone else - BUSY status
-    
-    // If peer is as initiator, Show Conversation UI
-    // If peer is as receiver, create Peer only
     if (init) {
         uListElem = this;
-        // Show Conversation UI
-        showConversationUI(true, uListElem);
     } else {
         document.querySelectorAll('#active-rooms > li').forEach((elm) => {
             if (elm.getAttribute('data-meta-rid') == iRID.id)
                 uListElem = elm;
         });
+    }
+
+    // Check if assigned to someone else - BUSY or TRANSFERED status
+    let isUserAssigned = checkUserAssignment(uListElem);
+    if (isUserAssigned) {
+        mdcAssignedDialogEl.open();
+        return;
+    }
+    
+    // If peer is as initiator, Show Conversation UI
+    if (init) {
+        // Show Conversation UI
+        showConversationUI(true, uListElem);
     }
     
     // Check if peer connection already exists
@@ -348,6 +362,33 @@ function checkPeerExists(rid) {
     return val;
 }
 
+// Check if User is assigned to someone else
+function checkUserAssignment(uListElem) {
+    let val = false;
+    let aid = uListElem.getAttribute('data-meta-assigned');
+    let ustat = uListElem.getAttribute('data-meta-status');
+
+    if (aid && aid != advStreams.myUserInfo.id && ustat != 'Disponible') {
+        let ename = '';
+        let uname = uListElem.querySelector('.mdc-list-item__primary-text').textContent;
+
+        document.querySelectorAll('#active-rooms > li').forEach((elm) => {
+            if (elm.getAttribute('data-meta-uid') == aid) {
+                ename = elm.querySelector('.mdc-list-item__primary-text').textContent;
+            }
+        });
+
+        document.getElementById('d-assigned-empname').textContent = ename;
+        document.getElementById('d-assigned-usrname').textContent = uname;
+        document.getElementById('d-assigned-status').textContent = ustat;
+        setUserStatusColor(document.getElementById('d-assigned-status'), ustat);
+
+        val = true;
+    }
+
+    return val;
+}
+
 // Create RTC User List Element
 function createRTCListUserContainer() {
     let userContainer = document.createElement('li');
@@ -415,12 +456,80 @@ function createRTCMessagesUserContainer(room_id, user, uType) {
     return userContainer;
 }
 
+// End RTC User Session
+function endRTCSession(showUsrSatSurv = false) {
+    let usrElem = document.getElementById('active-rooms').querySelector('.mdc-list-item--selected');
+    let u_id = usrElem.getAttribute('data-meta-rid');
+    let u_type = usrElem.getAttribute('data-meta-utype');
+
+    if (!peer.destroyed && peer.connected) {
+        peer.send(JSON.stringify({
+            msgType: 'endRTC',
+            showUSS: showUsrSatSurv
+        }));
+        peer.destroy();
+    }
+
+    socket.emit('endRTC', JSON.stringify({ 'u_id' : u_id, 'u_type' : u_type }));
+    showConversationUI(false, usrElem);
+}
+
+// Filter RTC User List
+var lastRTCFilterVal = 'all';
+function filterRTCUserList(value) {
+    switch (value) {
+        case 'all':
+            document.querySelectorAll('#active-rooms > li').forEach((elm) => {
+                elm.classList.remove('container--hidden');
+            });
+            break;
+        case 'anon':
+        case 'emp':
+        case 'reg':
+            document.querySelectorAll('#active-rooms > li').forEach((elm) => {
+                if (elm.getAttribute('data-meta-utype') != value) {
+                    elm.classList.add('container--hidden');
+                } else {
+                    elm.classList.remove('container--hidden');
+                }
+            });
+            break;
+        case 'mine':
+            document.querySelectorAll('#active-rooms > li').forEach((elm) => {
+                if (elm.getAttribute('data-meta-assigned') == advStreams.myUserInfo.id) {
+                    elm.classList.remove('container--hidden');
+                } else {
+                    elm.classList.add('container--hidden');
+                }
+            });
+            break;
+    }
+    lastRTCFilterVal = value;
+}
+
 // Hide RTC User Message Container Loader
 function hideRTCMessagesLoader(uid) {
     let msgContainer = document.getElementById('m_' + uid);
     let loaderElem = msgContainer.querySelector('.s-loader');
     
     loaderElem.classList.add('container--hidden');
+}
+
+// More Options Menu Selected Option
+function moreOptionsSelection(index) {
+    switch (index) {
+        // Transfer
+        case 0:
+            break;
+        // End Chat with User Satisfaction Survey
+        case 1:
+            endRTCSession(true);
+            break;
+        // End Chat without Survey
+        case 2:
+            endRTCSession();
+            break;
+    }
 }
 
 // Set RTC User List Container Data
@@ -431,7 +540,7 @@ function setRTCUserContainer(container, room_id, user, uType) {
     let userPhoto = (userInfo.photoURL)? decodeURIComponent(userInfo.photoURL) : '/static/images/manifest/user_f.svg';
 
     container.id = (uType == 'anon')? 'l_' + room_id : 'l_' + user.id;
-    container.setAttribute('data-meta-assigned', userInfo.assignedTo);
+    container.setAttribute('data-meta-assigned', (userInfo.assignedTo)? userInfo.assignedTo : '');
     container.setAttribute('data-meta-ip', userInfo.ip);
     container.setAttribute('data-meta-rid', room_id);
     container.setAttribute('data-meta-roles', userInfo.roles);
@@ -443,8 +552,8 @@ function setRTCUserContainer(container, room_id, user, uType) {
     container.querySelector('.mdc-list-item__primary-text').textContent = userName;
 }
 
-// Set User Status Icon Element Color
-function setUserStatusIconColor(elm, usrStatus) {
+// Set User Status Element Color
+function setUserStatusColor(elm, usrStatus) {
     elm.classList.remove('s-font-color-chat-busy', 's-font-color-chat-offline');
     elm.classList.remove('s-font-color-chat-online', 's-font-color-chat-transferred');
     switch (usrStatus) {
@@ -549,6 +658,10 @@ function showConversationUI(showOrHide, usrElem) {
             chatNoConver.classList.remove('container--hidden');
             sideMenuEl.classList.remove('container--hidden');
         }
+
+        if (elemFocus) {
+            usrElem.remove();
+        }
     }
 }
 
@@ -593,6 +706,7 @@ function showRTCUserList(userlist) {
     // Show No Active Room if there are no users
     if (document.querySelectorAll('#active-rooms > li').length > 0) {
         document.querySelector('#no-active-room').classList.add('container--hidden');
+        filterRTCUserList(lastRTCFilterVal);
     } else {
         document.querySelector('#no-active-room').classList.remove('container--hidden');
         showConversationUI(false, '');
@@ -625,7 +739,7 @@ function updateRTCUserStatus(id, usrStatus) {
 
     let statusText = (uType == 'emp')? '[' + uRoles + '] ' + usrStatus + ' - ' + uActTime : usrStatus + ' - ' + uActTime;
     elem.querySelector('.mdc-list-item__secondary-text').textContent = statusText;
-    setUserStatusIconColor(elem.querySelector('.mdc-list-item__graphic-status'), usrStatus);
+    setUserStatusColor(elem.querySelector('.mdc-list-item__graphic-status'), usrStatus);
     
 
     if (elemFocus) {
@@ -653,7 +767,7 @@ function updateRTCUserStatus(id, usrStatus) {
                 ftTextInputElem.disabled = false;
         }
         tbStatTextElem.textContent = statusText;
-        setUserStatusIconColor(tbStatIconElem, usrStatus);
+        setUserStatusColor(tbStatIconElem, usrStatus);
         updateRTCUserActionButtons(usrStatus);
 
         // If user was Offline and now Online, automatically reconnect
