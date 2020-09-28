@@ -13,8 +13,9 @@ var rtcConnections = [];
 // Initiator Room ID
 const iRID = { 'id' : '' };
 
-// MDC Dialog - Assigned
+// MDC Dialog - Assigned, Transfer
 var mdcAssignedDialogEl = null;
+var mdcTransferDialogEl = null;
 
 function initializeRTC () {
     console.log('Initializing SocketIO/SimplePeer');
@@ -63,17 +64,17 @@ function initializeRTC () {
 
 // SimplePeer User Connection Class
 class rtcPeerConnection {
-    #isInitialSignal;
-    #isInitiator;
-    #rtcSimplePeer;
-    #uListElem;
+    isInitialSignal;
+    isInitiator;
+    rtcSimplePeer;
+    uListElem;
 
     constructor(init, uListElem) {
-        this.#isInitiator = init;
-        this.#uListElem = uListElem;
-        this.#isInitialSignal = true;
+        this.isInitiator = init;
+        this.uListElem = uListElem;
+        this.isInitialSignal = true;
 
-        this.#rtcSimplePeer = new SimplePeer({
+        this.rtcSimplePeer = new SimplePeer({
             config: {
                 iceServers: [
                     {
@@ -91,50 +92,51 @@ class rtcPeerConnection {
                     }
                 ]
             },
-            initiator: this.#isInitiator,
+            initiator: this.isInitiator,
             trickle: false
         });
 
-        this.#rtcSimplePeer.on('signal', (data) => {
+        this.rtcSimplePeer.on('signal', (data) => {
             console.log(data);
-            if (this.#isInitiator) {
+            if (this.isInitiator) {
                 console.log('Initiator Signaling Started');
-                socket.emit('sendOfferToUser', JSON.stringify({ 'r_id' : this.#uListElem.getAttribute('data-meta-rid'), 'data' : data}));
+                socket.emit('sendOfferToUser', JSON.stringify({ 'r_id' : this.uListElem.getAttribute('data-meta-rid'), 'data' : data}));
             } else {
                 console.log('Receiver Signaling Started');
                 socket.emit('sendAnswerToUser', JSON.stringify({ 'r_id' : iRID.id, 'data' : data}));
             }
             
-            if (this.#isInitialSignal) {
-                this.#isInitialSignal = false;
+            if (this.isInitialSignal) {
+                this.isInitialSignal = false;
                 swcms.showUserRTCConSnackbar('con');
             }
         });
     
-        this.#rtcSimplePeer.on('error', (err) => {
+        this.rtcSimplePeer.on('error', (err) => {
             console.log('error', err);
             let newRTCConnections = [];
             
             // Remove Peer from Array of Connections
             rtcConnections.forEach((con) => {
-                if (con.rid != this.#uListElem.getAttribute('data-meta-rid')) {
+                if (con.rid != this.uListElem.getAttribute('data-meta-rid')) {
                     newRTCConnections.push(con);
                 }
             });
     
             rtcConnections = newRTCConnections;
+            swcms.showUserRTCConSnackbar('err', err);
         });
         
-        this.#rtcSimplePeer.on('connect', () => {
+        this.rtcSimplePeer.on('connect', () => {
             console.log('Initiator Connected');
             let userData = swcms.advStreams.myUserInfo;
 
-            if (this.#uListElem.getAttribute('data-meta-uid') == 2) {
+            if (this.uListElem.getAttribute('data-meta-uid') == 2) {
                 userData.name = 'Agente Contact-Os';
                 userData.photoURL = '/static/images/manifest/agent_f.svg';
             }
 
-            this.#rtcSimplePeer.send(JSON.stringify({
+            this.rtcSimplePeer.send(JSON.stringify({
                 msgType: 'welcome',
                 msgUserInfo: userData
             }));
@@ -142,13 +144,13 @@ class rtcPeerConnection {
             enableRTCUserList();
         });
         
-        this.#rtcSimplePeer.on('close', () => {
+        this.rtcSimplePeer.on('close', () => {
             console.log('Peer Disconnected');
             let newRTCConnections = [];
             
             // Remove Peer from Array of Connections
             rtcConnections.forEach((con) => {
-                if (con.rid != this.#uListElem.getAttribute('data-meta-rid')) {
+                if (con.rid != this.uListElem.getAttribute('data-meta-rid')) {
                     newRTCConnections.push(con);
                 }
             });
@@ -158,17 +160,17 @@ class rtcPeerConnection {
             enableRTCUserList();
         });
         
-        this.#rtcSimplePeer.on('data', (data) => {
+        this.rtcSimplePeer.on('data', (data) => {
             console.log('Initiator Data Received: ' + data);
-            let utype = this.#uListElem.getAttribute('data-meta-utype');
-            let uid = (utype != 'anon')? this.#uListElem.getAttribute('data-meta-uid') : this.#uListElem.getAttribute('data-meta-rid');
-            let upic = this.#uListElem.querySelector('.mdc-list-item__graphic').src;
+            let utype = this.uListElem.getAttribute('data-meta-utype');
+            let uid = (utype != 'anon')? this.uListElem.getAttribute('data-meta-uid') : this.uListElem.getAttribute('data-meta-rid');
+            let upic = this.uListElem.querySelector('.mdc-list-item__graphic').src;
             let jMsg = JSON.parse(data);
             switch (jMsg.msgType) {
                 case 'audio':
                 case 'audiovideo':
-                    if (!this.#uListElem.classList.contains('mdc-list-item--selected')) {
-                        this.#uListElem.click();
+                    if (!this.uListElem.classList.contains('mdc-list-item--selected')) {
+                        this.uListElem.click();
                     }
                     if (jMsg.msg == 'accepted') {
                         swcms.managePeerStream('send');
@@ -179,22 +181,23 @@ class rtcPeerConnection {
                     break;
                 
                 case 'endRTC':
-                    this.#rtcSimplePeer.destroy();
+                    this.rtcSimplePeer.destroy();
+                    showConversationUI(false, this.uListElem);
                     break;
         
                 case 'msg':
                     let rtcUserList = document.querySelector('#active-rooms');
                     swcms.appendChatMessage(jMsg.msg, jMsg.msgDateTime, 'others', jMsg.msgUserName, uid, upic);
-                    if (!this.#uListElem.classList.contains('mdc-list-item--selected')) {
-                        this.#uListElem.querySelector('.mdc-list-item__meta').classList.remove('container--hidden');
+                    if (!this.uListElem.classList.contains('mdc-list-item--selected')) {
+                        this.uListElem.querySelector('.mdc-list-item__meta').classList.remove('container--hidden');
                     }
-                    rtcUserList.insertBefore(this.#uListElem, rtcUserList.firstChild);
+                    rtcUserList.insertBefore(this.uListElem, rtcUserList.firstChild);
                     break;
         
                 case 'welcome':
                     hideRTCMessagesLoader(uid);
                     rtcConnections.forEach((con) => {
-                        if (con.rid == this.#uListElem.getAttribute('data-meta-rid')) {
+                        if (con.rid == this.uListElem.getAttribute('data-meta-rid')) {
                             con.userInfo = jMsg.msgUserInfo;
                         }
                     });
@@ -203,21 +206,21 @@ class rtcPeerConnection {
                     socket.emit('updateUsersStatus', JSON.stringify({
                         'e_id' : advStreams.myUserInfo.id,
                         's_type' : 'busy',
-                        'u_id' : this.#uListElem.getAttribute('data-meta-rid'),
-                        'u_type' : this.#uListElem.getAttribute('data-meta-utype') 
+                        'u_id' : this.uListElem.getAttribute('data-meta-rid'),
+                        'u_type' : this.uListElem.getAttribute('data-meta-utype') 
                     }));
                     break;
             }
         });
         
-        this.#rtcSimplePeer.on('stream', (stream) => {
+        this.rtcSimplePeer.on('stream', (stream) => {
             console.log('Setting Remote Stream');
             swcms.setAVStream(stream);
         });
     }
 
     get peerConnection() {
-        return this.#rtcSimplePeer;
+        return this.rtcSimplePeer;
     }
 }
 
@@ -487,8 +490,9 @@ function enableRTCUserList(enable = true){
 // End RTC User Session
 function endRTCSession(showUsrSatSurv = false) {
     let usrElem = document.getElementById('active-rooms').querySelector('.mdc-list-item--selected');
-    let u_id = usrElem.getAttribute('data-meta-rid');
+    let r_id = usrElem.getAttribute('data-meta-rid');
     let u_type = usrElem.getAttribute('data-meta-utype');
+    let uid = (u_type == 'anon')? r_id : usrElem.getAttribute('data-meta-uid');
 
     if (!peer.destroyed && peer.connected) {
         peer.send(JSON.stringify({
@@ -498,8 +502,13 @@ function endRTCSession(showUsrSatSurv = false) {
         peer.destroy();
     }
 
-    socket.emit('endRTC', JSON.stringify({ 'u_id' : u_id, 'u_type' : u_type }));
+    socket.emit('endRTC', JSON.stringify({ 'u_id' : r_id, 'u_type' : u_type }));
     showConversationUI(false, usrElem);
+    // If the user is not an Employee, remove the user from the list
+    if (u_type == 'anon' || u_type == 'reg'){
+        document.getElementById('m_' + uid).remove();
+        usrElem.remove();
+    }
 }
 
 // Filter RTC User List
@@ -608,12 +617,17 @@ function showContactsList() {
     let chatNoConver = document.querySelector('.container-chat--no-conversation');
     let chatTopBarEl = document.querySelector('.container-chat--topbar');
     let sideMenuEl = document.querySelector('.container-chat--sidemenu');
+    let elemFocus = document.querySelector('.container-chat--sidemenu-rooms').querySelector('.mdc-list-item--selected');
 
     chatBodyEl.classList.add('container--hidden');
     chatFooterEl.classList.add('container--hidden');
     chatNoConver.classList.add('container--hidden');
     chatTopBarEl.classList.add('container--hidden');
     sideMenuEl.classList.remove('container--hidden');
+
+    if (elemFocus) {
+        elemFocus.classList.remove('mdc-list-item--selected');
+    }
 }
 
 // Show Conversation UI
@@ -643,7 +657,7 @@ function showConversationUI(showOrHide, usrElem) {
         if (currentElemFocus) {
             currentElemFocus.classList.remove('mdc-list-item--selected');
         }
-        usrElem.classList.add('mdc-list-item--selected');
+        usrElem.classList.add('mdc-list-item--selected', 'container-chat--sidemenu-assigned');
         usrElem.querySelector('.mdc-list-item__meta').classList.add('container--hidden');
         
         // Mobile UI - Hide SideMenu
@@ -659,6 +673,8 @@ function showConversationUI(showOrHide, usrElem) {
         }
         chatMessagesEl.classList.remove('container-chat--body-messages-hidden');
         chatMessagesEl.classList.add('container-chat--body-messages-active');
+        // Scroll the conversation all the way to the bottom
+        // chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
         
         // Update User's Topbar info
         let usrName = usrElem.querySelector('.mdc-list-item__primary-text').textContent;
@@ -677,6 +693,17 @@ function showConversationUI(showOrHide, usrElem) {
         chatBodyEl.classList.add('container--hidden');
         chatFooterEl.classList.add('container--hidden');
         chatTopBarEl.classList.add('container--hidden');
+
+        let activeMsgEl = document.querySelector('.container-chat--body-messages-active');
+        if (activeMsgEl) {
+            activeMsgEl.classList.remove('container-chat--body-messages-active');
+            activeMsgEl.classList.add('container-chat--body-messages-hidden');
+        }
+
+        if (elemFocus) {
+            usrElem.classList.remove('container-chat--sidemenu-assigned');
+            usrElem.classList.remove('mdc-list-item--selected');
+        }
         
         // Mobile UI - Show SideMenu
         if (window.matchMedia("(max-width: 37.49em)").matches) {
@@ -685,10 +712,6 @@ function showConversationUI(showOrHide, usrElem) {
         } else {
             chatNoConver.classList.remove('container--hidden');
             sideMenuEl.classList.remove('container--hidden');
-        }
-
-        if (elemFocus) {
-            usrElem.remove();
         }
     }
 }

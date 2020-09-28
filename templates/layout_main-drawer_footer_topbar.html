@@ -9,7 +9,7 @@
     </div>
     <div class="mdc-drawer__content">
         <nav class="mdc-list">
-            <a class="mdc-list-item" href="/" aria-current="page">
+            <a class="mdc-list-item" href="/" aria-current="page" tabindex="0">
                 <span class="mdc-list-item__ripple"></span>
                 <i class="material-icons mdc-list-item__graphic" aria-hidden="true">home</i>
                 <span class="mdc-list-item__text">Bienvenido</span>
@@ -28,6 +28,12 @@
                 <span class="mdc-list-item__text">Chat</span>
             </a>
                 {% endif %}
+            {% else %}
+            <a class="mdc-list-item" href="/chat/" aria-current="page">
+                <span class="mdc-list-item__ripple"></span>
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">chat</i>
+                <span class="mdc-list-item__text">Chat</span>
+            </a>
             {% endif %}
             <a class="mdc-list-item" href="https://drive.google.com/drive/folders/18LWswNRXNYC-VkIvE86GHSoXwrzLk64B" target="_blank">
                 <span class="mdc-list-item__ripple"></span>

@@ -377,6 +377,10 @@ body {
         grid-row: span 3;
         height: 100%;
 
+        .container-chat--sidemenu-assigned {
+            border-left: 0.25rem solid stv.$swing-theme-primary;
+        }
+
         .container-chat--sidemenu-header {
             padding: 1rem 0.5rem 2rem 0.5rem;
         }
@@ -393,6 +397,7 @@ body {
                 }
 
                 .mdc-list-item__graphic {
+                    margin-left: 0.25rem;
                     margin-right: 1rem;
                 }
 

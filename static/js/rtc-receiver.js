@@ -73,7 +73,10 @@ function establishRTC() {
         trickle: false
     });
 
-    peer.on('error', err => console.log('error', err));
+    peer.on('error', err => {
+        console.log('error', err);
+        swcms.showUserRTCConSnackbar('err', err);
+    });
     
     peer.on('signal', (data) => {
         console.log('Receiver Signaling Started');

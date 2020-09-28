@@ -676,13 +676,18 @@ window.initSnackbar = initSnackbar;
 
 
 // Show Snackbars of User Connection and Disconnection
-export function showUserRTCConSnackbar(state) {
+export function showUserRTCConSnackbar(state, error = '') {
     switch (state) {
         case 'con':
             initSnackbar(snackbar, conPeerSBDataObj);
             break;
         case 'dcon':
             initSnackbar(snackbar, disconPeerSBDataObj);
+            break;
+        case 'err':
+            let errSB = failedGetUserMediaSBDataObj;
+            errSB.message = error;
+            initSnackbar(snackbar, errSB);
             break;
     }
 }
@@ -756,6 +761,11 @@ if (assignedDialogEl) {
 var endRTCDialogEl = document.querySelector('#endrtc-dialog');
 if (endRTCDialogEl) {
     mdcEndRTCDialogEl = new MDCDialog(endRTCDialogEl);
+}
+
+var transferDialogEl = document.querySelector('#transfer-dialog');
+if (transferDialogEl) {
+    mdcTransferDialogEl = new MDCDialog(transferDialogEl);
 }
 
 
