@@ -13,6 +13,7 @@ import { MDCLineRipple } from '@material/line-ripple';
 import { MDCList } from "@material/list";
 import { MDCMenu, Corner } from '@material/menu';
 import { MDCNotchedOutline } from '@material/notched-outline';
+import { MDCRadio } from '@material/radio';
 import { MDCRipple } from '@material/ripple';
 import { MDCSelect } from '@material/select';
 import { MDCSnackbar } from '@material/snackbar';
@@ -238,8 +239,8 @@ export function sendChatMessage() {
 window.sendChatMessage = sendChatMessage;
 /* Enable the Enter Key for the Chat Text Area */
 if (document.querySelector('#chat-textarea-input')) {
-    document.querySelector('#chat-textarea-input').addEventListener('keyup', (evt) => {
-        if (evt.keyCode === 13) {
+    document.querySelector('#chat-textarea-input').addEventListener('keydown', (evt) => {
+        if (evt.key === 'Enter') {
             evt.preventDefault();
             document.querySelector('#chat-textarea-button').click();
         }
@@ -906,6 +907,12 @@ if (shareMenuButton != null) {
 // Material Notched Ouline
 var mdcNotchedOutlines = [].map.call(document.querySelectorAll('.mdc-notched-outline'), function (el) {
     return new MDCNotchedOutline(el);
+});
+
+
+// Material Radio Buttons
+var mdcRadioButtons = [].map.call(document.querySelectorAll('.mdc-radio'), function (el) {
+    return new MDCRadio(el);
 });
 
 

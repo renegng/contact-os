@@ -188,7 +188,7 @@
                                     </button>
                                     <div id="moreOptionsMenu" class="mdc-menu mdc-menu-surface" tabindex="-1">
                                         <ul class="mdc-list mdc-menu__items" role="menu" aria-hidden="true">
-                                            <li class="mdc-list-item" role="menuitem" tabindex="0">
+                                            <li id="transferUserOption" class="mdc-list-item" role="menuitem" tabindex="0">
                                                 <span class="mdc-list-item__ripple"></span>
                                                 <i class="s-font-color-secondary material-icons mdc-list-item__graphic" aria-hidden="true">
                                                     send
@@ -272,11 +272,38 @@
             <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true" aria-labelledby="d-transfer-title" aria-describedby="d-transfer-content">
                 <h2 class="mdc-dialog__title" id="d-transfer-title">Transferir usuari@ a...</h2>
                 <div class="mdc-dialog__content" id="d-transfer-content">
+                    <label class="mdc-text-field mdc-text-field--filled">
+                        <span class="mdc-text-field__ripple"></span>
+                        <input id="d-transfer-ufilter-input" class="mdc-text-field__input" type="text" 
+                                aria-labelledby="d-transfer-ufilter-label" tabindex="-1">
+                        <span class="mdc-floating-label" id="d-transfer-ufilter-label">Filtrar lista</span>
+                        <i class="material-icons mdc-text-field__icon">search</i>
+                        <span class="mdc-line-ripple"></span>
+                    </label>
+                    <ul id="no-transfer-list" class="mdc-list mdc-list--avatar-list mdc-list--two-line">
+                        <li class="mdc-list-item">
+                            <span class="mdc-list-item__ripple"></span>
+                            <span class="mdc-list-item__graphic material-icons"
+                                aria-hidden="true">nights_stay</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">0 contactos.</span>
+                                <span class="mdc-list-item__secondary-text">No hay funcionarios.</span>
+                            </span>
+                        </li>
+                    </ul>
+                    <ul class="mdc-list mdc-list--avatar-list mdc-list--two-line container-dialog--transfer container--hidden"
+                        id="transfer-list" role="radiogroup">
+                    </ul>
                 </div>
                 <div class="mdc-dialog__actions">
-                    <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept" data-mdc-dialog-button-default>
+                    <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="cancel">
                         <div class="mdc-button__ripple"></div>
-                        <span class="mdc-button__label">OK</span>
+                        <span class="mdc-button__label">Cancelar</span>
+                    </button>
+                    <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept"
+                            data-action-type="submit" data-action-fn="transferRTCUser">
+                        <div class="mdc-button__ripple"></div>
+                        <span class="mdc-button__label">Transferir</span>
                     </button>
                 </div>
             </div>

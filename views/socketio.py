@@ -4,7 +4,7 @@ from . import db, removeItemFromList, updateItemFromList
 from flask import current_app as app
 from flask import Blueprint, request, jsonify
 from flask_login import current_user
-from flask_socketio import SocketIO, join_room, leave_room
+from flask_socketio import SocketIO, close_room, join_room, leave_room, rooms
 from models.models import CatalogOperations, CatalogUserRoles, LogUserConnections, RTCOnlineUsers, User
 
 sio = Blueprint('sio', __name__, template_folder='templates', static_folder='static')
@@ -113,10 +113,12 @@ def _disconnect():
                 ulist = new_oul.userlist.get('rtc_online_users', {}).get('anon_users')
                 updateItemFromList(ulist, 'assignedTo', current_user.id, 'userInfo', 'status', new_usr_status, 'userInfo')
                 updateItemFromList(ulist, 'assignedTo', current_user.id, 'userInfo', 'assignedTo', None, 'userInfo')
+                updateItemFromList(ulist, 'assignedTo', current_user.id, 'userInfo', 'activity', int(int(dt_now.strftime('%s%f'))/1000), 'userInfo')
                 
                 ulist = new_oul.userlist.get('rtc_online_users', {}).get('reg_users')
                 updateItemFromList(ulist, 'assignedTo', current_user.id, 'userInfo', 'status', new_usr_status, 'userInfo')
                 updateItemFromList(ulist, 'assignedTo', current_user.id, 'userInfo', 'assignedTo', None, 'userInfo')
+                updateItemFromList(ulist, 'assignedTo', current_user.id, 'userInfo', 'activity', int(int(dt_now.strftime('%s%f'))/1000), 'userInfo')
             else:
                 removeItemFromList(new_oul.userlist.get('rtc_online_users', {}).get('reg_users'), 'id', user.id)
         else:
@@ -175,6 +177,11 @@ def _endrtc(js):
         if usr_type == 'anon':
             ulist = new_oul.userlist.get('rtc_online_users', {}).get('anon_users')
             removeItemFromList(ulist, 'r_id', usr_id)
+        elif usr_type == 'emp':
+            urooms = rooms(usr_id)
+            if len(urooms) <= 0:
+                ulist = new_oul.userlist.get('rtc_online_users', {}).get('emp_users')
+                removeItemFromList(ulist, 'r_id', usr_id)
         elif usr_type == 'reg':
             ulist = new_oul.userlist.get('rtc_online_users', {}).get('reg_users')
             removeItemFromList(ulist, 'r_id', usr_id)
@@ -277,12 +284,15 @@ def _updateUsersStatus(js):
             ulist = new_oul.userlist.get('rtc_online_users', {}).get('anon_users')
             updateItemFromList(ulist, 'r_id', usr_id, None, 'status', new_usr_status, 'userInfo')
             updateItemFromList(ulist, 'r_id', usr_id, None, 'assignedTo', emp_id, 'userInfo')
+            updateItemFromList(ulist, 'r_id', usr_id, None, 'activity', int(int(dt_now.strftime('%s%f'))/1000), 'userInfo')
         elif usr_type == 'emp':
             updateItemFromList(ulist, 'r_id', usr_id, None, 'status', new_emp_status, 'userInfo')
+            updateItemFromList(ulist, 'r_id', usr_id, None, 'activity', int(int(dt_now.strftime('%s%f'))/1000), 'userInfo')
         elif usr_type == 'reg':
             ulist = new_oul.userlist.get('rtc_online_users', {}).get('reg_users')
             updateItemFromList(ulist, 'r_id', usr_id, None, 'status', new_usr_status, 'userInfo')
             updateItemFromList(ulist, 'r_id', usr_id, None, 'assignedTo', emp_id, 'userInfo')
+            updateItemFromList(ulist, 'r_id', usr_id, None, 'activity', int(int(dt_now.strftime('%s%f'))/1000), 'userInfo')
         
         new_userlist = new_oul.userlist
 

@@ -367,6 +367,19 @@ function appendRTCUser(room_id, user, uType) {
     updateRTCUserStatus(uid, user.userInfo.status);
 }
 
+// Add RTC User to User Transfer List
+function appendRTCTransferList(user) {
+    let uid = user.id;
+    let userContainer = document.getElementById('tl_' + uid);
+    
+    // If there is no container, user is a new one
+    if (!userContainer) {
+        userContainer = createRTCListUserContainer('rtcTransferList');
+    }
+    setRTCUserTransferContainer(userContainer, user);
+    setUserStatusColor(userContainer.querySelector('.mdc-list-item__graphic-status'), user.userInfo.status);
+}
+
 // Check if Peer Exists and Assign it to Peer if available
 function checkPeerExists(rid) {
     let val = false;
@@ -410,7 +423,7 @@ function checkUserAssignment(uListElem) {
 }
 
 // Create RTC User List Element
-function createRTCListUserContainer() {
+function createRTCListUserContainer(parentContainer = 'rtcConversationList') {
     let userContainer = document.createElement('li');
     let ripple = document.createElement('span');
     let userPhoto = document.createElement('img');
@@ -419,7 +432,6 @@ function createRTCListUserContainer() {
     let userName = document.createElement('span');
     let userInfo = document.createElement('span');
     let metaContainer = document.createElement('span');
-    let notification = document.createElement('i');
 
     userContainer.classList.add('mdc-list-item');
     ripple.classList.add('mdc-list-item__ripple');
@@ -428,13 +440,43 @@ function createRTCListUserContainer() {
     textContainer.classList.add('mdc-list-item__text');
     userName.classList.add('mdc-list-item__primary-text');
     userInfo.classList.add('mdc-list-item__secondary-text', 'mdc-typography--caption');
-    metaContainer.classList.add('mdc-list-item__meta', 'container--hidden');
-    notification.classList.add('material-icons', 's-font-color-primary');
+    metaContainer.classList.add('mdc-list-item__meta');
 
     userStatus.textContent = 'stop_circle';
-    notification.textContent = 'notification_important';
 
-    metaContainer.appendChild(notification);
+    if (parentContainer == 'rtcConversationList') {
+        let notification = document.createElement('i');
+
+        notification.classList.add('material-icons', 's-font-color-primary');
+        notification.textContent = 'notification_important';
+
+        metaContainer.classList.add('container--hidden');
+        metaContainer.appendChild(notification);
+    } else if (parentContainer == 'rtcTransferList') {
+        let radioInput = document.createElement('input');
+        let radioBack = document.createElement('span');
+        let radioOuter = document.createElement('span');
+        let radioInner = document.createElement('span');
+        let radioRipple = document.createElement('span');
+
+        radioInput.classList.add('mdc-radio__native-control');
+        radioBack.classList.add('mdc-radio__background');
+        radioOuter.classList.add('mdc-radio__outer-circle');
+        radioInner.classList.add('mdc-radio__inner-circle');
+        radioRipple.classList.add('mdc-radio__ripple');
+
+        radioInput.setAttribute('type', 'radio');
+        radioInput.setAttribute('name', 'd-transfer-radios');
+        userContainer.setAttribute('role', 'radio');
+        userContainer.setAttribute('aria-checked', 'false');
+
+        radioBack.appendChild(radioOuter);
+        radioBack.appendChild(radioInner);
+        metaContainer.appendChild(radioInput);
+        metaContainer.appendChild(radioBack);
+        metaContainer.appendChild(radioRipple);
+    }
+
     textContainer.appendChild(userName);
     textContainer.appendChild(userInfo);
     userContainer.appendChild(ripple);
@@ -443,10 +485,14 @@ function createRTCListUserContainer() {
     userContainer.appendChild(textContainer);
     userContainer.appendChild(metaContainer);
 
-    userContainer.addEventListener('click', establishRTC);
-
-    document.querySelector('#active-rooms').appendChild(userContainer);
-
+    if (parentContainer == 'rtcConversationList') {
+        userContainer.addEventListener('click', establishRTC);
+        document.querySelector('#active-rooms').appendChild(userContainer);
+    } else if (parentContainer == 'rtcTransferList') {
+        userContainer.setAttribute('tabindex', '0');
+        document.querySelector('#transfer-list').appendChild(userContainer);
+    }
+    
     return userContainer;
 }
 
@@ -509,6 +555,7 @@ function endRTCSession(showUsrSatSurv = false) {
         document.getElementById('m_' + uid).remove();
         usrElem.remove();
     }
+    enableRTCUserList();
 }
 
 // Filter RTC User List
@@ -544,6 +591,35 @@ function filterRTCUserList(value) {
     lastRTCFilterVal = value;
 }
 
+// Filter RTC User Transfer List
+function filterRTCUserTransferList(txt) {
+    document.querySelectorAll('#transfer-list > li').forEach((elm) => {
+        let userName = elm.querySelector('.mdc-list-item__primary-text').textContent;
+        let userRole = elm.querySelector('.mdc-list-item__secondary-text').textContent;
+
+        // Removes special characters, start/end spaces and uppercases from all names to compare
+        let userNameNorm = userName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+        let userRoleNorm = userRole.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+        let userTextNorm = txt.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+
+        if (userNameNorm.includes(userTextNorm) || userRoleNorm.includes(userTextNorm)) {
+            elm.classList.remove('container--hidden');
+        } else {
+            elm.classList.add('container--hidden');
+        }
+    });
+}
+if (document.querySelector('#d-transfer-ufilter-input')) {
+    document.querySelector('#d-transfer-ufilter-input').addEventListener('keydown', (evt) => {
+        if (evt.key === 'Enter') {
+            evt.preventDefault();
+        }
+    });
+    document.querySelector('#d-transfer-ufilter-input').addEventListener('keyup', () => {
+        filterRTCUserTransferList(document.querySelector('#d-transfer-ufilter-input').value);
+    });
+}
+
 // Hide RTC User Message Container Loader
 function hideRTCMessagesLoader(uid) {
     let msgContainer = document.getElementById('m_' + uid);
@@ -557,6 +633,7 @@ function moreOptionsSelection(index) {
     switch (index) {
         // Transfer
         case 0:
+            mdcTransferDialogEl.open();
             break;
         // End Chat with User Satisfaction Survey
         case 1:
@@ -573,7 +650,7 @@ function moreOptionsSelection(index) {
 function setRTCUserContainer(container, room_id, user, uType) {
     let userInfo = user.userInfo;
     let activityTime = returnFormatDate(new Date(userInfo.activity - (new Date().getTimezoneOffset()*60000)));
-    let userName = (uType != 'anon')? userInfo.name : userInfo.name + ' - ' + userInfo.ip;
+    let userName = (uType != 'anon')? userInfo.name : userInfo.name + ((userInfo.ip)? ' - ' + userInfo.ip : '');
     let userPhoto = (userInfo.photoURL)? decodeURIComponent(userInfo.photoURL) : '/static/images/manifest/user_f.svg';
 
     container.id = (uType == 'anon')? 'l_' + room_id : 'l_' + user.id;
@@ -587,6 +664,19 @@ function setRTCUserContainer(container, room_id, user, uType) {
     container.setAttribute('data-meta-utype', uType);
     container.querySelector('.mdc-list-item__graphic').src = userPhoto;
     container.querySelector('.mdc-list-item__primary-text').textContent = userName;
+}
+
+// Set RTC User Transfer List Container Data
+function setRTCUserTransferContainer(container, user) {
+    let userInfo = user.userInfo;
+    let userPhoto = (userInfo.photoURL)? decodeURIComponent(userInfo.photoURL) : '/static/images/manifest/user_f.svg';
+
+    container.id = 'tl_' + user.id;
+    container.setAttribute('data-meta-uid', user.id);
+    container.querySelector('.mdc-list-item__graphic').src = userPhoto;
+    container.querySelector('.mdc-radio__native-control').value = user.id
+    container.querySelector('.mdc-list-item__primary-text').textContent = userInfo.name;
+    container.querySelector('.mdc-list-item__secondary-text').textContent = userInfo.roles;
 }
 
 // Set User Status Element Color
@@ -674,15 +764,21 @@ function showConversationUI(showOrHide, usrElem) {
         chatMessagesEl.classList.remove('container-chat--body-messages-hidden');
         chatMessagesEl.classList.add('container-chat--body-messages-active');
         // Scroll the conversation all the way to the bottom
-        // chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+        chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
         
         // Update User's Topbar info
         let usrName = usrElem.querySelector('.mdc-list-item__primary-text').textContent;
         let usrPhoto = usrElem.querySelector('.mdc-list-item__graphic').src;
         let usrStatus = usrElem.getAttribute('data-meta-status');
+        let transferOption = document.querySelector('#transferUserOption');
         document.querySelector('#chat-pic').src = usrPhoto;
         document.querySelector('.container-chat--topbar-info-data-name').textContent = usrName;
         updateRTCUserStatus(uid, usrStatus);
+        if (uType == 'emp' && transferOption) {
+            transferOption.classList.add('mdc-list-item--disabled');
+        } else {
+            transferOption.classList.remove('mdc-list-item--disabled');
+        }
 
         // Update User's Call UI
         document.querySelector('#callerid-pic').src = usrPhoto;
@@ -719,6 +815,7 @@ function showConversationUI(showOrHide, usrElem) {
 // Show RTC User List
 function showRTCUserList(userlist) {
     let rtcULID = [];
+    let rtcUTID = [];
     // Iterate through Anonymous users
     userlist.rtc_online_users.anon_users.forEach((user) => {
         appendRTCUser(user.r_id, user, 'anon');
@@ -728,7 +825,9 @@ function showRTCUserList(userlist) {
     userlist.rtc_online_users.emp_users.forEach((user) => {
         if (user.id != advStreams.myUserInfo.id) {
             appendRTCUser(user.r_id, user, 'emp');
+            appendRTCTransferList(user);
             rtcULID.push('l_' + user.id);
+            rtcUTID.push('tl_' + user.id);
         }
     });
     // Iterate through Registered users
@@ -737,6 +836,11 @@ function showRTCUserList(userlist) {
         rtcULID.push('l_' + user.id);
     });
     // Remove users not Online unless focused
+    document.querySelectorAll('#transfer-list > li').forEach((elm) => {
+        if (!rtcUTID.includes(elm.id)) {
+            elm.remove();
+        }
+    });
     document.querySelectorAll('#active-rooms > li').forEach((elm) => {
         if (!rtcULID.includes(elm.id)) {
             // Get User Type and ID
@@ -762,6 +866,21 @@ function showRTCUserList(userlist) {
         document.querySelector('#no-active-room').classList.remove('container--hidden');
         showConversationUI(false, '');
     }
+
+    if (document.querySelectorAll('#transfer-list > li').length > 0) {
+        document.querySelector('#transfer-list').classList.remove('container--hidden');
+        document.querySelector('#no-transfer-list').classList.add('container--hidden');
+    } else {
+        document.querySelector('#transfer-list').classList.add('container--hidden');
+        document.querySelector('#no-transfer-list').classList.remove('container--hidden');
+    }
+}
+
+// Transfer RTC User
+function transferRTCUser() {
+    console.log('Transfering user...');
+    let userRadio = document.querySelector('input[name="d-transfer-radios"]:checked');
+    console.log('User Radio Value: ' + userRadio.value);
 }
 
 // Update RTC User Action Buttons elements

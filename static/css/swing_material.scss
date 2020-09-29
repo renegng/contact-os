@@ -64,6 +64,8 @@
 @use "@material/menu-surface";
 @use "@material/menu-surface/mdc-menu-surface";
 @use "@material/notched-outline";
+@use "@material/radio";
+@use "@material/radio/mdc-radio";
 @use "@material/ripple";
 @use "@material/rtl";
 @use "@material/rtl/mixins";
@@ -103,6 +105,7 @@
 @include menu.core-styles;
 @include menu-surface.core-styles;
 @include notched-outline.core-styles;
+@include radio.core-styles;
 @include ripple.core-styles;
 @include select.core-styles;
 @include snackbar.core-styles;
@@ -159,11 +162,6 @@
 .mdc-dialog {
     justify-content: center;
     position: absolute;
-    z-index: 1;
-
-    // .mdc-dialog__surface {
-    //     max-width: 100%;
-    // }
 }
 
 /* Drawer */
