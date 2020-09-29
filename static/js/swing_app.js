@@ -256,8 +256,7 @@ export function sendPeerChatMessage(type, text, dateTime, userName) {
             msgDateTime: dateTime,
             msgUserName: userName
         }));
-    }
-    if (enableOfflineMsgs) {
+    } else if (enableOfflineMsgs) {
         offlineMsgs.push(JSON.stringify({
             msgType: type,
             msg: text,
@@ -392,6 +391,16 @@ const disconPeerSBDataObj = {
     timeout: 5000,
     actionHandler: () => {
         console.log('User disconnected.');
+    }
+};
+
+// Snackbar Data for Transfering Peers
+const transferPeerSBDataObj = {
+    message: 'Transfiriendo usuario...',
+    actionText: 'OK',
+    timeout: 5000,
+    actionHandler: () => {
+        console.log('Transfering user...');
     }
 };
 
@@ -689,6 +698,9 @@ export function showUserRTCConSnackbar(state, error = '') {
             let errSB = failedGetUserMediaSBDataObj;
             errSB.message = error;
             initSnackbar(snackbar, errSB);
+            break;
+        case 'trn':
+            initSnackbar(snackbar, transferPeerSBDataObj);
             break;
     }
 }

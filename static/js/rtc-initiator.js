@@ -879,8 +879,35 @@ function showRTCUserList(userlist) {
 // Transfer RTC User
 function transferRTCUser() {
     console.log('Transfering user...');
-    let userRadio = document.querySelector('input[name="d-transfer-radios"]:checked');
-    console.log('User Radio Value: ' + userRadio.value);
+    let empUserRadio = document.querySelector('input[name="d-transfer-radios"]:checked');
+    
+    if (empUserRadio) {
+        let userTransfer = document.querySelector('.container-chat--sidemenu-rooms').querySelector('.mdc-list-item--selected');
+        let r_id = userTransfer.getAttribute('data-meta-rid');
+        let u_type = userTransfer.getAttribute('data-meta-utype');
+        let uid = (u_type == 'anon')? r_id : userTransfer.getAttribute('data-meta-uid');
+        let msgEl = document.getElementById('m_' + uid);
+        let loadEl = msgEl.querySelector('.s-loader');
+
+        if (!peer.destroyed && peer.connected) {
+            socket.emit('updateUsersStatus', JSON.stringify({
+                'e_id' : advStreams.myUserInfo.id,
+                's_type' : 'transferred',
+                'u_id' : r_id,
+                'u_type' : u_type,
+                'e_t_id': empUserRadio.value
+            }));
+            peer.destroy();
+        }
+
+        document.querySelector('#d-transfer-ufilter-input').value = '';
+        showConversationUI(false, userTransfer);
+        empUserRadio.checked = false;
+        enableRTCUserList();
+        msgEl.textContent = '';
+        msgEl.appendChild(loadEl);
+        swcms.showUserRTCConSnackbar('trn');
+    }
 }
 
 // Update RTC User Action Buttons elements
@@ -893,6 +920,7 @@ function updateRTCUserActionButtons(usrStatus) {
             break;
         case 'Disponible':
         case 'Offline':
+        case 'Transferid@':
             document.querySelector('#audioCall').disabled = true;
             document.querySelector('#videoCall').disabled = true;
             break;

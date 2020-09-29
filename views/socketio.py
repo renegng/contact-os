@@ -270,15 +270,18 @@ def _updateUsersStatus(js):
                     usrsAssigned += 1
             
             new_emp_status = 'Disponible'
-            if usrsAssigned > 1:
+            if usrsAssigned > 0:
                 new_emp_status = 'Atendiendo'
             
-            new_usr_status = 'Transferido'
+            new_usr_status = 'Transferid@'
 
         new_oul = cur_oul
         # Update Our Employee Status
         ulist = new_oul.userlist.get('rtc_online_users', {}).get('emp_users')
         updateItemFromList(ulist, 'id', emp_id, None, 'status', new_emp_status, 'userInfo')
+        # If User is Transferred, Update the Employee ID to the Transfer Employee ID
+        if status == 'transferred':
+            emp_id = j['e_t_id']
         # Depending on the type of User, update it's status
         if usr_type == 'anon':
             ulist = new_oul.userlist.get('rtc_online_users', {}).get('anon_users')
@@ -293,6 +296,8 @@ def _updateUsersStatus(js):
             updateItemFromList(ulist, 'r_id', usr_id, None, 'status', new_usr_status, 'userInfo')
             updateItemFromList(ulist, 'r_id', usr_id, None, 'assignedTo', emp_id, 'userInfo')
             updateItemFromList(ulist, 'r_id', usr_id, None, 'activity', int(int(dt_now.strftime('%s%f'))/1000), 'userInfo')
+        
+        # Update User 
         
         new_userlist = new_oul.userlist
 
