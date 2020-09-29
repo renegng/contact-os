@@ -10,6 +10,8 @@ Swing CMS is being develop with the following libraries:
 - Python pip 10.0.1
 - Flask 1.0.2
 - Apache HTTPD 2.4.18
+- Nginx and Gunicorn 20.0.4
+- SocketIO 2.3.0, Flask-SocketIO 4.3.0 and SimplePeer 9.7
 - libapache2-mod-wsgi-py3
 - NodeJS 10.1.0
 - npm 6.0.1
