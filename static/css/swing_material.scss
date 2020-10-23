@@ -312,7 +312,7 @@
 
 /* Top app bar */
 .mdc-top-app-bar {
-    position: absolute;
+    position: sticky;
 
     .mdc-top-app-bar__title {
         a {

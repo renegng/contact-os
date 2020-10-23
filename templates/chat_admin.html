@@ -2,7 +2,7 @@
 {% block page_description %}Contact-Os Chat, Mensajes de Texto por Chat, Mensajes{% endblock %}
 {% block page_title %}Contact-Os Chat{% endblock %}
 {% block body %}
-<main class="s-main-content s-main-content--extend-tab-color-primary mdc-top-app-bar--fixed-adjust">
+<main class="s-main-content s-main-content--extend-tab-color-primary">
     <div class="container-avcalls container--hidden">
         <div class="container-avcalls--canvas">
             <div class="container-avcalls--callerid s-font-align-center">
@@ -70,9 +70,21 @@
                     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4-desktop mdc-layout-grid__cell--span-3-tablet
                                 mdc-layout-grid__cell--span-4-phone container-chat--sidemenu">
                         <header class="container-chat--sidemenu-header">
-                            <span class="mdc-typography--headline5 s-font-color-primary">
-                                Mensajes
-                            </span>
+                            <img id="header-accountImage" src="{{ url_for('static', filename='images/manifest/agent_f.svg') }}"
+                                 alt="Account Photo" />
+                            <i class="material-icons container-chat--sidemenu-header-info-data-status-icon s-font-color-chat-offline">
+                                stop_circle
+                            </i>
+                            <div class="container-chat--sidemenu-header-info-data">
+                                <span class="container-chat--sidemenu-header-info-data-name mdc-typography--body1 s-font-color-primary">
+                                    - -
+                                </span>
+                                <div class="container-chat--sidemenu-header-info-data-status">
+                                    <span class="container-chat--sidemenu-header-info-data-status-text mdc-typography--caption s-font-color-secondary">
+                                        - -
+                                    </span>
+                                </div>
+                            </div>
                         </header>
                         <div class="mdc-select container-chat--sidemenu-filters" role="filters" data-action-fn="filterRTCUserList">
                             <div class="mdc-select__anchor">
@@ -152,8 +164,7 @@
                                     arrow_back
                                 </button>
                                 <div class="container-chat--topbar-info-pic">
-                                    <img id="chat-pic"
-                                        src="{{ url_for('static', filename='images/manifest/wifi_antenna.svg') }}"
+                                    <img id="chat-pic" src="{{ url_for('static', filename='images/manifest/wifi_antenna.svg') }}"
                                         alt="Logo Contact-Os" />
                                 </div>
                                 <div class="container-chat--topbar-info-data">
@@ -216,12 +227,13 @@
                             </section>
                         </header>
                     </div>
-                    <div
-                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--body container--hidden">
+                        <div class="container-chat--body-message-istyping mdc-typography--caption s-font-color-secondary container--hidden">
+                            ... está escribiendo
+                        </div>
                     </div>
-                    <div
-                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--footer container--hidden">
                         <section class="container-chat--footer-input">
                             <label

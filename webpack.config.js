@@ -5,7 +5,6 @@ var wpBundle = new Object({
     entry: [
         './instance/js/swing_firebase-api-init.js',
         './static/css/swing_app.scss',
-        './static/js/lazysizes.min.js',
         './static/js/swing_firebase.js',
         './static/js/swing_app.js'
     ],

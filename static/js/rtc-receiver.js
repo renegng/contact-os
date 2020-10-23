@@ -56,13 +56,13 @@ function establishRTC() {
             iceServers: [
                 {
                     urls: [
-                        'stun:stun.l.google.com:19302',
-                        'stun:global.stun.twilio.com:3478'
+                        // 'stun:global.stun.twilio.com:3478',
+                        'stun:stun.l.google.com:19302'
                     ]
                 },{
                     urls: [
-                        'turn:relay.backups.cz',
-                        'turn:relay.backups.cz?transport=tcp'
+                        // 'turn:relay.backups.cz?transport=tcp',
+                        'turn:relay.backups.cz'
                     ],
                     credential: 'webrtc',
                     username: 'webrtc'

@@ -20,7 +20,7 @@ def _connect():
         user = current_user if current_user.is_authenticated else User.query.filter_by(uid='CTOS-Anonim@').first()
 
         # Retrieve User IP Address
-        ip = request.remote_addr
+        ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
 
         # Add User to RTC Online Users List
         cur_oul = RTCOnlineUsers.query.with_for_update().order_by(RTCOnlineUsers.id.desc()).first()
@@ -165,6 +165,7 @@ def _endrtc(js):
     app.logger.debug('** SWING_CMS ** - SocketIO EndRTC')
     try:
         j = json.loads(js)
+        emp_id = j['e_id']
         usr_id = j['u_id']
         usr_type = j['u_type']
 
@@ -185,6 +186,24 @@ def _endrtc(js):
         elif usr_type == 'reg':
             ulist = new_oul.userlist.get('rtc_online_users', {}).get('reg_users')
             removeItemFromList(ulist, 'r_id', usr_id)
+        
+        # Set status accordingly
+        usrsAssigned = 0
+        for anonUser in cur_oul.userlist.get('rtc_online_users', {}).get('anon_users'):
+            if anonUser.get('userInfo', {}).get('assignedTo') == emp_id:
+                usrsAssigned += 1
+        
+        for regUser in cur_oul.userlist.get('rtc_online_users', {}).get('reg_users'):
+            if regUser.get('userInfo', {}).get('assignedTo') == emp_id:
+                usrsAssigned += 1
+        
+        new_emp_status = 'Disponible'
+        if usrsAssigned > 0:
+            new_emp_status = 'Atendiendo'
+        
+        # Update Our Employee Status
+        ulist = new_oul.userlist.get('rtc_online_users', {}).get('emp_users')
+        updateItemFromList(ulist, 'id', emp_id, None, 'status', new_emp_status, 'userInfo')
         
         new_userlist = new_oul.userlist
 
@@ -257,16 +276,26 @@ def _updateUsersStatus(js):
         new_usr_status = ''
 
         if status == 'busy':
-            new_emp_status = 'Atendiendo'
-            new_usr_status = 'Atendido'
+            # Conversation is between employee and user
+            if usr_type != 'emp':
+                new_emp_status = 'Atendiendo'
+                new_usr_status = 'Atendido'
+            # If user type is an employee, conversation is between employees. Do not update status
+            elif usr_type == 'emp':
+                for empUser in cur_oul.userlist.get('rtc_online_users', {}).get('emp_users'):
+                    if empUser.get('id') == emp_id:
+                        new_emp_status = empUser.get('userInfo', {}).get('status')
+                    elif empUser.get('r_id') == usr_id:
+                        new_usr_status = empUser.get('userInfo', {}).get('status')
+            
         elif status == 'transferred':
             usrsAssigned = 0
             for anonUser in cur_oul.userlist.get('rtc_online_users', {}).get('anon_users'):
-                if anonUser.get('userInfo', {}).get('assignedTo') == emp_id:
+                if anonUser.get('userInfo', {}).get('assignedTo') == emp_id and anonUser.get('r_id') != usr_id:
                     usrsAssigned += 1
             
             for regUser in cur_oul.userlist.get('rtc_online_users', {}).get('reg_users'):
-                if regUser.get('userInfo', {}).get('assignedTo') == emp_id:
+                if regUser.get('userInfo', {}).get('assignedTo') == emp_id and regUser.get('r_id') != usr_id:
                     usrsAssigned += 1
             
             new_emp_status = 'Disponible'
@@ -296,8 +325,6 @@ def _updateUsersStatus(js):
             updateItemFromList(ulist, 'r_id', usr_id, None, 'status', new_usr_status, 'userInfo')
             updateItemFromList(ulist, 'r_id', usr_id, None, 'assignedTo', emp_id, 'userInfo')
             updateItemFromList(ulist, 'r_id', usr_id, None, 'activity', int(int(dt_now.strftime('%s%f'))/1000), 'userInfo')
-        
-        # Update User 
         
         new_userlist = new_oul.userlist
 

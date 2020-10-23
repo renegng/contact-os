@@ -4,22 +4,22 @@
 
 const filesToPreCache = [
     // Web pages
-    { url: '/', revision: '2020-09-29-1' },
-    { url: '/acercade/', revision: '2020-09-29-1' },
-    { url: '/login/', revision: '2020-09-29-1' },
-    { url: '/politicaprivacidad/', revision: '2020-09-29-1' },
-    { url: '/terminosdelservicio/', revision: '2020-09-29-1' },
+    { url: '/', revision: '2020-10-20-1' },
+    { url: '/acercade/', revision: '2020-10-20-1' },
+    { url: '/login/', revision: '2020-10-20-1' },
+    { url: '/politicaprivacidad/', revision: '2020-10-20-1' },
+    { url: '/terminosdelservicio/', revision: '2020-10-20-1' },
     // Images
-    { url: '/static/images/manifest/agent_f.svg', revision: '2020-09-29-1' },
-    { url: '/static/images/manifest/bid_slogan.png', revision: '2020-09-29-1' },
-    { url: '/static/images/manifest/contact-os.svg', revision: '2020-09-29-1' },
-    { url: '/static/images/manifest/icon-512x512.png', revision: '2020-09-29-1' },
-    { url: '/static/images/manifest/user_f.svg', revision: '2020-09-29-1' },
-    { url: '/static/images/manifest/wifi_antenna.svg', revision: '2020-09-29-1' },
+    { url: '/static/images/manifest/agent_f.svg', revision: '2020-10-20-1' },
+    { url: '/static/images/manifest/bid_slogan.png', revision: '2020-10-20-1' },
+    { url: '/static/images/manifest/contact-os.svg', revision: '2020-10-20-1' },
+    { url: '/static/images/manifest/icon-512x512.png', revision: '2020-10-20-1' },
+    { url: '/static/images/manifest/user_f.svg', revision: '2020-10-20-1' },
+    { url: '/static/images/manifest/wifi_antenna.svg', revision: '2020-10-20-1' },
     // Audio Files
-    { url: '/static/media/audio/call_connected.mp3', revision: '2020-09-29-1' },
-    { url: '/static/media/audio/call_ended.mp3', revision: '2020-09-29-1' },
-    { url: '/static/media/audio/calling_ring.mp3', revision: '2020-09-29-1' }
+    { url: '/static/media/audio/call_connected.mp3', revision: '2020-10-20-1' },
+    { url: '/static/media/audio/call_ended.mp3', revision: '2020-10-20-1' },
+    { url: '/static/media/audio/calling_ring.mp3', revision: '2020-10-20-1' }
 ];
 
 // Importing Google's Workbox library for ServiceWorker implementation
@@ -37,14 +37,35 @@ workbox.core.clientsClaim();
 // Configuring Workbox
 workbox.core.setCacheNameDetails({
     prefix: 'contact-os',
-    suffix: 'v2020-07-09-1',
+    suffix: 'v2020-10-20-1',
     precache: 'pre-cache',
     runtime: 'run-time',
-    googleAnalytics: 'ga',
+    googleAnalytics: 'ga'
 });
 
 // Install Event and Pre-Cache
 workbox.precaching.precacheAndRoute(filesToPreCache);
+// Activate Event and Delete Old Caches
+self.addEventListener('activate', event => {
+    const promiseChain = caches.keys().then((cacheNames) => {
+        // Get all valid caches
+        let validCacheSet = new Set(Object.values(workbox.core.cacheNames));
+        validCacheSet.add('contact-os-webfonts');
+        validCacheSet.add('contact-os-css_js');
+        validCacheSet.add('contact-os-img');
+
+        return Promise.all(
+            cacheNames.filter((cacheName) => {
+                return !validCacheSet.has(cacheName);
+            }).map((cacheName) => {
+                console.log("Deleting Cache: ", cacheName);
+                caches.delete(cacheName);
+            })
+        );
+    });
+    // Keep the service worker alive until all caches are deleted.
+    event.waitUntil(promiseChain);
+});
 
 // Enable Google Analytics Offline
 workbox.googleAnalytics.initialize();

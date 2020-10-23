@@ -79,13 +79,13 @@ class rtcPeerConnection {
                 iceServers: [
                     {
                         urls: [
-                            'stun:stun.l.google.com:19302',
-                            'stun:global.stun.twilio.com:3478'
+                            // 'stun:global.stun.twilio.com:3478',
+                            'stun:stun.l.google.com:19302'
                         ]
                     },{
                         urls: [
-                            'turn:relay.backups.cz',
-                            'turn:relay.backups.cz?transport=tcp'
+                            // 'turn:relay.backups.cz?transport=tcp',
+                            'turn:relay.backups.cz'
                         ],
                         credential: 'webrtc',
                         username: 'webrtc'
@@ -129,7 +129,7 @@ class rtcPeerConnection {
         
         this.rtcSimplePeer.on('connect', () => {
             console.log('Initiator Connected');
-            let userData = swcms.advStreams.myUserInfo;
+            let userData = Object.assign({}, swcms.advStreams.myUserInfo);
 
             if (this.uListElem.getAttribute('data-meta-uid') == 2) {
                 userData.name = 'Agente Contact-Os';
@@ -548,7 +548,7 @@ function endRTCSession(showUsrSatSurv = false) {
         peer.destroy();
     }
 
-    socket.emit('endRTC', JSON.stringify({ 'u_id' : r_id, 'u_type' : u_type }));
+    socket.emit('endRTC', JSON.stringify({ 'e_id' : advStreams.myUserInfo.id, 'u_id' : r_id, 'u_type' : u_type }));
     showConversationUI(false, usrElem);
     // If the user is not an Employee, remove the user from the list
     if (u_type == 'anon' || u_type == 'reg'){
@@ -828,6 +828,17 @@ function showRTCUserList(userlist) {
             appendRTCTransferList(user);
             rtcULID.push('l_' + user.id);
             rtcUTID.push('tl_' + user.id);
+        } else {
+            // Update User Account Info
+            let accImgEl = document.querySelector('#header-accountImage');
+            let accNameEl = document.querySelector('.container-chat--sidemenu-header-info-data-name');
+            let accStatEl = document.querySelector('.container-chat--sidemenu-header-info-data-status-icon');
+            let accStatTxtEl = document.querySelector('.container-chat--sidemenu-header-info-data-status-text');
+
+            accImgEl.src = advStreams.myUserInfo.photoURL;
+            accNameEl.textContent = advStreams.myUserInfo.name;
+            accStatTxtEl.textContent = '[' + user.userInfo.roles + '] ' + user.userInfo.status;
+            setUserStatusColor(accStatEl, user.userInfo.status);
         }
     });
     // Iterate through Registered users
@@ -911,7 +922,7 @@ function transferRTCUser() {
 }
 
 // Update RTC User Action Buttons elements
-function updateRTCUserActionButtons(usrStatus) {
+function updateRTCUserActionButtons(usrStatus, usrType) {
     switch (usrStatus) {
         case 'Atendido':
         case 'Atendiendo':
@@ -919,6 +930,14 @@ function updateRTCUserActionButtons(usrStatus) {
             document.querySelector('#videoCall').disabled = false;
             break;
         case 'Disponible':
+            if (usrType == 'emp') {
+                document.querySelector('#audioCall').disabled = false;
+                document.querySelector('#videoCall').disabled = false;
+            } else {
+                document.querySelector('#audioCall').disabled = true;
+                document.querySelector('#videoCall').disabled = true;
+            }
+            break;
         case 'Offline':
         case 'Transferid@':
             document.querySelector('#audioCall').disabled = true;
@@ -949,8 +968,15 @@ function updateRTCUserStatus(id, usrStatus) {
 
         switch (usrStatus) {
             case 'Disponible':
-                ftTextAreaElem.classList.add('mdc-text-field--disabled');
-                ftTextInputElem.disabled = true;
+                if (uType == 'emp') {
+                    tbStatTextElem.classList.remove('s-font-color-secondary');
+                    tbStatTextElem.classList.add('s-font-color-primary');
+                    ftTextAreaElem.classList.remove('mdc-text-field--disabled');
+                    ftTextInputElem.disabled = false;
+                } else {
+                    ftTextAreaElem.classList.add('mdc-text-field--disabled');
+                    ftTextInputElem.disabled = true;
+                }
                 break;
             case 'Offline':
                 tbStatTextElem.classList.remove('s-font-color-primary');
@@ -966,7 +992,7 @@ function updateRTCUserStatus(id, usrStatus) {
         }
         tbStatTextElem.textContent = statusText;
         setUserStatusColor(tbStatIconElem, usrStatus);
-        updateRTCUserActionButtons(usrStatus);
+        updateRTCUserActionButtons(usrStatus, uType);
 
         // If user was Offline and now Online, automatically reconnect
         if (wasOfflineNowOnline && usrStatus == 'Disponible') {

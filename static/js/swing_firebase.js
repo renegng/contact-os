@@ -48,6 +48,9 @@ if (document.querySelector('#firebaseui-auth-container')) {
     firebaseUI.start('#firebaseui-auth-container', firebaseUIConfig);
 }
 
+// Avoids onAuthStateChanged initializeRTC on Signing Out
+var userSignsOut = false;
+
 // Get Signed-In User info
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
@@ -70,7 +73,7 @@ firebase.auth().onAuthStateChanged((user) => {
     }
 
     // When a RTC Connection Intent exists, it executes signaling
-    if (document.querySelector('.container-chat')) {
+    if (document.querySelector('.container-chat') && !userSignsOut) {
         initializeRTC();
     }
 });
@@ -83,7 +86,15 @@ export function accountRedirect(e) {
     } else if (e.detail.index == 1) {
         // Log Out User
         firebase.auth().signOut().then(function() {
-            // Sign-out successful.
+            // Firebase Sign-out successful. Proceed to close sessions
+            // SocketIO disconnect session
+            console.log('Signing out...');
+            userSignsOut = true;
+            if (window.socket) {
+                console.log('Socket connection found. Ready to disconnect');
+                socket.emit('disconnect');
+            }
+            // Flask Session Sign Out
             window.location.href = '/logoutuser/';
         }).catch(function(error) {
             // An error happened.

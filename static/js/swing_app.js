@@ -368,7 +368,7 @@ function startUserMedia(av, state) {
 const failedGetUserMediaSBDataObj = {
     message: 'Por favor habilite el acceso a la cámara y/o micrófono.',
     actionText: 'OK',
-    timeout: 20000,
+    timeout: 10000,
     actionHandler: () => {
         console.log('GetUserMedia Devices Failed...');
     }
@@ -378,7 +378,7 @@ const failedGetUserMediaSBDataObj = {
 const conPeerSBDataObj = {
     message: 'Conectando con usuario...',
     actionText: 'OK',
-    timeout: 5000,
+    timeout: 10000,
     actionHandler: () => {
         console.log('Connecting to user...');
     }
@@ -388,7 +388,7 @@ const conPeerSBDataObj = {
 const disconPeerSBDataObj = {
     message: 'Usuario desconectado.',
     actionText: 'OK',
-    timeout: 5000,
+    timeout: 10000,
     actionHandler: () => {
         console.log('User disconnected.');
     }
@@ -398,7 +398,7 @@ const disconPeerSBDataObj = {
 const transferPeerSBDataObj = {
     message: 'Transfiriendo usuario...',
     actionText: 'OK',
-    timeout: 5000,
+    timeout: 10000,
     actionHandler: () => {
         console.log('Transfering user...');
     }
@@ -667,18 +667,23 @@ export function showTabContent(e) {
 
 
 // Snackbar init function
+let sbCurrEvent = null;
 export function initSnackbar(sb, initObject) {
     sb.labelText = initObject.message;
     sb.actionButtonText = initObject.actionText;
-    sb.setTimeoutMs = initObject.timeout;
-    sb.listen('MDCSnackbar:closed', (evt) => {
+    sb.timeoutMs = initObject.timeout;
+    if (sb.isOpen) {
+        sb.close('New snackbar initialization...');
+    }
+    if (sbCurrEvent) {
+        sb.unlisten('MDCSnackbar:closed', sbCurrEvent);
+    }
+    sbCurrEvent = ((evt) => {
         if (evt.detail.reason == 'action') {
             initObject.actionHandler();
         }
     });
-    if (sb.isOpen) {
-        sb.close('New snackbar initialization...');
-    }
+    sb.listen('MDCSnackbar:closed', sbCurrEvent);
     sb.open();
 }
 /* Allow 'window' context to reference the function */
@@ -787,13 +792,15 @@ const drawerEl = document.querySelector('.mdc-drawer');
 const topAppBarEl = document.querySelector('.mdc-top-app-bar');
 const topAppBarNavEl = document.querySelector('.mdc-top-app-bar__navigation-icon');
 if (drawerEl && topAppBarEl) {
-    const mainContentEl = document.querySelector('.s-main-content');
+    const mainContentEl = document.querySelector('.mdc-drawer-app-content');
     const drawerItemsEl = document.querySelector('.mdc-drawer__content .mdc-list');
 
     const topAppBar = MDCTopAppBar.attachTo(topAppBarEl);
     topAppBar.setScrollTarget(mainContentEl);
 
+    let isDrawerModal = false;
     const initModalDrawer = () => {
+        isDrawerModal = true;
         drawerEl.classList.add("mdc-drawer--modal");
         topAppBarNavEl.classList.remove("mdc-top-app-bar__navigation-icon--hidden");
 
@@ -804,19 +811,34 @@ if (drawerEl && topAppBarEl) {
             drawer.open = !drawer.open;
         });
 
+        let drawerItemHref = null;
         drawerItemsEl.addEventListener('click', (event) => {
             drawer.open = false;
+            drawerItemHref = event.target.href;
+            if (isDrawerModal) {
+                event.preventDefault();
+            }
+        });
+
+        document.body.addEventListener('MDCDrawer:closed', () => {
+            drawer.handleScrimClick;
+            mainContentEl.querySelector('input, button').focus();
+            if (drawerItemHref) {
+                window.location.assign(drawerItemHref);
+            }
         });
 
         return drawer;
     }
 
     const initPermanentDrawer = () => {
+        isDrawerModal = false;
         drawerEl.classList.remove("mdc-drawer--modal");
         topAppBarNavEl.classList.add("mdc-top-app-bar__navigation-icon--hidden");
 
         const permDrawerList = new MDCList(drawerItemsEl);
         permDrawerList.wrapFocus = true;
+
         return permDrawerList;
     }
 
@@ -846,7 +868,7 @@ if (drawerEl && topAppBarEl) {
     });
 } else if (topAppBarEl) {
     const topAppBar = MDCTopAppBar.attachTo(topAppBarEl);
-    const mainContentEl = document.querySelector('.s-main-content');
+    const mainContentEl = document.querySelector('.mdc-drawer-app-content');
 
     topAppBar.setScrollTarget(mainContentEl);
     topAppBarNavEl.classList.add("mdc-top-app-bar__navigation-icon--hidden");
@@ -857,6 +879,14 @@ if (drawerEl && topAppBarEl) {
 var mdcFloatingLabels = [].map.call(document.querySelectorAll('.mdc-floating-label'), function (el) {
     return new MDCFloatingLabel(el);
 });
+
+
+// Material Image List Open Image
+if (document.querySelector('.mdc-image-list__image')) {
+    Array.from(document.getElementsByClassName('mdc-image-list__image')).forEach((elem) => {
+        elem.addEventListener('click', () => (window.open(elem.getAttribute('src'))));
+    });
+}
 
 
 // Material Line Ripples
@@ -916,7 +946,7 @@ if (shareMenuButton != null) {
 }
 
 
-// Material Notched Ouline
+// Material Notched Outline
 var mdcNotchedOutlines = [].map.call(document.querySelectorAll('.mdc-notched-outline'), function (el) {
     return new MDCNotchedOutline(el);
 });
@@ -1049,7 +1079,7 @@ var appIsInstalled = false;
 const installSBDataObj = {
     message: '¿Deseas Instalar nuestra App? (¡Gratis!)',
     actionText: 'Si',
-    timeout: 20000,
+    timeout: 10000,
     actionHandler: () => {
         console.log('Installing app (A2H)...');
         // Show the prompt
@@ -1073,7 +1103,7 @@ const installSBDataObj = {
 const updateSBDataObj = {
     message: '¡Nuevo contenido disponible!. Click OK para actualizar.',
     actionText: 'OK',
-    timeout: 20000,
+    timeout: 10000,
     actionHandler: () => {
         console.log('Updating app...');
         // Refresh the app

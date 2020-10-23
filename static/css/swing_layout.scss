@@ -342,6 +342,11 @@ body {
         .container-chat--body-messages-hidden {
             display: none !important;
         }
+
+        .container-chat--body-message-istyping {
+            display: flex;
+            margin: 0.5rem 0 0 0.5rem;
+        }
     }
 
     .container-chat--footer {
@@ -382,7 +387,49 @@ body {
         }
 
         .container-chat--sidemenu-header {
-            padding: 1rem 0.5rem 2rem 0.5rem;
+            display: flex;
+            padding: 0.25rem 0.5rem 2rem 0;
+
+            img {
+                border-radius: 50%;
+                cursor: pointer;
+                height: 3.25rem;
+                margin-left: 0.25rem;
+            }
+
+            .container-chat--sidemenu-header-info-data-status-icon {
+                font-size: 0.75rem;
+                margin: 2.65rem 0 0 2.65rem;
+                position: absolute;
+            }
+
+            .container-chat--sidemenu-header-info-data {
+                display: flex;
+                flex-flow: column;
+                justify-content: center;
+                margin: 0rem 1rem;
+                overflow: hidden;
+
+                .container-chat--sidemenu-header-info-data-name {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+
+                .container-chat--sidemenu-header-info-data-status {
+                    align-items: center;
+                    display: flex;
+                    flex-shrink: 0;
+                    overflow: hidden;
+                    white-space: nowrap;
+
+                    .container-chat--sidemenu-header-info-data-status-text{
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+                }
+            }
         }
 
         .container-chat--sidemenu-rooms {

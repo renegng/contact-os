@@ -74,6 +74,13 @@ To install Swing CMS, follow the next steps (under Ubuntu 16.04):
     ~: pip install psycopg2-binary
     ~: pip install firebase-admin
     ~: pip install mysqlclient
+
+    For ChatBot component, install following packages:
+    ~: pip install chatterbot
+    ~: pip install pyyaml
+    ~: pip install spacy
+    ~: spacy download es
+
     ~: deactivate
 
 7 - Install the appropriate plugin for Flask and Python to be executed on the web server:
