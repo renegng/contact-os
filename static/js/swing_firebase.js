@@ -92,7 +92,7 @@ export function accountRedirect(e) {
             userSignsOut = true;
             if (window.socket) {
                 console.log('Socket connection found. Ready to disconnect');
-                socket.emit('disconnect');
+                socket.io.disconnect();
             }
             // Flask Session Sign Out
             window.location.href = '/logoutuser/';

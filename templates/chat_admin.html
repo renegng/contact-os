@@ -70,23 +70,54 @@
                     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4-desktop mdc-layout-grid__cell--span-3-tablet
                                 mdc-layout-grid__cell--span-4-phone container-chat--sidemenu">
                         <header class="container-chat--sidemenu-header">
-                            <img id="header-accountImage" src="{{ url_for('static', filename='images/manifest/agent_f.svg') }}"
-                                 alt="Account Photo" />
-                            <i class="material-icons container-chat--sidemenu-header-info-data-status-icon s-font-color-chat-offline">
+                            <img id="header-accountImage"
+                                src="{{ url_for('static', filename='images/manifest/agent_f.svg') }}"
+                                alt="Account Photo" />
+                            <i
+                                class="material-icons container-chat--sidemenu-header-info-data-status-icon s-font-color-chat-offline">
                                 stop_circle
                             </i>
+                            <div class="container-chat--sidemenu-header-info-data-status-menu mdc-menu-surface--anchor">
+                                <div id="accountStatus" class="mdc-menu mdc-menu-surface" tabindex="-1">
+                                    <div class="mdc-typography--subtitle2 s-font-color-secondary s-menu-subtitle">
+                                        Selecciona tu estado:</div>
+                                    <ul class="mdc-list mdc-menu__items" role="menu" aria-hidden="true">
+                                        <li class="mdc-list-item" role="menuitem" tabindex="0">
+                                            <span class="mdc-list-item__ripple"></span>
+                                            <i class="material-icons mdc-list-item__graphic s-font-color-chat-online"
+                                                aria-hidden="true">stop_circle</i>
+                                            <span class="mdc-list-item__text">Disponible</span>
+                                        </li>
+                                        <li class="mdc-list-item" role="menuitem" tabindex="1">
+                                            <span class="mdc-list-item__ripple"></span>
+                                            <i class="material-icons mdc-list-item__graphic s-font-color-chat-away"
+                                                aria-hidden="true">stop_circle</i>
+                                            <span class="mdc-list-item__text">En receso</span>
+                                        </li>
+                                        <li class="mdc-list-item" role="menuitem" tabindex="2">
+                                            <span class="mdc-list-item__ripple"></span>
+                                            <i class="material-icons mdc-list-item__graphic s-font-color-chat-away"
+                                                aria-hidden="true">stop_circle</i>
+                                            <span class="mdc-list-item__text">En reunión</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                             <div class="container-chat--sidemenu-header-info-data">
-                                <span class="container-chat--sidemenu-header-info-data-name mdc-typography--body1 s-font-color-primary">
+                                <span
+                                    class="container-chat--sidemenu-header-info-data-name mdc-typography--body1 s-font-color-primary">
                                     - -
                                 </span>
                                 <div class="container-chat--sidemenu-header-info-data-status">
-                                    <span class="container-chat--sidemenu-header-info-data-status-text mdc-typography--caption s-font-color-secondary">
+                                    <span
+                                        class="container-chat--sidemenu-header-info-data-status-text mdc-typography--caption s-font-color-secondary">
                                         - -
                                     </span>
                                 </div>
                             </div>
                         </header>
-                        <div class="mdc-select container-chat--sidemenu-filters" role="filters" data-action-fn="filterRTCUserList">
+                        <div class="mdc-select container-chat--sidemenu-filters" role="filters"
+                            data-action-fn="filterRTCUserList">
                             <div class="mdc-select__anchor">
                                 <span class="mdc-select__ripple"></span>
                                 <input type="text" disabled readonly class="mdc-select__selected-text">
@@ -155,16 +186,18 @@
                             Recuerda que puedes filtrar la lista de personas.
                         </p>
                     </div>
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
+                    <div
+                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--topbar container--hidden">
                         <header class="container-chat--topbar-header">
                             <section class="container-chat--topbar-info">
                                 <button class="material-icons mdc-icon-button container-chat--topbar-info-back"
-                                        aria-label="Back" data-action-type="submit" data-action-fn="showContactsList">
+                                    aria-label="Back" data-action-type="submit" data-action-fn="showContactsList">
                                     arrow_back
                                 </button>
                                 <div class="container-chat--topbar-info-pic">
-                                    <img id="chat-pic" src="{{ url_for('static', filename='images/manifest/wifi_antenna.svg') }}"
+                                    <img id="chat-pic"
+                                        src="{{ url_for('static', filename='images/manifest/wifi_antenna.svg') }}"
                                         alt="Logo Contact-Os" />
                                 </div>
                                 <div class="container-chat--topbar-info-data">
@@ -172,10 +205,12 @@
                                         - -
                                     </span>
                                     <div class="container-chat--topbar-info-data-status">
-                                        <i class="material-icons container-chat--topbar-info-data-status-icon s-font-color-chat-offline">
+                                        <i
+                                            class="material-icons container-chat--topbar-info-data-status-icon s-font-color-chat-offline">
                                             stop_circle
                                         </i>
-                                        <span class="container-chat--topbar-info-data-status-text mdc-typography--caption s-font-color-secondary">
+                                        <span
+                                            class="container-chat--topbar-info-data-status-text mdc-typography--caption s-font-color-secondary">
                                             - -
                                         </span>
                                     </div>
@@ -199,27 +234,31 @@
                                     </button>
                                     <div id="moreOptionsMenu" class="mdc-menu mdc-menu-surface" tabindex="-1">
                                         <ul class="mdc-list mdc-menu__items" role="menu" aria-hidden="true">
-                                            <li id="transferUserOption" class="mdc-list-item" role="menuitem" tabindex="0">
+                                            <li id="transferUserOption" class="mdc-list-item" role="menuitem"
+                                                tabindex="0">
                                                 <span class="mdc-list-item__ripple"></span>
-                                                <i class="s-font-color-secondary material-icons mdc-list-item__graphic" aria-hidden="true">
+                                                <i class="s-font-color-secondary material-icons mdc-list-item__graphic"
+                                                    aria-hidden="true">
                                                     send
                                                 </i>
                                                 <span class="mdc-list-item__text">Transferir</span>
                                             </li>
                                             <li class="mdc-list-item" role="menuitem" tabindex="1">
                                                 <span class="mdc-list-item__ripple"></span>
-                                                <i class="s-font-color-secondary material-icons mdc-list-item__graphic"  aria-hidden="true">
+                                                <i class="s-font-color-secondary material-icons mdc-list-item__graphic"
+                                                    aria-hidden="true">
                                                     exit_to_app
                                                 </i>
-                                                <span class="mdc-list-item__text">Finalizar Chat</span>
+                                                <span class="mdc-list-item__text">Finalizar atención</span>
                                             </li>
                                             <hr class="mdc-list-divider s-mdc-list-divider">
                                             <li class="mdc-list-item" role="menuitem" tabindex="2">
                                                 <span class="mdc-list-item__ripple"></span>
-                                                <i class="s-font-color-secondary material-icons mdc-list-item__graphic"  aria-hidden="true">
+                                                <i class="s-font-color-secondary material-icons mdc-list-item__graphic"
+                                                    aria-hidden="true">
                                                     cancel
                                                 </i>
-                                                <span class="mdc-list-item__text">Cerrar Conexión</span>
+                                                <span class="mdc-list-item__text">Cerrar conexión</span>
                                             </li>
                                         </ul>
                                     </div>
@@ -227,13 +266,16 @@
                             </section>
                         </header>
                     </div>
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
+                    <div
+                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--body container--hidden">
-                        <div class="container-chat--body-message-istyping mdc-typography--caption s-font-color-secondary container--hidden">
+                        <div
+                            class="container-chat--body-message-istyping mdc-typography--caption s-font-color-secondary container--hidden">
                             ... está escribiendo
                         </div>
                     </div>
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
+                    <div
+                        class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-5-tablet
                                 mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle container-chat--footer container--hidden">
                         <section class="container-chat--footer-input">
                             <label
@@ -263,14 +305,17 @@
     </div>
     <div id="assigned-dialog" class="mdc-dialog">
         <div class="mdc-dialog__container">
-            <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true" aria-labelledby="d-assigned-title" aria-describedby="d-assigned-content">
+            <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true" aria-labelledby="d-assigned-title"
+                aria-describedby="d-assigned-content">
                 <h2 class="mdc-dialog__title" id="d-assigned-title">Usuari@ en sesión</h2>
                 <div class="mdc-dialog__content" id="d-assigned-content">
-                    <span id="d-assigned-usrname" class="s-font-color-primary"></span>, con estado <span id="d-assigned-status"></span>, 
+                    <span id="d-assigned-usrname" class="s-font-color-primary"></span>, con estado <span
+                        id="d-assigned-status"></span>,
                     se encuentra asignad@ a <span id="d-assigned-empname" class="s-font-color-primary"></span>
                 </div>
                 <div class="mdc-dialog__actions">
-                    <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept" data-mdc-dialog-button-default>
+                    <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept"
+                        data-mdc-dialog-button-default>
                         <div class="mdc-button__ripple"></div>
                         <span class="mdc-button__label">OK</span>
                     </button>
@@ -281,13 +326,14 @@
     </div>
     <div id="transfer-dialog" class="mdc-dialog">
         <div class="mdc-dialog__container">
-            <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true" aria-labelledby="d-transfer-title" aria-describedby="d-transfer-content">
+            <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true" aria-labelledby="d-transfer-title"
+                aria-describedby="d-transfer-content">
                 <h2 class="mdc-dialog__title" id="d-transfer-title">Transferir usuari@ a...</h2>
                 <div class="mdc-dialog__content" id="d-transfer-content">
                     <label class="mdc-text-field mdc-text-field--filled">
                         <span class="mdc-text-field__ripple"></span>
-                        <input id="d-transfer-ufilter-input" class="mdc-text-field__input" type="text" 
-                                aria-labelledby="d-transfer-ufilter-label" tabindex="-1">
+                        <input id="d-transfer-ufilter-input" class="mdc-text-field__input" type="text"
+                            aria-labelledby="d-transfer-ufilter-label" tabindex="-1">
                         <span class="mdc-floating-label" id="d-transfer-ufilter-label">Filtrar lista</span>
                         <i class="material-icons mdc-text-field__icon">search</i>
                         <span class="mdc-line-ripple"></span>
@@ -295,8 +341,7 @@
                     <ul id="no-transfer-list" class="mdc-list mdc-list--avatar-list mdc-list--two-line">
                         <li class="mdc-list-item">
                             <span class="mdc-list-item__ripple"></span>
-                            <span class="mdc-list-item__graphic material-icons"
-                                aria-hidden="true">nights_stay</span>
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">nights_stay</span>
                             <span class="mdc-list-item__text">
                                 <span class="mdc-list-item__primary-text">0 contactos.</span>
                                 <span class="mdc-list-item__secondary-text">No hay funcionarios.</span>
@@ -313,9 +358,30 @@
                         <span class="mdc-button__label">Cancelar</span>
                     </button>
                     <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept"
-                            data-action-type="submit" data-action-fn="transferRTCUser">
+                        data-action-type="submit" data-action-fn="transferRTCUser">
                         <div class="mdc-button__ripple"></div>
                         <span class="mdc-button__label">Transferir</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="mdc-dialog__scrim"></div>
+    </div>
+    <div id="disconnected-dialog" class="mdc-dialog">
+        <div class="mdc-dialog__container">
+            <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true" aria-labelledby="d-disconnected-title"
+                aria-describedby="d-disconnected-content">
+                <h2 class="mdc-dialog__title" id="d-disconnected-title">Sesión desconectada</h2>
+                <div class="mdc-dialog__content" id="d-disconnected-content">
+                    Su sesión ha perdido conexión por inactividad (<span id="d-disconnected-inactivity"
+                        class="s-font-color-primary"></span> segundos inactivos). Presione OK para reiniciar la
+                    conexión.
+                </div>
+                <div class="mdc-dialog__actions">
+                    <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept"
+                        data-action-type="redirect" data-action-val="/chat/admin/" data-mdc-dialog-button-default>
+                        <div class="mdc-button__ripple"></div>
+                        <span class="mdc-button__label">OK</span>
                     </button>
                 </div>
             </div>

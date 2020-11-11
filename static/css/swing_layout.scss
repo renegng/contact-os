@@ -95,6 +95,39 @@ body {
 
 /* Container layouts */
 
+.container-appointment {
+    .container-appointment-confirm {
+        div {
+            padding: 0.5rem;
+        }
+    }
+
+    .container-appointment-date {
+        grid-column-start: 1;
+        grid-row-start: 2;
+    }
+
+    .container-appointment-service {
+        grid-column-start: 1;
+    }
+
+    .container-appointment-time {
+        grid-row: span 2;
+
+        .container-appointment-hours {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+
+            .mdc-card {
+                margin: 1rem;
+                padding: 1.5rem 1rem;
+                width: 16rem;
+            }
+        }
+    }
+}
+
 .container-avcalls {
     background: stv.$swing-theme-secondary;
     min-height: 90vh;
@@ -430,6 +463,23 @@ body {
                     }
                 }
             }
+
+            .container-chat--sidemenu-header-info-data-status-menu {
+                z-index: 2;
+
+                .mdc-list-item__graphic {
+                    font-size: 0.75rem;
+                    margin-right: 1rem;
+                }
+
+                .mdc-menu-surface {
+                    min-width: 12rem;
+                }
+
+                .s-menu-subtitle {
+                    margin: 1rem 0 0 1.25rem;
+                }
+            }
         }
 
         .container-chat--sidemenu-rooms {
@@ -657,6 +707,10 @@ body {
     text-align: justify;
 }
 
+.s-font-color-chat-away {
+    color: #fdcd19 !important;
+}
+
 .s-font-color-chat-busy {
     color: #dc143c !important;
 }
@@ -767,6 +821,68 @@ body {
     max-width: 30%;
 }
 
+/* jsCalendar Theming */
+
+.jsCalendar.primary tbody td.jsCalendar-current {
+    background-color: stv.$swing-theme-primary;
+}
+
+.jsCalendar.primary *::selection {
+    background: stv.$swing-theme-primary;
+}
+
+.jsCalendar.primary *::-moz-selection {
+    background: stv.$swing-theme-primary;
+}
+
+.jsCalendar.material-theme.primary thead {
+    background-color: stv.$swing-theme-primary;
+}
+
+.jsCalendar.material-theme.primary thead .jsCalendar-nav-left:hover,
+.jsCalendar.material-theme.primary thead .jsCalendar-nav-right:hover {
+    background-color: darken(stv.$swing-theme-primary, 10%);
+}
+
+.jsCalendar.classic-theme.primary thead {
+    background-color: stv.$swing-theme-primary;
+}
+
+.jsCalendar.classic-theme.primary thead .jsCalendar-nav-left:hover,
+.jsCalendar.classic-theme.primary thead .jsCalendar-nav-right:hover {
+    background-color: darken(stv.$swing-theme-primary, 10%);;
+}
+
+.jsCalendar.secondary tbody td.jsCalendar-current {
+    background-color: stv.$swing-theme-secondary;
+}
+
+.jsCalendar.secondary *::selection {
+    background: stv.$swing-theme-secondary;
+}
+
+.jsCalendar.secondary *::-moz-selection {
+    background: stv.$swing-theme-secondary;
+}
+
+.jsCalendar.material-theme.secondary thead {
+    background-color: stv.$swing-theme-secondary;
+}
+
+.jsCalendar.material-theme.secondary thead .jsCalendar-nav-left:hover,
+.jsCalendar.material-theme.secondary thead .jsCalendar-nav-right:hover {
+    background-color: darken(stv.$swing-theme-secondary, 10%);
+}
+
+.jsCalendar.classic-theme.secondary thead {
+    background-color: stv.$swing-theme-secondary;
+}
+
+.jsCalendar.classic-theme.secondary thead .jsCalendar-nav-left:hover,
+.jsCalendar.classic-theme.secondary thead .jsCalendar-nav-right:hover {
+    background-color: darken(stv.$swing-theme-secondary, 10%);;
+}
+
 /* Loader animation */
 /* Credits to: @tobiasahlin */
 
@@ -819,4 +935,3 @@ body {
         transform: scale(1);
     }
 }
-

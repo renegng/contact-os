@@ -54,6 +54,12 @@ def _components():
     return render_template('components.html')
 
 
+@home.route('/citas/crear/')
+def _citas_crear():
+    app.logger.debug('** SWING_CMS ** - Crear Citas')
+    return render_template('citas_crear.html')
+
+
 @home.route('/home/')
 @login_required
 def _home():

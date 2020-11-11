@@ -134,21 +134,32 @@
 
 /* Card */
 .mdc-card {
-    width: 100%;
     color: stv.$swing-theme-on-surface;
+    padding: 1rem;
+    width: 100%;
 
-    .demo-card__primary {
-        padding: 1rem;
+    a {
+        color: inherit;
+        text-decoration: none;
+
+        i {
+            display: flex;
+            font-size: 8rem;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .mdc-card__media {
+            padding: 1rem;
+        }
     }
 
-    .demo-card__title,
-    .demo-card__subtitle {
-        margin: 0;
-    }
-
-    .demo-card__secondary {
-        padding: 0 1rem 0.5rem;
-        opacity: 0.87;
+    iframe {
+        position:absolute;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
     }
 }
 

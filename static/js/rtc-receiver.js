@@ -10,7 +10,8 @@ window.enableOfflineMsgs = enableOfflineMsgs;
 // Initiator Room ID
 const iRID = { 'id' : '' };
 
-// MDC Dialog - End RTC
+// MDC Dialog - Disconnected, End RTC
+var mdcDisconnectedDialogEl = null;
 var mdcEndRTCDialogEl = null;
 
 function initializeRTC() {
@@ -44,6 +45,12 @@ function initializeRTC() {
             establishRTC();
         }
         peer.signal(data.data);
+    });
+
+    // Receive Heartbeat to keep app alive in the background
+    socket.on('receiveHeartbeat', (data) => {
+        console.log('Received Heartbeat');
+        console.log(data);
     });
 }
 
@@ -142,6 +149,14 @@ function establishRTC() {
             case 'msg':
                 swcms.appendChatMessage(jMsg.msg, jMsg.msgDateTime, 'others', jMsg.msgUserName);
                 break;
+            
+            case 'typ':
+                if (jMsg.msg) {
+                    document.querySelector('.container-chat--body-message-istyping').classList.remove('container--hidden');
+                } else {
+                    document.querySelector('.container-chat--body-message-istyping').classList.add('container--hidden');
+                }
+                break;
     
             case 'welcome':
                 swcms.advStreams.otherUserInfo = jMsg.msgUserInfo;
@@ -149,6 +164,7 @@ function establishRTC() {
                 document.querySelector('#callerid-pic').src = jMsg.msgUserInfo.photoURL;
                 document.querySelector('#callerid-name').textContent = jMsg.msgUserInfo.name;
                 document.querySelector('.s-loader').classList.add('container--hidden');
+                document.querySelector('.container-chat--body-message-istyping').textContent = jMsg.msgUserInfo.name + ' está escribiendo...';
                 document.querySelector('.container-chat--topbar-info-data-name').textContent = jMsg.msgUserInfo.name;
                 document.querySelector('.container-chat--topbar-info-data-status-icon').classList.remove('s-font-color-chat-offline');
                 document.querySelector('.container-chat--topbar-info-data-status-icon').classList.add('s-font-color-chat-online');
@@ -168,6 +184,43 @@ function establishRTC() {
 
 
 /************************** FUNCTIONS **************************/
+
+
+// Keep app active in the background with a Heartbeat
+var timeInBack = 0;
+var heartBeatIntv = null;
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState == 'visible') {
+        if (heartBeatIntv) {
+            window.clearInterval(heartBeatIntv);
+            heartBeatIntv = null;
+            // If connection was lost, display Dialog
+            if (socket.disconnected) {
+                document.getElementById('d-disconnected-inactivity').textContent = timeInBack;
+                mdcDisconnectedDialogEl.open();
+            }
+            timeInBack = 0;
+        }
+    }
+    if (document.visibilityState == 'hidden') {
+        heartBeatIntv = window.setInterval(() => {
+            timeInBack++;
+            // After 8 seconds, send a Heartbeat.
+            if ((timeInBack % 8) == 0) {
+                if (socket && socket.connected) {
+                    socket.emit('heartbeat', JSON.stringify({ 'hb' : swcms.advStreams.myUserInfo.id }));
+                }
+            }
+        }, 1000);
+    }
+});
+// Close SocketIO connection on window close
+window.addEventListener('beforeunload', () => {
+    if (socket && socket.connected) {
+        console.log('Closing Socket Connection...');
+        socket.io.disconnect();
+    }
+}, false);
 
 // Save user satisfaction ratings
 const usrSatAnswers = { 1: null, 2: null};

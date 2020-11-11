@@ -13,15 +13,16 @@ var rtcConnections = [];
 // Initiator Room ID
 const iRID = { 'id' : '' };
 
-// MDC Dialog - Assigned, Transfer
+// MDC Dialog - Assigned, Disconnected, Transfer
 var mdcAssignedDialogEl = null;
+var mdcDisconnectedDialogEl = null;
 var mdcTransferDialogEl = null;
 
 function initializeRTC () {
     console.log('Initializing SocketIO/SimplePeer');
 
     const socket = io({
-        query: 'photoURL=' + encodeURIComponent(advStreams.myUserInfo.photoURL)
+        query: 'photoURL=' + encodeURIComponent(swcms.advStreams.myUserInfo.photoURL)
     });
     /* Allow 'window' context to reference the function */
     window.socket = socket;
@@ -36,8 +37,8 @@ function initializeRTC () {
     
     socket.on('userIsConnected', (data) => {
         console.log('I am online: ' + data.id);
-        advStreams.myUserInfo.id = data.id;
-        advStreams.myUserInfo.roles = data.roles;
+        swcms.advStreams.myUserInfo.id = data.id;
+        swcms.advStreams.myUserInfo.roles = data.roles;
     });
 
     socket.on('RTCUserList', (data) => {
@@ -60,15 +61,23 @@ function initializeRTC () {
         iRID.id = data.r_id;
         establishRTC(false, data.data);
     });
+
+    // Receive a User Transferral
+    socket.on('userTransferNotification', (data) => {
+        console.log('Received User Transferral');
+        console.log(data);
+        swcms.showUserRTCConSnackbar('trnRcv', data.usr_name);
+    });
+
+    // Receive Heartbeat to keep app alive in the background
+    socket.on('receiveHeartbeat', (data) => {
+        console.log('Received Heartbeat');
+        console.log(data);
+    });
 }
 
 // SimplePeer User Connection Class
 class rtcPeerConnection {
-    isInitialSignal;
-    isInitiator;
-    rtcSimplePeer;
-    uListElem;
-
     constructor(init, uListElem) {
         this.isInitiator = init;
         this.uListElem = uListElem;
@@ -108,7 +117,7 @@ class rtcPeerConnection {
             
             if (this.isInitialSignal) {
                 this.isInitialSignal = false;
-                swcms.showUserRTCConSnackbar('con');
+                swcms.showUserRTCConSnackbar('con', this.uListElem.querySelector('.mdc-list-item__primary-text').textContent);
             }
         });
     
@@ -156,7 +165,7 @@ class rtcPeerConnection {
             });
     
             rtcConnections = newRTCConnections;
-            swcms.showUserRTCConSnackbar('dcon');
+            swcms.showUserRTCConSnackbar('dcon', this.uListElem.querySelector('.mdc-list-item__primary-text').textContent);
             enableRTCUserList();
         });
         
@@ -193,6 +202,16 @@ class rtcPeerConnection {
                     }
                     rtcUserList.insertBefore(this.uListElem, rtcUserList.firstChild);
                     break;
+                
+                case 'typ':
+                    if (this.uListElem.classList.contains('mdc-list-item--selected')) {
+                        if (jMsg.msg) {
+                            document.querySelector('.container-chat--body-message-istyping').classList.remove('container--hidden');
+                        } else {
+                            document.querySelector('.container-chat--body-message-istyping').classList.add('container--hidden');
+                        }
+                    }
+                    break;
         
                 case 'welcome':
                     hideRTCMessagesLoader(uid);
@@ -204,7 +223,7 @@ class rtcPeerConnection {
                     swcms.advStreams.otherUserInfo = jMsg.msgUserInfo;
                     swcms.appendChatMessage(jMsg.msgUserInfo.name + ' Online.', null, 'auto', '', uid);
                     socket.emit('updateUsersStatus', JSON.stringify({
-                        'e_id' : advStreams.myUserInfo.id,
+                        'e_id' : swcms.advStreams.myUserInfo.id,
                         's_type' : 'busy',
                         'u_id' : this.uListElem.getAttribute('data-meta-rid'),
                         'u_type' : this.uListElem.getAttribute('data-meta-utype') 
@@ -287,6 +306,42 @@ function establishRTC(init = true, receiverData = null) {
 
 /************************** FUNCTIONS **************************/
 
+
+// Keep app active in the background with a Heartbeat
+var timeInBack = 0;
+var heartBeatIntv = null;
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState == 'visible') {
+        if (heartBeatIntv) {
+            window.clearInterval(heartBeatIntv);
+            heartBeatIntv = null;
+            // If connection was lost, display Dialog
+            if (socket.disconnected) {
+                document.getElementById('d-disconnected-inactivity').textContent = timeInBack;
+                mdcDisconnectedDialogEl.open();
+            }
+            timeInBack = 0;
+        }
+    }
+    if (document.visibilityState == 'hidden') {
+        heartBeatIntv = window.setInterval(() => {
+            timeInBack++;
+            // After 8 seconds, send a Heartbeat.
+            if ((timeInBack % 8) == 0) {
+                if (socket && socket.connected) {
+                    socket.emit('heartbeat', JSON.stringify({ 'hb' : swcms.advStreams.myUserInfo.id }));
+                }
+            }
+        }, 1000);
+    }
+});
+// Close SocketIO connection on window close
+window.addEventListener('beforeunload', () => {
+    if (socket && socket.connected) {
+        console.log('Closing Socket Connection...');
+        socket.io.disconnect();
+    }
+}, false);
 
 // Side menu responsive UI
 if (document.querySelector('.container-chat--sidemenu')) {
@@ -401,7 +456,7 @@ function checkUserAssignment(uListElem) {
     let aid = uListElem.getAttribute('data-meta-assigned');
     let ustat = uListElem.getAttribute('data-meta-status');
 
-    if (aid && aid != advStreams.myUserInfo.id && ustat != 'Disponible') {
+    if (aid && aid != swcms.advStreams.myUserInfo.id && ustat != 'Disponible') {
         let ename = '';
         let uname = uListElem.querySelector('.mdc-list-item__primary-text').textContent;
 
@@ -517,7 +572,8 @@ function createRTCMessagesUserContainer(room_id, user, uType) {
 
     userContainer.id = (uType == 'anon')? 'm_' + room_id : 'm_' + user.id;
 
-    document.querySelector('.container-chat--body').appendChild(userContainer);
+    let isTypingEl = document.querySelector('.container-chat--body-message-istyping');
+    document.querySelector('.container-chat--body').insertBefore(userContainer, isTypingEl);
 
     return userContainer;
 }
@@ -548,7 +604,7 @@ function endRTCSession(showUsrSatSurv = false) {
         peer.destroy();
     }
 
-    socket.emit('endRTC', JSON.stringify({ 'e_id' : advStreams.myUserInfo.id, 'u_id' : r_id, 'u_type' : u_type }));
+    socket.emit('endRTC', JSON.stringify({ 'e_id' : swcms.advStreams.myUserInfo.id, 'u_id' : r_id, 'u_type' : u_type }));
     showConversationUI(false, usrElem);
     // If the user is not an Employee, remove the user from the list
     if (u_type == 'anon' || u_type == 'reg'){
@@ -580,7 +636,7 @@ function filterRTCUserList(value) {
             break;
         case 'mine':
             document.querySelectorAll('#active-rooms > li').forEach((elm) => {
-                if (elm.getAttribute('data-meta-assigned') == advStreams.myUserInfo.id) {
+                if (elm.getAttribute('data-meta-assigned') == swcms.advStreams.myUserInfo.id) {
                     elm.classList.remove('container--hidden');
                 } else {
                     elm.classList.add('container--hidden');
@@ -664,6 +720,10 @@ function setRTCUserContainer(container, room_id, user, uType) {
     container.setAttribute('data-meta-utype', uType);
     container.querySelector('.mdc-list-item__graphic').src = userPhoto;
     container.querySelector('.mdc-list-item__primary-text').textContent = userName;
+
+    if (userInfo.assignedTo && userInfo.assignedTo == swcms.advStreams.myUserInfo.id && userInfo.status == 'Transferid@') {
+        container.querySelector('.mdc-list-item__meta').classList.remove('container--hidden');
+    }
 }
 
 // Set RTC User Transfer List Container Data
@@ -681,12 +741,16 @@ function setRTCUserTransferContainer(container, user) {
 
 // Set User Status Element Color
 function setUserStatusColor(elm, usrStatus) {
-    elm.classList.remove('s-font-color-chat-busy', 's-font-color-chat-offline');
+    elm.classList.remove('s-font-color-chat-away', 's-font-color-chat-busy', 's-font-color-chat-offline');
     elm.classList.remove('s-font-color-chat-online', 's-font-color-chat-transferred');
     switch (usrStatus) {
         case 'Atendido':
         case 'Atendiendo':
             elm.classList.add('s-font-color-chat-busy');
+            break;
+        case 'En receso':
+        case 'En reunión':
+            elm.classList.add('s-font-color-chat-away');
             break;
         case 'Disponible':
             elm.classList.add('s-font-color-chat-online');
@@ -779,6 +843,10 @@ function showConversationUI(showOrHide, usrElem) {
         } else {
             transferOption.classList.remove('mdc-list-item--disabled');
         }
+        // Update is Typing Message
+        let activeIsTypingEl = document.querySelector('.container-chat--body-message-istyping');
+        activeIsTypingEl.classList.add('container--hidden');
+        activeIsTypingEl.textContent = usrName + ' está escribiendo...';
 
         // Update User's Call UI
         document.querySelector('#callerid-pic').src = usrPhoto;
@@ -823,7 +891,7 @@ function showRTCUserList(userlist) {
     });
     // Iterate through Employees users
     userlist.rtc_online_users.emp_users.forEach((user) => {
-        if (user.id != advStreams.myUserInfo.id) {
+        if (user.id != swcms.advStreams.myUserInfo.id) {
             appendRTCUser(user.r_id, user, 'emp');
             appendRTCTransferList(user);
             rtcULID.push('l_' + user.id);
@@ -835,8 +903,8 @@ function showRTCUserList(userlist) {
             let accStatEl = document.querySelector('.container-chat--sidemenu-header-info-data-status-icon');
             let accStatTxtEl = document.querySelector('.container-chat--sidemenu-header-info-data-status-text');
 
-            accImgEl.src = advStreams.myUserInfo.photoURL;
-            accNameEl.textContent = advStreams.myUserInfo.name;
+            accImgEl.src = swcms.advStreams.myUserInfo.photoURL;
+            accNameEl.textContent = swcms.advStreams.myUserInfo.name;
             accStatTxtEl.textContent = '[' + user.userInfo.roles + '] ' + user.userInfo.status;
             setUserStatusColor(accStatEl, user.userInfo.status);
         }
@@ -902,7 +970,7 @@ function transferRTCUser() {
 
         if (!peer.destroyed && peer.connected) {
             socket.emit('updateUsersStatus', JSON.stringify({
-                'e_id' : advStreams.myUserInfo.id,
+                'e_id' : swcms.advStreams.myUserInfo.id,
                 's_type' : 'transferred',
                 'u_id' : r_id,
                 'u_type' : u_type,
@@ -917,7 +985,7 @@ function transferRTCUser() {
         enableRTCUserList();
         msgEl.textContent = '';
         msgEl.appendChild(loadEl);
-        swcms.showUserRTCConSnackbar('trn');
+        swcms.showUserRTCConSnackbar('trn', userTransfer.querySelector('.mdc-list-item__primary-text').textContent);
     }
 }
 
@@ -930,6 +998,8 @@ function updateRTCUserActionButtons(usrStatus, usrType) {
             document.querySelector('#videoCall').disabled = false;
             break;
         case 'Disponible':
+        case 'En reunión':
+        case 'En receso':
             if (usrType == 'emp') {
                 document.querySelector('#audioCall').disabled = false;
                 document.querySelector('#videoCall').disabled = false;
@@ -945,6 +1015,37 @@ function updateRTCUserActionButtons(usrStatus, usrType) {
             break;
     }
 }
+
+// Update RTC User Personal Status
+function updateRTCUserPersonalStatus(e) {
+    if (e.detail.index == 0) {
+        // Available
+        socket.emit('updateUsersStatus', JSON.stringify({
+            'e_id' : swcms.advStreams.myUserInfo.id,
+            's_type' : 'online',
+            'u_id' : null,
+            'u_type' : null
+        }));
+    } else if (e.detail.index == 1) {
+        // Away
+        socket.emit('updateUsersStatus', JSON.stringify({
+            'e_id' : swcms.advStreams.myUserInfo.id,
+            's_type' : 'away',
+            'u_id' : null,
+            'u_type' : null
+        }));
+    } else if (e.detail.index == 2) {
+        // On a meeting
+        socket.emit('updateUsersStatus', JSON.stringify({
+            'e_id' : swcms.advStreams.myUserInfo.id,
+            's_type' : 'meeting',
+            'u_id' : null,
+            'u_type' : null
+        }));
+    }
+}
+/* Allow 'window' context to reference the function */
+window.updateRTCUserPersonalStatus = updateRTCUserPersonalStatus;
 
 // Update RTC User Status elements
 function updateRTCUserStatus(id, usrStatus) {
@@ -968,6 +1069,8 @@ function updateRTCUserStatus(id, usrStatus) {
 
         switch (usrStatus) {
             case 'Disponible':
+            case 'En reunión':
+            case 'En receso':
                 if (uType == 'emp') {
                     tbStatTextElem.classList.remove('s-font-color-secondary');
                     tbStatTextElem.classList.add('s-font-color-primary');

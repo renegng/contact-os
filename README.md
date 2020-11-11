@@ -76,6 +76,7 @@ To install Swing CMS, follow the next steps (under Ubuntu 16.04):
     ~: pip install mysqlclient
 
     For ChatBot component, install following packages:
+    ~: pip install pyspellchecker
     ~: pip install chatterbot
     ~: pip install pyyaml
     ~: pip install spacy
@@ -127,6 +128,8 @@ Proper credit for the following people/teams:
 - Polymer Project, for an amazing main HTML PWA Template structure.
 - Python, Flask, NodeJS, SQLAlchemy, Migrate, Alembic, WTForms, Login, GitHub and everyone's amazing frameworks.
 - PeerJS, simple-peer, SaltyRTC for their wonderful frameworks to implement WebRTC.
+- Localforage for their simple and amazing localStorage wrapper.
+- jsCalendar for their amazing simple modern calendar library.
 - Traversy Media, for incredible tips & tricks overall.
 - Visual Studio Code, for an incredible IDE.
 - Twitter Twemoji for the amazing emojis.

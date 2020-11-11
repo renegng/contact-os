@@ -226,6 +226,16 @@ def _endrtc(js):
         return jsonify({ 'status': 'error' })
 
 
+@socketio.on('heartbeat')
+def _heartbeat(js):
+    app.logger.debug('** SWING_CMS ** - App Heartbeat: {}'.format(js))
+    try:
+        socketio.emit('receiveHeartbeat', { 'hb' : 1 }, room=request.sid)
+    except Exception as e:
+        app.logger.error('** SWING_CMS ** - App Heartbeat Error: {}'.format(e))
+        return jsonify({ 'status': 'error' })
+
+
 @socketio.on('receiveSocketID')
 def _receiveSocketID(json):
     app.logger.debug('** SWING_CMS ** - SocketIO User Connected SocketID: {}'.format(json))
@@ -275,7 +285,28 @@ def _updateUsersStatus(js):
         new_emp_status = ''
         new_usr_status = ''
 
-        if status == 'busy':
+        # If status is Transferred, retrieve Employee Room ID to emit a Snackbar Notification
+        usr_name = ''
+        trf_emp_id = ''
+        trf_emp_rid = ''
+
+        if status == 'online' or status == 'away' or status == 'meeting':
+            cur_emp_status = None
+            for empUser in cur_oul.userlist.get('rtc_online_users', {}).get('emp_users'):
+                if empUser.get('id') == emp_id:
+                    cur_emp_status = empUser.get('userInfo', {}).get('status')
+            
+            if cur_emp_status == 'Atendiendo':
+                new_emp_status = 'Atendiendo'
+            else:
+                if status == 'online':
+                    new_emp_status = 'Disponible'
+                elif status == 'away':
+                    new_emp_status = 'En receso'
+                elif status == 'meeting':
+                    new_emp_status = 'En reunión'
+
+        elif status == 'busy':
             # Conversation is between employee and user
             if usr_type != 'emp':
                 new_emp_status = 'Atendiendo'
@@ -290,12 +321,23 @@ def _updateUsersStatus(js):
             
         elif status == 'transferred':
             usrsAssigned = 0
+            # Retrieve Employee ID for User Assignment and Notification
+            trf_emp_id = int(j['e_t_id'])
+            for empUser in cur_oul.userlist.get('rtc_online_users', {}).get('emp_users'):
+                if empUser.get('id') == trf_emp_id:
+                    trf_emp_rid = empUser.get('r_id')
+
+            # Determine if Employee has more users assigned to display proper status
             for anonUser in cur_oul.userlist.get('rtc_online_users', {}).get('anon_users'):
-                if anonUser.get('userInfo', {}).get('assignedTo') == emp_id and anonUser.get('r_id') != usr_id:
+                if anonUser.get('r_id') == usr_id:
+                    usr_name = anonUser.get('userInfo', {}).get('name')
+                elif anonUser.get('userInfo', {}).get('assignedTo') == emp_id and anonUser.get('r_id') != usr_id:
                     usrsAssigned += 1
             
             for regUser in cur_oul.userlist.get('rtc_online_users', {}).get('reg_users'):
-                if regUser.get('userInfo', {}).get('assignedTo') == emp_id and regUser.get('r_id') != usr_id:
+                if regUser.get('r_id') == usr_id:
+                    usr_name = regUser.get('userInfo', {}).get('name')
+                elif regUser.get('userInfo', {}).get('assignedTo') == emp_id and regUser.get('r_id') != usr_id:
                     usrsAssigned += 1
             
             new_emp_status = 'Disponible'
@@ -308,9 +350,12 @@ def _updateUsersStatus(js):
         # Update Our Employee Status
         ulist = new_oul.userlist.get('rtc_online_users', {}).get('emp_users')
         updateItemFromList(ulist, 'id', emp_id, None, 'status', new_emp_status, 'userInfo')
+        updateItemFromList(ulist, 'id', emp_id, None, 'activity', int(int(dt_now.strftime('%s%f'))/1000), 'userInfo')
+        
         # If User is Transferred, Update the Employee ID to the Transfer Employee ID
         if status == 'transferred':
-            emp_id = j['e_t_id']
+            emp_id = trf_emp_id
+        
         # Depending on the type of User, update it's status
         if usr_type == 'anon':
             ulist = new_oul.userlist.get('rtc_online_users', {}).get('anon_users')
@@ -318,7 +363,7 @@ def _updateUsersStatus(js):
             updateItemFromList(ulist, 'r_id', usr_id, None, 'assignedTo', emp_id, 'userInfo')
             updateItemFromList(ulist, 'r_id', usr_id, None, 'activity', int(int(dt_now.strftime('%s%f'))/1000), 'userInfo')
         elif usr_type == 'emp':
-            updateItemFromList(ulist, 'r_id', usr_id, None, 'status', new_emp_status, 'userInfo')
+            updateItemFromList(ulist, 'r_id', usr_id, None, 'status', new_usr_status, 'userInfo')
             updateItemFromList(ulist, 'r_id', usr_id, None, 'activity', int(int(dt_now.strftime('%s%f'))/1000), 'userInfo')
         elif usr_type == 'reg':
             ulist = new_oul.userlist.get('rtc_online_users', {}).get('reg_users')
@@ -342,6 +387,9 @@ def _updateUsersStatus(js):
         db.session.commit()
 
         socketio.emit('RTCUserList', new_userlist, room='CTOS-EMPS')
+        # Send Employee Notification of User Transferral
+        if status == 'transferred':
+            socketio.emit('userTransferNotification', { 'usr_name' : usr_name }, room=trf_emp_rid)
     except Exception as e:
         app.logger.error('** SWING_CMS ** - SocketIO Update User Status Error: {}'.format(e))
         return jsonify({ 'status': 'error' })

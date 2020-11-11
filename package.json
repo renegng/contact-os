@@ -1,7 +1,7 @@
 {
-  "name": "swing_cms",
+  "name": "contact-os",
   "version": "1.0.0",
-  "description": "Swing easily over WEBsite development with Swing CMS",
+  "description": "A communication platform to provide Contact with users through different secure channels: Chat, Audio and Video Calls",
   "main": "static/js/swing_app.js",
   "scripts": {
     "build-dev-wp": "webpack --progress -d --config webpack.config.js",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/renegng/swing_cms.git"
+    "url": "git+ssh://git@github.com/renegng/contact-os.git"
   },
   "author": "renegng",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/renegng/swing_cms/issues"
+    "url": "https://github.com/renegng/contact-os/issues"
   },
-  "homepage": "https://github.com/renegng/swing_cms#readme",
+  "homepage": "https://github.com/renegng/contact-os#readme",
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
