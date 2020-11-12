@@ -748,7 +748,7 @@ function setUserStatusColor(elm, usrStatus) {
         case 'Atendiendo':
             elm.classList.add('s-font-color-chat-busy');
             break;
-        case 'En receso':
+        case 'Ausente':
         case 'En reunión':
             elm.classList.add('s-font-color-chat-away');
             break;
@@ -997,9 +997,9 @@ function updateRTCUserActionButtons(usrStatus, usrType) {
             document.querySelector('#audioCall').disabled = false;
             document.querySelector('#videoCall').disabled = false;
             break;
+        case 'Ausente':
         case 'Disponible':
         case 'En reunión':
-        case 'En receso':
             if (usrType == 'emp') {
                 document.querySelector('#audioCall').disabled = false;
                 document.querySelector('#videoCall').disabled = false;
@@ -1068,9 +1068,9 @@ function updateRTCUserStatus(id, usrStatus) {
         let wasOfflineNowOnline = tbStatTextElem.textContent.includes('Offline');
 
         switch (usrStatus) {
+            case 'Ausente':
             case 'Disponible':
             case 'En reunión':
-            case 'En receso':
                 if (uType == 'emp') {
                     tbStatTextElem.classList.remove('s-font-color-secondary');
                     tbStatTextElem.classList.add('s-font-color-primary');

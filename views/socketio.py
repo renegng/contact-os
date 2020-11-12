@@ -302,7 +302,7 @@ def _updateUsersStatus(js):
                 if status == 'online':
                     new_emp_status = 'Disponible'
                 elif status == 'away':
-                    new_emp_status = 'En receso'
+                    new_emp_status = 'Ausente'
                 elif status == 'meeting':
                     new_emp_status = 'En reunión'
 
