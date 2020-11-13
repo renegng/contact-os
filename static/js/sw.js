@@ -4,22 +4,22 @@
 
 const filesToPreCache = [
     // Web pages
-    { url: '/', revision: '2020-11-12-1' },
-    { url: '/acercade/', revision: '2020-11-12-1' },
-    { url: '/login/', revision: '2020-11-12-1' },
-    { url: '/politicaprivacidad/', revision: '2020-11-12-1' },
-    { url: '/terminosdelservicio/', revision: '2020-11-12-1' },
+    { url: '/', revision: '2020-11-13-1' },
+    { url: '/acercade/', revision: '2020-11-13-1' },
+    { url: '/login/', revision: '2020-11-13-1' },
+    { url: '/politicaprivacidad/', revision: '2020-11-13-1' },
+    { url: '/terminosdelservicio/', revision: '2020-11-13-1' },
     // Images
-    { url: '/static/images/manifest/agent_f.svg', revision: '2020-11-12-1' },
-    { url: '/static/images/manifest/bid_slogan.png', revision: '2020-11-12-1' },
-    { url: '/static/images/manifest/contact-os.svg', revision: '2020-11-12-1' },
-    { url: '/static/images/manifest/icon-512x512.png', revision: '2020-11-12-1' },
-    { url: '/static/images/manifest/user_f.svg', revision: '2020-11-12-1' },
-    { url: '/static/images/manifest/wifi_antenna.svg', revision: '2020-11-12-1' },
+    { url: '/static/images/manifest/agent_f.svg', revision: '2020-11-13-1' },
+    { url: '/static/images/manifest/bid_slogan.png', revision: '2020-11-13-1' },
+    { url: '/static/images/manifest/contact-os.svg', revision: '2020-11-13-1' },
+    { url: '/static/images/manifest/icon-512x512.png', revision: '2020-11-13-1' },
+    { url: '/static/images/manifest/user_f.svg', revision: '2020-11-13-1' },
+    { url: '/static/images/manifest/wifi_antenna.svg', revision: '2020-11-13-1' },
     // Audio Files
-    { url: '/static/media/audio/call_connected.mp3', revision: '2020-11-12-1' },
-    { url: '/static/media/audio/call_ended.mp3', revision: '2020-11-12-1' },
-    { url: '/static/media/audio/calling_ring.mp3', revision: '2020-11-12-1' }
+    { url: '/static/media/audio/call_connected.mp3', revision: '2020-11-13-1' },
+    { url: '/static/media/audio/call_ended.mp3', revision: '2020-11-13-1' },
+    { url: '/static/media/audio/calling_ring.mp3', revision: '2020-11-13-1' }
 ];
 
 // Importing Localforage to access localStorage
@@ -43,7 +43,7 @@ workbox.core.clientsClaim();
 // Configuring Workbox
 workbox.core.setCacheNameDetails({
     prefix: 'contact-os',
-    suffix: 'v2020-11-12-1',
+    suffix: 'v2020-11-13-1',
     precache: 'pre-cache',
     runtime: 'run-time',
     googleAnalytics: 'ga'

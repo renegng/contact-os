@@ -63,21 +63,19 @@ function establishRTC() {
             iceServers: [
                 {
                     urls: [
-                        // 'stun:global.stun.twilio.com:3478',
-                        'stun:stun.l.google.com:19302'
+                        'stun:stun.rxdbit.com'
                     ]
                 },{
                     urls: [
-                        // 'turn:relay.backups.cz?transport=tcp',
-                        'turn:relay.backups.cz'
+                        'turn:turn.rxdbit.com'
                     ],
-                    credential: 'webrtc',
-                    username: 'webrtc'
+                    credential: 'cotnection',
+                    username: 'cotusr'
                 }
             ]
         },
-        initiator: false,
-        trickle: false
+        initiator: this.isInitiator,
+        trickle: true
     });
 
     peer.on('error', err => {
