@@ -4,22 +4,20 @@
 
 const filesToPreCache = [
     // Web pages
-    { url: '/', revision: '2020-11-13-1' },
-    { url: '/acercade/', revision: '2020-11-13-1' },
-    { url: '/login/', revision: '2020-11-13-1' },
-    { url: '/politicaprivacidad/', revision: '2020-11-13-1' },
-    { url: '/terminosdelservicio/', revision: '2020-11-13-1' },
+    { url: '/login/', revision: '2020-11-25-1' },
+    { url: '/politicaprivacidad/', revision: '2020-11-25-1' },
+    { url: '/terminosdelservicio/', revision: '2020-11-25-1' },
     // Images
-    { url: '/static/images/manifest/agent_f.svg', revision: '2020-11-13-1' },
-    { url: '/static/images/manifest/bid_slogan.png', revision: '2020-11-13-1' },
-    { url: '/static/images/manifest/contact-os.svg', revision: '2020-11-13-1' },
-    { url: '/static/images/manifest/icon-512x512.png', revision: '2020-11-13-1' },
-    { url: '/static/images/manifest/user_f.svg', revision: '2020-11-13-1' },
-    { url: '/static/images/manifest/wifi_antenna.svg', revision: '2020-11-13-1' },
+    { url: '/static/images/manifest/agent_f.svg', revision: '2020-11-25-1' },
+    { url: '/static/images/manifest/bid_slogan.png', revision: '2020-11-25-1' },
+    { url: '/static/images/manifest/contact-os.svg', revision: '2020-11-25-1' },
+    { url: '/static/images/manifest/icon-512x512.png', revision: '2020-11-25-1' },
+    { url: '/static/images/manifest/user_f.svg', revision: '2020-11-25-1' },
+    { url: '/static/images/manifest/wifi_antenna.svg', revision: '2020-11-25-1' },
     // Audio Files
-    { url: '/static/media/audio/call_connected.mp3', revision: '2020-11-13-1' },
-    { url: '/static/media/audio/call_ended.mp3', revision: '2020-11-13-1' },
-    { url: '/static/media/audio/calling_ring.mp3', revision: '2020-11-13-1' }
+    { url: '/static/media/audio/call_connected.mp3', revision: '2020-11-25-1' },
+    { url: '/static/media/audio/call_ended.mp3', revision: '2020-11-25-1' },
+    { url: '/static/media/audio/calling_ring.mp3', revision: '2020-11-25-1' }
 ];
 
 // Importing Localforage to access localStorage
@@ -43,7 +41,7 @@ workbox.core.clientsClaim();
 // Configuring Workbox
 workbox.core.setCacheNameDetails({
     prefix: 'contact-os',
-    suffix: 'v2020-11-13-1',
+    suffix: 'v2020-11-25-1',
     precache: 'pre-cache',
     runtime: 'run-time',
     googleAnalytics: 'ga'
@@ -58,6 +56,7 @@ self.addEventListener('activate', event => {
         let validCacheSet = new Set(Object.values(workbox.core.cacheNames));
         validCacheSet.add('contact-os-webfonts');
         validCacheSet.add('contact-os-css_js');
+        validCacheSet.add('contact-os-pages');
         validCacheSet.add('contact-os-img');
 
         return Promise.all(
@@ -80,11 +79,35 @@ swStore.setItem('swVersion', workbox.core.cacheNames.suffix).then( (val) => {
 // Enable Google Analytics Offline
 workbox.googleAnalytics.initialize();
 
+// Cache for Web Pages
+workbox.routing.registerRoute(
+    ({ request }) => request.mode === 'navigate',
+    new workbox.strategies.NetworkFirst({
+        cacheName: 'contact-os-pages',
+        plugins: [
+            // Ensure that only requests that result in a 200 status are cached
+            new workbox.cacheableResponse.CacheableResponsePlugin({
+                statuses: [200],
+            }),
+        ],
+    }),
+);
+
 // Cache for Web Fonts.
 workbox.routing.registerRoute(
     new RegExp(/.*(?:fonts\.googleapis|fonts\.gstatic|cloudflare)\.com/),
-    new workbox.strategies.StaleWhileRevalidate({
-        cacheName: 'contact-os-webfonts'
+    new workbox.strategies.CacheFirst({
+        cacheName: 'contact-os-webfonts',
+        plugins: [
+            new workbox.expiration.ExpirationPlugin({
+                // Keep at most 60 entries.
+                maxEntries: 60,
+                // Don't keep any entries for more than 10 days.
+                maxAgeSeconds: 10 * 24 * 60 * 60,
+                // Automatically cleanup if quota is exceeded.
+                purgeOnQuotaError: true,
+            }),
+        ],
     }),
 );
 
@@ -99,7 +122,7 @@ workbox.routing.registerRoute(
 // Cache for Images
 workbox.routing.registerRoute(
     new RegExp('\.(?:png|gif|webp|jpg|jpeg|svg)$'),
-    new workbox.strategies.StaleWhileRevalidate({
+    new workbox.strategies.CacheFirst({
         cacheName: 'contact-os-img',
         plugins: [
             new workbox.expiration.ExpirationPlugin({

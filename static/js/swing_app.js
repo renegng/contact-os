@@ -284,6 +284,9 @@ export function sendPeerChatMessage(type, text, dateTime, userName) {
             msgDateTime: dateTime,
             msgUserName: userName
         }));
+        if (enableMsgDBStore && type == 'msg') {
+            storeConvMsg(advStreams.myUserInfo.id, text, dateTime, peer);
+        }
     } else if (enableOfflineMsgs) {
         offlineMsgs.push(JSON.stringify({
             msgType: type,
@@ -534,7 +537,7 @@ window.displayCallUI = displayCallUI;
 
 export function initAudioCall() {
     document.getElementById('chat-textarea-input').value = '- Inicio de Audio llamada';
-    document.querySelector('#chat-textarea-button').click();
+    document.getElementById('chat-textarea-button').click();
     startUserMedia('audio', 'init');
 }
 /* Allow 'window' context to reference the function */
@@ -548,7 +551,7 @@ window.acceptAudioCall = acceptAudioCall;
 
 export function initVideoCall() {
     document.getElementById('chat-textarea-input').value = '- Inicio de Video llamada';
-    document.querySelector('#chat-textarea-button').click();
+    document.getElementById('chat-textarea-button').click();
     startUserMedia('audiovideo', 'init');
 }
 /* Allow 'window' context to reference the function */
@@ -570,7 +573,7 @@ export function endAVCall(sendMsg = true) {
             advStreams.myUserInfo.name
         );
         document.getElementById('chat-textarea-input').value = '- Fin de llamada';
-        document.querySelector('#chat-textarea-button').click();
+        document.getElementById('chat-textarea-button').click();
     }
     managePeerStream('end');
 }

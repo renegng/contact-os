@@ -128,6 +128,39 @@ body {
     }
 }
 
+.container-appointments-list {
+    display: flex;
+    flex-flow: wrap;
+    justify-content: space-evenly;
+
+    .mdc-card {
+        margin: 0.25rem 0.2rem;
+        max-width: 18rem;
+        min-width: 15rem;
+        text-align: start;
+
+        .mdc-card__primary-action {
+            padding: 1rem 0.5rem 1rem 1rem;
+
+            .s-mdc-card__appointment-date {
+                margin-bottom: 0.25rem;
+            }
+
+            .s-mdc-card__appointment-service {
+                margin-bottom: 0.5rem;
+            }
+
+            .s-mdc-card__appointment-time {
+                margin-bottom: 0.25rem;
+            }
+        }
+
+        .mdc-card__actions {
+            justify-content: flex-end;
+        }
+    }
+}
+
 .container-avcalls {
     background: stv.$swing-theme-secondary;
     min-height: 90vh;

@@ -1,8 +1,9 @@
-import datetime
-
+from datetime import datetime as dt
+from datetime import timezone as tz
 from flask import current_app as app
 from flask import jsonify
-from models import db, CatalogOperations, CatalogUserRoles, RTCOnlineUsers, User, UserXRole
+from models import db, CatalogServices, CatalogOperations, CatalogUserRoles, RTCOnlineUsers, User, UserXRole
+from models import CatalogSurveysAnswerTypes, Surveys, SurveysQuestions
 
 # -----------------------------------------------------------------------------------------------------
 # DATABASE MINIMUM REQUIRED DATA
@@ -11,17 +12,28 @@ from models import db, CatalogOperations, CatalogUserRoles, RTCOnlineUsers, User
 
 # Initialize Database Populate Function
 def initPopulateDB():
+    # Add Surveys Answer Types Catalog
+    populateSurveysAnswerTypesCatalog()
+
+    # Add Survey - User Satisfaction
+    populateSurveyUserSatisfaction()
+
     # Add Operations Catalog
     populateCatalogOperations()
 
     # Add User Roles Catalog
     populateCatalogUserRoles()
 
+    # Add Services Catalog
+    populateServicesCatalog()
+
     # Add Default Users
     populateDefaultUsers()
 
     # Add Default RTC_OUL
     populateDefaultRTC_OUL()
+
+    app.logger.info('** SWING_CMS ** - Populate Database FINISHED.')
 
 
 # Populate Default RTC Online User List
@@ -30,7 +42,7 @@ def populateDefaultRTC_OUL():
         app.logger.debug('** SWING_CMS ** - Populate Default RTC Online User List')
 
         #Add Default RTC_OUL JSON
-        nowdt = datetime.datetime.utcnow()
+        nowdt = dt.now(tz.utc)
         operation = CatalogOperations.query.filter_by(name_short='ins').first()
 
         rtc_oul = RTCOnlineUsers()
@@ -97,6 +109,110 @@ def populateDefaultUsers():
         return jsonify({ 'status': 'success' })
     except Exception as e:
         app.logger.error('** SWING_CMS ** - Populate Default Users Error: {}'.format(e))
+        return jsonify({ 'status': 'error' })
+
+
+# Populate Catalog Services Data
+def populateServicesCatalog():
+    try:
+        app.logger.debug('** SWING_CMS ** - Populate Catalog Services')
+
+        # Add Services
+        advice = CatalogServices(name='Orientación', name_short='adv')
+        db.session.add(advice)
+
+        lawyer = CatalogServices(name='Asistencia Legal', name_short='law')
+        db.session.add(lawyer)
+
+        support = CatalogServices(name='Soporte', name_short='sup')
+        db.session.add(support)
+        
+        db.session.commit()
+
+        return jsonify({ 'status': 'success' })
+    except Exception as e:
+        app.logger.error('** SWING_CMS ** - Populate Catalog Services Error: {}'.format(e))
+        return jsonify({ 'status': 'error' })
+
+
+# Populate Surveys Answer Types
+def populateSurveysAnswerTypesCatalog():
+    try:
+        app.logger.debug('** SWING_CMS ** - Populate Catalog Surveys Answer Types')
+
+        # Add Answer Types
+        checkboxes = CatalogSurveysAnswerTypes(name='Selección Múltiple', name_short='chk')
+        db.session.add(checkboxes)
+
+        radios = CatalogSurveysAnswerTypes(name='Selección Única', name_short='rad')
+        db.session.add(radios)
+        
+        satisfaction = CatalogSurveysAnswerTypes(name='Rango de Satisfacción (3 Niveles)', name_short='sat_3')
+        db.session.add(satisfaction)
+
+        satisfactionFaces = CatalogSurveysAnswerTypes(name='Rango de Satisfacción (3 Caritas)', name_short='sat_3f')
+        db.session.add(satisfactionFaces)
+
+        textbox = CatalogSurveysAnswerTypes(name='Respuesta de Usuario', name_short='txt')
+        db.session.add(textbox)
+
+        db.session.commit()
+
+        return jsonify({ 'status': 'success' })
+    except Exception as e:
+        app.logger.error('** SWING_CMS ** - Populate Catalog Surveys Answer Types Error: {}'.format(e))
+        return jsonify({ 'status': 'error' })
+
+
+# Populate Survey - User Satisfaction
+def populateSurveyUserSatisfaction():
+    try:
+        app.logger.debug('** SWING_CMS ** - Populate Survey User Satisfaction')
+
+        # Add Questions
+        ans_type = CatalogSurveysAnswerTypes.query.filter_by(name_short='sat_3f').first()
+
+        question01 = SurveysQuestions(
+            question = '¿Cómo calificas tu experiencia con el servicio recibido?',
+            question_answers = {
+                'a_1': 'sentiment_very_dissatisfied',
+                'a_2': 'sentiment_satisfied',
+                'a_3': 'sentiment_very_satisfied'
+            },
+            answers_type = ans_type.id
+        )
+        db.session.add(question01)
+
+        question02 = SurveysQuestions(
+            question = '¿Cómo calificas tu experiencia con la plataforma?',
+            question_answers = {
+                'a_1': 'sentiment_very_dissatisfied',
+                'a_2': 'sentiment_satisfied',
+                'a_3': 'sentiment_very_satisfied'
+            },
+            answers_type = ans_type.id
+        )
+        db.session.add(question02)
+
+        db.session.commit()
+
+        # Add Survey and it's Questions
+        userSatisfactionSurvey = Surveys(
+            name = 'Encuesta de satisfacción de atención.',
+            name_short = 'uss',
+            description = 'Encuesta de satisfacción de usuario sobre la atención recibida y el uso de la plataforma.',
+            questions = {
+                'q_1': question01.id,
+                'q_2': question02.id
+            }
+        )
+        db.session.add(userSatisfactionSurvey)
+
+        db.session.commit()
+
+        return jsonify({ 'status': 'success' })
+    except Exception as e:
+        app.logger.error('** SWING_CMS ** - Populate Survey User Satisfaction Error: {}'.format(e))
         return jsonify({ 'status': 'error' })
 
 

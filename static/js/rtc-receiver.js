@@ -3,6 +3,10 @@ var peer;
 /* Allow 'window' context to reference the function */
 window.peer = peer;
 
+var enableMsgDBStore = false;
+/* Allow 'window' context to reference the function */
+window.enableMsgDBStore = enableMsgDBStore;
+
 var enableOfflineMsgs = true;
 /* Allow 'window' context to reference the function */
 window.enableOfflineMsgs = enableOfflineMsgs;

@@ -3,6 +3,12 @@ var peer;
 /* Allow 'window' context to reference the function */
 window.peer = peer;
 
+var currPeerObj;
+
+var enableMsgDBStore = true;
+/* Allow 'window' context to reference the function */
+window.enableMsgDBStore = enableMsgDBStore;
+
 var enableOfflineMsgs = false;
 /* Allow 'window' context to reference the function */
 window.enableOfflineMsgs = enableOfflineMsgs;
@@ -74,11 +80,23 @@ function initializeRTC () {
         console.log('Received Heartbeat');
         console.log(data);
     });
+
+    // Receive Conversation ID
+    socket.on('receiveConversationId', (data) => {
+        console.log('Conversation Info Retrieved');
+        rtcConnections.forEach((con) => {
+            if (con.rid == data.rid) {
+                con.peer.cid = data.cid;
+                con.peer.sendWelcomeData();
+            }
+        });
+    });
 }
 
 // SimplePeer User Connection Class
 class rtcPeerConnection {
     constructor(init, uListElem) {
+        this.convId = null;
         this.isInitiator = init;
         this.uListElem = uListElem;
         this.isInitialSignal = true;
@@ -107,10 +125,16 @@ class rtcPeerConnection {
             console.log(data);
             if (this.isInitiator) {
                 console.log('Initiator Signaling Started');
-                socket.emit('sendOfferToUser', JSON.stringify({ 'r_id' : this.uListElem.getAttribute('data-meta-rid'), 'data' : data}));
+                socket.emit('sendOfferToUser', JSON.stringify({
+                    'r_id': this.uListElem.getAttribute('data-meta-rid'),
+                    'data': data
+                }));
             } else {
                 console.log('Receiver Signaling Started');
-                socket.emit('sendAnswerToUser', JSON.stringify({ 'r_id' : iRID.id, 'data' : data}));
+                socket.emit('sendAnswerToUser', JSON.stringify({
+                    'r_id': iRID.id,
+                    'data': data
+                }));
             }
             
             if (this.isInitialSignal) {
@@ -136,19 +160,22 @@ class rtcPeerConnection {
         
         this.rtcSimplePeer.on('connect', () => {
             console.log('Initiator Connected');
-            let userData = Object.assign({}, swcms.advStreams.myUserInfo);
 
-            if (this.uListElem.getAttribute('data-meta-uid') == 2) {
-                userData.name = 'Agente Contact-Os';
-                userData.photoURL = '/static/images/manifest/agent_f.svg';
-            }
+            let utype = this.uListElem.getAttribute('data-meta-utype');
+            let uid = (utype != 'anon')? parseInt(this.uListElem.getAttribute('data-meta-uid')) : this.uListElem.getAttribute('data-meta-rid');
+            let upic = this.uListElem.querySelector('.mdc-list-item__graphic').src;
 
-            this.rtcSimplePeer.send(JSON.stringify({
-                msgType: 'welcome',
-                msgUserInfo: userData
+            socket.emit('getConversationId', JSON.stringify({
+                'u_id': uid,
+                'u_ip': this.uListElem.getAttribute('data-meta-ip'),
+                'u_rid': this.uListElem.getAttribute('data-meta-rid'),
+                'u_type': utype,
+                'u_name': this.uListElem.querySelector('.mdc-list-item__primary-text').textContent,
+                'u_photoURL': upic,
+                'e_id': swcms.advStreams.myUserInfo.id,
+                'e_name': swcms.advStreams.myUserInfo.name,
+                'e_photoURL': swcms.advStreams.myUserInfo.photoURL
             }));
-
-            enableRTCUserList();
         });
         
         this.rtcSimplePeer.on('close', () => {
@@ -198,6 +225,7 @@ class rtcPeerConnection {
                     if (!this.uListElem.classList.contains('mdc-list-item--selected')) {
                         this.uListElem.querySelector('.mdc-list-item__meta').classList.remove('container--hidden');
                     }
+                    storeConvMsg((utype != 'anon')? parseInt(uid) : uid, jMsg.msg, jMsg.msgDateTime, this.rtcSimplePeer, this.convId, utype);
                     rtcUserList.insertBefore(this.uListElem, rtcUserList.firstChild);
                     break;
                 
@@ -221,10 +249,10 @@ class rtcPeerConnection {
                     swcms.advStreams.otherUserInfo = jMsg.msgUserInfo;
                     swcms.appendChatMessage(jMsg.msgUserInfo.name + ' Online.', null, 'auto', '', uid);
                     socket.emit('updateUsersStatus', JSON.stringify({
-                        'e_id' : swcms.advStreams.myUserInfo.id,
-                        's_type' : 'busy',
-                        'u_id' : this.uListElem.getAttribute('data-meta-rid'),
-                        'u_type' : this.uListElem.getAttribute('data-meta-utype') 
+                        'e_id': swcms.advStreams.myUserInfo.id,
+                        's_type': 'busy',
+                        'u_id': this.uListElem.getAttribute('data-meta-rid'),
+                        'u_type': utype
                     }));
                     break;
             }
@@ -236,8 +264,33 @@ class rtcPeerConnection {
         });
     }
 
+    get cid() {
+        return this.convId;
+    }
+
     get peerConnection() {
         return this.rtcSimplePeer;
+    }
+
+    set cid(id) {
+        this.convId = id;
+    }
+
+    sendWelcomeData() {
+        console.log('Sending Welcome Data');
+        let userData = Object.assign({}, swcms.advStreams.myUserInfo);
+
+        if (this.uListElem.getAttribute('data-meta-uid') == 2) {
+            userData.name = 'Agente Contact-Os';
+            userData.photoURL = '/static/images/manifest/agent_f.svg';
+        }
+
+        this.rtcSimplePeer.send(JSON.stringify({
+            'msgType': 'welcome',
+            'msgUserInfo': userData
+        }));
+
+        enableRTCUserList();
     }
 }
 
@@ -297,7 +350,8 @@ function establishRTC(init = true, receiverData = null) {
 
     // Set Newly Created Peer as the Current Peer
     if (uListElem.classList.contains('mdc-list-item--selected')) {
-        peer = newPeer.peerConnection;
+        currPeerObj = newPeer;
+        peer = currPeerObj.peerConnection;
     }
 }
 
@@ -327,7 +381,7 @@ document.addEventListener('visibilitychange', () => {
             // After 8 seconds, send a Heartbeat.
             if ((timeInBack % 8) == 0) {
                 if (socket && socket.connected) {
-                    socket.emit('heartbeat', JSON.stringify({ 'hb' : swcms.advStreams.myUserInfo.id }));
+                    socket.emit('heartbeat', JSON.stringify({ 'hb': swcms.advStreams.myUserInfo.id }));
                 }
             }
         }, 1000);
@@ -440,7 +494,8 @@ function checkPeerExists(rid) {
     rtcConnections.forEach((con) => {
         if (con.rid == rid && !con.peer.peerConnection.destroyed) {
             swcms.advStreams.otherUserInfo = con.userInfo;
-            peer = con.peer.peerConnection;
+            currPeerObj = con.peer;
+            peer = currPeerObj.peerConnection;
             val = true;
         }
     });
@@ -596,13 +651,17 @@ function endRTCSession(showUsrSatSurv = false) {
 
     if (!peer.destroyed && peer.connected) {
         peer.send(JSON.stringify({
-            msgType: 'endRTC',
-            showUSS: showUsrSatSurv
+            'msgType': 'endRTC',
+            'showUSS': showUsrSatSurv
         }));
         peer.destroy();
     }
 
-    socket.emit('endRTC', JSON.stringify({ 'e_id' : swcms.advStreams.myUserInfo.id, 'u_id' : r_id, 'u_type' : u_type }));
+    socket.emit('endRTC', JSON.stringify({
+        'e_id': swcms.advStreams.myUserInfo.id,
+        'u_id': r_id,
+        'u_type': u_type
+    }));
     showConversationUI(false, usrElem);
     // If the user is not an Employee, remove the user from the list
     if (u_type == 'anon' || u_type == 'reg'){
@@ -953,6 +1012,25 @@ function showRTCUserList(userlist) {
     }
 }
 
+// Save Conversation Message into DB
+function storeConvMsg(uid, msg, date, convPeer, convId = currPeerObj.cid, uType = 'emp') {
+    if (convPeer && !convPeer.destroyed && convPeer.initiator) {
+        console.log('Storing Conversation');
+        let jsn = JSON.stringify({
+            'msg': msg,
+            'u_id': uid,
+            'date': date,
+            'u_type': uType
+        });
+        socket.emit('saveConversation', {
+            'cid': convId,
+            'data': jsn
+        });
+    }
+}
+/* Allow 'window' context to reference the function */
+window.storeConvMsg = storeConvMsg;
+
 // Transfer RTC User
 function transferRTCUser() {
     console.log('Transfering user...');
@@ -967,13 +1045,17 @@ function transferRTCUser() {
         let loadEl = msgEl.querySelector('.s-loader');
 
         if (!peer.destroyed && peer.connected) {
+            document.getElementById('chat-textarea-input').value = '- Transferencia en curso. Por favor, espere un momento.';
+            document.getElementById('chat-textarea-button').click();
+
             socket.emit('updateUsersStatus', JSON.stringify({
-                'e_id' : swcms.advStreams.myUserInfo.id,
-                's_type' : 'transferred',
-                'u_id' : r_id,
-                'u_type' : u_type,
+                'e_id': swcms.advStreams.myUserInfo.id,
+                's_type': 'transferred',
+                'u_id': r_id,
+                'u_type': u_type,
                 'e_t_id': empUserRadio.value
             }));
+
             peer.destroy();
         }
 
@@ -1019,26 +1101,26 @@ function updateRTCUserPersonalStatus(e) {
     if (e.detail.index == 0) {
         // Available
         socket.emit('updateUsersStatus', JSON.stringify({
-            'e_id' : swcms.advStreams.myUserInfo.id,
-            's_type' : 'online',
-            'u_id' : null,
-            'u_type' : null
+            'e_id': swcms.advStreams.myUserInfo.id,
+            's_type': 'online',
+            'u_id': null,
+            'u_type': null
         }));
     } else if (e.detail.index == 1) {
         // Away
         socket.emit('updateUsersStatus', JSON.stringify({
-            'e_id' : swcms.advStreams.myUserInfo.id,
-            's_type' : 'away',
-            'u_id' : null,
-            'u_type' : null
+            'e_id': swcms.advStreams.myUserInfo.id,
+            's_type': 'away',
+            'u_id': null,
+            'u_type': null
         }));
     } else if (e.detail.index == 2) {
         // On a meeting
         socket.emit('updateUsersStatus', JSON.stringify({
-            'e_id' : swcms.advStreams.myUserInfo.id,
-            's_type' : 'meeting',
-            'u_id' : null,
-            'u_type' : null
+            'e_id': swcms.advStreams.myUserInfo.id,
+            's_type': 'meeting',
+            'u_id': null,
+            'u_type': null
         }));
     }
 }
