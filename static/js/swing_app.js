@@ -136,7 +136,7 @@ export function playAudio(audioEl, play) {
 
 
 // Send Chat Message
-export function createChatMessageContainer(txt, dateTime, user, userName = '') {
+export function createChatMessageContainer(txt, dateTime, user, userName = '', appendBefore = false) {
     let msgContainer = document.createElement('p');
     let msgContainerMsg = document.createElement('span');
     let msgContainerTime = document.createElement('span');
@@ -176,7 +176,11 @@ export function createChatMessageContainer(txt, dateTime, user, userName = '') {
     msgContainer.appendChild(msgContainerMsg);
     
     if (user != 'auto') {
-        msgContainerTime.textContent = returnFormatDate(dateTime);
+        if (appendBefore) {
+            msgContainerTime.textContent = returnFormatDate(dateTime, 'full');
+        } else {
+            msgContainerTime.textContent = returnFormatDate(dateTime);
+        }
         msgContainer.appendChild(msgContainerTime);
     }
 
@@ -184,12 +188,12 @@ export function createChatMessageContainer(txt, dateTime, user, userName = '') {
 }
 
 var lastMsgUser = '';
-export function appendChatMessage(txt, dateTime, user, userName = '', chatMsgElem = '', otherUserPhoto = '') {
+export function appendChatMessage(txt, dateTime, user, userName = '', chatMsgElem = '', otherUserPhoto = '', appendBefore = false) {
     let chatContainer = document.querySelector('.container-chat--body-messages-active');
     if (chatMsgElem) {
         chatContainer = document.getElementById('m_' + chatMsgElem);
     }
-    let msgContainer = createChatMessageContainer(txt, dateTime, user, userName);
+    let msgContainer = createChatMessageContainer(txt, dateTime, user, userName, appendBefore);
 
     if (lastMsgUser != userName && user != 'auto') {
         let msgContainerUserHeader = document.createElement('p');
@@ -214,12 +218,23 @@ export function appendChatMessage(txt, dateTime, user, userName = '', chatMsgEle
         msgContainerUserHeader.appendChild(msgContainerUserHeaderPic);
         msgContainerUserHeader.appendChild(msgContainerUserHeaderName);
 
-        chatContainer.appendChild(msgContainerUserHeader);
+        if (appendBefore) {
+            let insBefElm = chatContainer.querySelector('.container-chat--body-messages-load');
+            chatContainer.insertBefore(msgContainerUserHeader, insBefElm)
+        } else {
+            chatContainer.appendChild(msgContainerUserHeader);
+        }
 
         lastMsgUser = userName;
     }
     
-    chatContainer.appendChild(msgContainer);
+    if (appendBefore) {
+        let insBefElm = chatContainer.querySelector('.container-chat--body-messages-load');
+        chatContainer.insertBefore(msgContainer, insBefElm)
+    } else {
+        chatContainer.appendChild(msgContainer);
+    }
+    
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 

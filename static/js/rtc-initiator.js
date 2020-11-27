@@ -82,14 +82,26 @@ function initializeRTC () {
     });
 
     // Receive Conversation ID
-    socket.on('receiveConversationId', (data) => {
+    socket.on('setConversationId', (data) => {
         console.log('Conversation Info Retrieved');
+        let convPeer = null;
         rtcConnections.forEach((con) => {
             if (con.rid == data.rid) {
                 con.peer.cid = data.cid;
-                con.peer.sendWelcomeData();
+                convPeer = con.peer;
             }
         });
+        if (convPeer) {
+            convPeer.sendWelcomeData();
+            getConversationMessages(convPeer.cid, 'current', convPeer.uid);
+        }
+    });
+
+    // Receive Conversation Messages
+    socket.on('setConversationMessages', (data) => {
+        console.log('Conversation Messages Retrieved');
+        console.log(data);
+        showConversationMessages(data.users, data.messages, data.uidElm);
     });
 }
 
@@ -270,6 +282,12 @@ class rtcPeerConnection {
 
     get peerConnection() {
         return this.rtcSimplePeer;
+    }
+
+    get uid() {
+        let utype = this.uListElem.getAttribute('data-meta-utype');
+        let uid = (utype != 'anon')? this.uListElem.getAttribute('data-meta-uid') : this.uListElem.getAttribute('data-meta-rid');
+        return uid;
     }
 
     set cid(id) {
@@ -611,16 +629,20 @@ function createRTCMessagesUserContainer(room_id, user, uType) {
     let bounce1 = document.createElement('div');
     let bounce2 = document.createElement('div');
     let bounce3 = document.createElement('div');
+    let prevMsgs = document.createElement('div');
 
     userContainer.classList.add('container-chat--body-messages', 'container-chat--body-messages-hidden');
     loader.classList.add('s-loader');
     bounce1.classList.add('s-loader-bounce1');
     bounce2.classList.add('s-loader-bounce2');
     bounce3.classList.add('s-loader-bounce3');
+    prevMsgs.classList.add('container-chat--body-messages-load');
 
     loader.appendChild(bounce1);
     loader.appendChild(bounce2);
     loader.appendChild(bounce3);
+    
+    userContainer.appendChild(prevMsgs);
     userContainer.appendChild(loader);
 
     userContainer.id = (uType == 'anon')? 'm_' + room_id : 'm_' + user.id;
@@ -733,6 +755,21 @@ if (document.querySelector('#d-transfer-ufilter-input')) {
     });
 }
 
+// Retrieve Conversation Messages
+function getConversationMessages(cid, date, uidElm) {
+    console.log('Retrieving Messages...');
+    if (cid && date) {
+        let jsn = JSON.stringify({
+            'c_date': date,
+            'uidElm': uidElm
+        });
+        socket.emit('getConversationMessages', {
+            'cid': cid,
+            'data': jsn
+        });
+    }
+}
+
 // Hide RTC User Message Container Loader
 function hideRTCMessagesLoader(uid) {
     let msgContainer = document.getElementById('m_' + uid);
@@ -839,6 +876,27 @@ function showContactsList() {
     if (elemFocus) {
         elemFocus.classList.remove('mdc-list-item--selected');
     }
+}
+
+// Show Conversation Messages Retrieved
+function showConversationMessages(users, messages, uid) {
+    messages.forEach((msg) => {
+        if (msg.user_id == swcms.advStreams.myUserInfo.id) {
+            let usr_name = swcms.advStreams.myUserInfo.name;
+            let usr_photoURL = swcms.advStreams.myUserInfo.photoURL;
+            swcms.appendChatMessage(msg.message, msg.msg_date, 'me', usr_name, uid, usr_photoURL, true);
+        } else {
+            let usr_name;
+            let usr_photoURL;
+            users.forEach((user) => {
+                if (msg.user_id == user.id) {
+                    usr_name = user.name;
+                    usr_photoURL = user.photoURL;
+                }
+            });
+            swcms.appendChatMessage(msg.message, msg.msg_date, 'others', usr_name, uid, usr_photoURL, true);
+        }
+    });
 }
 
 // Show Conversation UI
@@ -1043,6 +1101,7 @@ function transferRTCUser() {
         let uid = (u_type == 'anon')? r_id : userTransfer.getAttribute('data-meta-uid');
         let msgEl = document.getElementById('m_' + uid);
         let loadEl = msgEl.querySelector('.s-loader');
+        let msgloadEl = msgEl.querySelector('.container-chat--body-messages-load');
 
         if (!peer.destroyed && peer.connected) {
             document.getElementById('chat-textarea-input').value = '- Transferencia en curso. Por favor, espere un momento.';
@@ -1064,6 +1123,7 @@ function transferRTCUser() {
         empUserRadio.checked = false;
         enableRTCUserList();
         msgEl.textContent = '';
+        msgEl.appendChild(msgloadEl);
         msgEl.appendChild(loadEl);
         swcms.showUserRTCConSnackbar('trn', userTransfer.querySelector('.mdc-list-item__primary-text').textContent);
     }

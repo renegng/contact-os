@@ -231,8 +231,8 @@ def _endrtc(js):
 
 
 @socketio.on('getConversationId')
-def _getConversation(js):
-    app.logger.debug('** SWING_CMS ** - SocketIO Get Conversation: {}'.format(js))
+def _getConversationId(js):
+    app.logger.debug('** SWING_CMS ** - SocketIO Get Conversation ID: {}'.format(js))
     try:
         j = json.loads(js)
         usr_id = j['u_id']
@@ -384,9 +384,78 @@ def _getConversation(js):
             'cid': usr_conversation_id_b64
         }
 
-        socketio.emit('receiveConversationId', usr_conversation_id, room=request.sid)
+        socketio.emit('setConversationId', usr_conversation_id, room=request.sid)
     except Exception as e:
-        app.logger.error('** SWING_CMS ** - SocketIO Get Conversation Error: {}'.format(e))
+        app.logger.error('** SWING_CMS ** - SocketIO Get Conversation ID Error: {}'.format(e))
+        return jsonify({ 'status': 'error' })
+
+
+@socketio.on('getConversationMessages')
+def _getConversationMessages(js):
+    app.logger.debug('** SWING_CMS ** - SocketIO Get Conversation Messages: {}'.format(js))
+    try:
+        usr_conv_obj = json.loads(base64.b64decode(js['cid']).decode('utf-8'))
+        usr_conv_type = usr_conv_obj['u_type']
+        
+        j = json.loads(js['data'])
+        req_date = j['c_date']
+        uid = j['uidElm']
+
+        # Depending on the user type, we need to retrieve the Conversation
+        usr_conv_date = None
+        usr_conversation = None
+
+        if req_date == 'current':
+            usr_conv_date = dt.fromtimestamp(usr_conv_obj['date'])
+        else:
+            usr_conv_date = dt.fromtimestamp(req_date)
+
+        if usr_conv_type == 'anon':
+            if req_date == 'current':
+                usr_conversation = ChatsAnonymous.query.filter_by(
+                    date=usr_conv_date,
+                    sid=usr_conv_obj['sid']
+                ).first()
+
+        elif usr_conv_type == 'reg':
+            if req_date == 'current':
+                usr_conversation = ChatsRegistered.query.filter_by(
+                    date=usr_conv_date,
+                    user_id=int(usr_conv_obj['user_id'])
+                ).first()
+            else:
+                usr_conversation = ChatsRegistered.query.filter_by(
+                    date < usr_conv_date,
+                    user_id=int(usr_conv_obj['user_id'])
+                ).order_by(ChatsRegistered.date.desc()).first()
+
+        elif usr_conv_type == 'emp':
+            if req_date == 'current':
+                usr_conversation = ChatsEmployees.query.filter_by(
+                    date=usr_conv_date,
+                    user_id_01=int(usr_conv_obj['user_id_01']),
+                    user_id_02=int(usr_conv_obj['user_id_02'])
+                ).first()
+            else:
+                usr_conversation = ChatsEmployees.query.filter_by(
+                    date < usr_conv_date,
+                    user_id_01=int(usr_conv_obj['user_id_01']),
+                    user_id_02=int(usr_conv_obj['user_id_02'])
+                ).order_by(ChatsEmployees.date.desc()).first()
+
+        if usr_conversation is not None:
+            response = {
+                'users': usr_conversation.users,
+                'messages': usr_conversation.messages,
+                'uidElm': uid
+            }
+            app.logger.debug('** SWING_CMS ** - SocketIO Get Conversation Messages Users: {}'.format(usr_conversation.users))
+            app.logger.debug('** SWING_CMS ** - SocketIO Get Conversation Messages Messages: {}'.format(usr_conversation.messages))
+            
+            socketio.emit('setConversationMessages', response, room=request.sid)
+
+    except Exception as e:
+        app.logger.error('** SWING_CMS ** - SocketIO Get Conversation Messages Error: {}'.format(e))
         return jsonify({ 'status': 'error' })
 
 

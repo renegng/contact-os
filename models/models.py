@@ -404,6 +404,8 @@ class User(UserMixin, db.Model):
 class UserExtraInfo(db.Model):
     __tablename__ = 'user_extra_info'
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    last_names = db.Column(db.String(300), unique=False, nullable=True)
+    names = db.Column(db.String(300), unique=False, nullable=True)
     avatar = db.Column(db.String(16), unique=False, nullable=True)
     country = db.Column(db.JSON, unique=False, nullable=True)
     state = db.Column(db.JSON, unique=False, nullable=True)
@@ -412,6 +414,8 @@ class UserExtraInfo(db.Model):
     def __repr__(self):
         return jsonify(
             id = self.id,
+            names = self.names,
+            last_names = self.last_names,
             avatar = self.avatar,
             country = self.country,
             state = self.state,
