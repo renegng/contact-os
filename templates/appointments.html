@@ -132,8 +132,13 @@
 </main>
 {% endblock %}
 {% block bottombar %}
+{% if current_user.is_user_role(['adm','emp']) %}
+<button id="floatingButton" class="mdc-fab mdc-fab--extended mdc-fab--fixed" aria-label="Create appointment"
+        data-action-type="redirect" data-action-val="/appointments/create/admin/">
+{% elif current_user.is_user_role(['usr']) %}
 <button id="floatingButton" class="mdc-fab mdc-fab--extended mdc-fab--fixed" aria-label="Create appointment"
         data-action-type="redirect" data-action-val="/appointments/create/">
+{% endif %}
     <div class="mdc-fab__ripple"></div>
     <span class="mdc-fab__label">Solicita una cita</span>
     <span class="material-icons mdc-fab__icon">add</span>

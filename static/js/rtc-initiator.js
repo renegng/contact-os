@@ -232,13 +232,25 @@ class rtcPeerConnection {
                     break;
         
                 case 'msg':
-                    let rtcUserList = document.querySelector('#active-rooms');
+                    let rtcUserList = '';
+                    switch (utype) {
+                        case 'anon':
+                            rtcUserList = document.querySelector('#anon-active-rooms');
+                            break;
+                        case 'emp':
+                            rtcUserList = document.querySelector('#emp-active-rooms');
+                            break;
+                        case 'reg':
+                            rtcUserList = document.querySelector('#reg-active-rooms');
+                            break;
+                    }
                     swcms.appendChatMessage(jMsg.msg, jMsg.msgDateTime, 'others', jMsg.msgUserName, uid, upic);
                     if (!this.uListElem.classList.contains('mdc-list-item--selected')) {
                         this.uListElem.querySelector('.mdc-list-item__meta').classList.remove('container--hidden');
                     }
                     storeConvMsg((utype != 'anon')? parseInt(uid) : uid, jMsg.msg, jMsg.msgDateTime, this.rtcSimplePeer, this.convId, utype);
-                    rtcUserList.insertBefore(this.uListElem, rtcUserList.firstChild);
+                    let nxtElm = rtcUserList.querySelector('.container-chat--sidemenu-rooms-usertype-header');
+                    nxtElm.after(this.uListElem);
                     break;
                 
                 case 'typ':
@@ -319,9 +331,12 @@ function establishRTC(init = true, receiverData = null) {
     if (init) {
         uListElem = this;
     } else {
-        document.querySelectorAll('#active-rooms > li').forEach((elm) => {
-            if (elm.getAttribute('data-meta-rid') == iRID.id)
-                uListElem = elm;
+        document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
+            let qry = 'li:not(.container-chat--sidemenu-rooms-usertype-header):not(.container-chat--sidemenu-rooms-usertype-empty)';
+            cont.querySelectorAll(qry).forEach((elm) => {
+                if (elm.getAttribute('data-meta-rid') == iRID.id)
+                    uListElem = elm;
+            });
         });
     }
 
@@ -485,7 +500,7 @@ function appendRTCUser(room_id, user, uType) {
     userContainer = document.getElementById('l_' + uid);
     // If there is no container, user is a new one
     if (!userContainer) {
-        userContainer = createRTCListUserContainer();
+        userContainer = createRTCListUserContainer(uType);
         createRTCMessagesUserContainer(room_id, user, uType);
     }
     setRTCUserContainer(userContainer, room_id, user, uType);
@@ -531,10 +546,13 @@ function checkUserAssignment(uListElem) {
         let ename = '';
         let uname = uListElem.querySelector('.mdc-list-item__primary-text').textContent;
 
-        document.querySelectorAll('#active-rooms > li').forEach((elm) => {
-            if (elm.getAttribute('data-meta-uid') == aid) {
-                ename = elm.querySelector('.mdc-list-item__primary-text').textContent;
-            }
+        document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
+            let qry = 'li:not(.container-chat--sidemenu-rooms-usertype-header):not(.container-chat--sidemenu-rooms-usertype-empty)';
+            cont.querySelectorAll(qry).forEach((elm) => {
+                if (elm.getAttribute('data-meta-uid') == aid) {
+                    ename = elm.querySelector('.mdc-list-item__primary-text').textContent;
+                }
+            });
         });
 
         document.getElementById('d-assigned-empname').textContent = ename;
@@ -549,7 +567,7 @@ function checkUserAssignment(uListElem) {
 }
 
 // Create RTC User List Element
-function createRTCListUserContainer(parentContainer = 'rtcConversationList') {
+function createRTCListUserContainer(parentContainer) {
     let userContainer = document.createElement('li');
     let ripple = document.createElement('span');
     let userPhoto = document.createElement('img');
@@ -570,15 +588,7 @@ function createRTCListUserContainer(parentContainer = 'rtcConversationList') {
 
     userStatus.textContent = 'stop_circle';
 
-    if (parentContainer == 'rtcConversationList') {
-        let notification = document.createElement('i');
-
-        notification.classList.add('material-icons', 's-font-color-primary');
-        notification.textContent = 'notification_important';
-
-        metaContainer.classList.add('container--hidden');
-        metaContainer.appendChild(notification);
-    } else if (parentContainer == 'rtcTransferList') {
+    if (parentContainer == 'rtcTransferList') {
         let radioInput = document.createElement('input');
         let radioBack = document.createElement('span');
         let radioOuter = document.createElement('span');
@@ -601,6 +611,14 @@ function createRTCListUserContainer(parentContainer = 'rtcConversationList') {
         metaContainer.appendChild(radioInput);
         metaContainer.appendChild(radioBack);
         metaContainer.appendChild(radioRipple);
+    } else {
+        let notification = document.createElement('i');
+
+        notification.classList.add('material-icons', 's-font-color-primary');
+        notification.textContent = 'notification_important';
+
+        metaContainer.classList.add('container--hidden');
+        metaContainer.appendChild(notification);
     }
 
     textContainer.appendChild(userName);
@@ -611,12 +629,23 @@ function createRTCListUserContainer(parentContainer = 'rtcConversationList') {
     userContainer.appendChild(textContainer);
     userContainer.appendChild(metaContainer);
 
-    if (parentContainer == 'rtcConversationList') {
-        userContainer.addEventListener('click', establishRTC);
-        document.querySelector('#active-rooms').appendChild(userContainer);
-    } else if (parentContainer == 'rtcTransferList') {
-        userContainer.setAttribute('tabindex', '0');
-        document.querySelector('#transfer-list').appendChild(userContainer);
+    switch (parentContainer) {
+        case 'anon':
+            userContainer.addEventListener('click', establishRTC);
+            document.querySelector('#anon-active-rooms').appendChild(userContainer);
+            break;
+        case 'emp':
+            userContainer.addEventListener('click', establishRTC);
+            document.querySelector('#emp-active-rooms').appendChild(userContainer);
+            break;
+        case 'reg':
+            userContainer.addEventListener('click', establishRTC);
+            document.querySelector('#reg-active-rooms').appendChild(userContainer);
+            break;
+        case 'rtcTransferList':
+            userContainer.setAttribute('tabindex', '0');
+            document.querySelector('#transfer-list').appendChild(userContainer);
+            break;
     }
     
     return userContainer;
@@ -655,18 +684,27 @@ function createRTCMessagesUserContainer(room_id, user, uType) {
 
 // Enable or Disable RTC User List to prevent connection issues
 function enableRTCUserList(enable = true){
-    document.querySelectorAll('#active-rooms > li').forEach((elm) => {
-        if (enable) {
-            elm.classList.remove('container--disable-click');
-        } else {
-            elm.classList.add('container--disable-click');
-        }
+    document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
+        let qry = 'li:not(.container-chat--sidemenu-rooms-usertype-header):not(.container-chat--sidemenu-rooms-usertype-empty)';
+        cont.querySelectorAll(qry).forEach((elm) => {
+            if (enable) {
+                elm.classList.remove('container--disable-click');
+            } else {
+                elm.classList.add('container--disable-click');
+            }
+        });
     });
 }
 
 // End RTC User Session
 function endRTCSession(showUsrSatSurv = false) {
-    let usrElem = document.getElementById('active-rooms').querySelector('.mdc-list-item--selected');
+    let usrElem = null;
+    document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
+        if (cont.querySelector('.mdc-list-item--selected')) {
+            usrElem = cont.querySelector('.mdc-list-item--selected');
+        };
+    });
+
     let r_id = usrElem.getAttribute('data-meta-rid');
     let u_type = usrElem.getAttribute('data-meta-utype');
     let uid = (u_type == 'anon')? r_id : usrElem.getAttribute('data-meta-uid');
@@ -696,29 +734,65 @@ function endRTCSession(showUsrSatSurv = false) {
 // Filter RTC User List
 var lastRTCFilterVal = 'all';
 function filterRTCUserList(value) {
+    let qry = 'li:not(.container-chat--sidemenu-rooms-usertype-header):not(.container-chat--sidemenu-rooms-usertype-empty)';
     switch (value) {
         case 'all':
-            document.querySelectorAll('#active-rooms > li').forEach((elm) => {
-                elm.classList.remove('container--hidden');
+            document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
+                cont.querySelectorAll(qry).forEach((elm) => {
+                    elm.classList.remove('container--hidden');
+                });
+                cont.classList.remove('container--hidden');
             });
             break;
         case 'anon':
-        case 'emp':
-        case 'reg':
-            document.querySelectorAll('#active-rooms > li').forEach((elm) => {
-                if (elm.getAttribute('data-meta-utype') != value) {
-                    elm.classList.add('container--hidden');
+            document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
+                if (cont.getAttribute('id') == 'anon-active-rooms') {
+                    cont.querySelectorAll(qry).forEach((elm) => {
+                        elm.classList.remove('container--hidden');
+                    });
+                    cont.classList.remove('container--hidden');
                 } else {
-                    elm.classList.remove('container--hidden');
+                    cont.classList.add('container--hidden');
+                }
+            });
+            break;
+        case 'emp':
+            document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
+                if (cont.getAttribute('id') == 'emp-active-rooms') {
+                    cont.querySelectorAll(qry).forEach((elm) => {
+                        elm.classList.remove('container--hidden');
+                    });
+                    cont.classList.remove('container--hidden');
+                } else {
+                    cont.classList.add('container--hidden');
+                }
+            });
+            break;
+        case 'reg':
+            document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
+                if (cont.getAttribute('id') == 'reg-active-rooms') {
+                    cont.querySelectorAll(qry).forEach((elm) => {
+                        elm.classList.remove('container--hidden');
+                    });
+                    cont.classList.remove('container--hidden');
+                } else {
+                    cont.classList.add('container--hidden');
                 }
             });
             break;
         case 'mine':
-            document.querySelectorAll('#active-rooms > li').forEach((elm) => {
-                if (elm.getAttribute('data-meta-assigned') == swcms.advStreams.myUserInfo.id) {
-                    elm.classList.remove('container--hidden');
-                } else {
-                    elm.classList.add('container--hidden');
+            document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
+                let hasMine = false;
+                cont.querySelectorAll(qry).forEach((elm) => {
+                    if (elm.getAttribute('data-meta-assigned') == swcms.advStreams.myUserInfo.id) {
+                        elm.classList.remove('container--hidden');
+                        hasMine = true;
+                    } else {
+                        elm.classList.add('container--hidden');
+                    }
+                });
+                if (!hasMine) {
+                    cont.classList.add('container--hidden');
                 }
             });
             break;
@@ -865,7 +939,13 @@ function showContactsList() {
     let chatNoConver = document.querySelector('.container-chat--no-conversation');
     let chatTopBarEl = document.querySelector('.container-chat--topbar');
     let sideMenuEl = document.querySelector('.container-chat--sidemenu');
-    let elemFocus = document.querySelector('.container-chat--sidemenu-rooms').querySelector('.mdc-list-item--selected');
+    let elemFocus = null;
+
+    document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
+        if (cont.querySelector('.mdc-list-item--selected')) {
+            elemFocus = cont.querySelector('.mdc-list-item--selected');
+        };
+    });
 
     chatBodyEl.classList.add('container--hidden');
     chatFooterEl.classList.add('container--hidden');
@@ -916,7 +996,13 @@ function showConversationUI(showOrHide, usrElem) {
         let uType = usrElem.getAttribute('data-meta-utype');
         let uid = (uType == 'anon')? usrElem.getAttribute('data-meta-rid') : usrElem.getAttribute('data-meta-uid');
         let chatMessagesEl = document.getElementById('m_' + uid);
-        let currentElemFocus = document.querySelector('.container-chat--sidemenu-rooms').querySelector('.mdc-list-item--selected');
+        let currentElemFocus = null;
+        
+        document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
+            if (cont.querySelector('.mdc-list-item--selected')) {
+                currentElemFocus = cont.querySelector('.mdc-list-item--selected');
+            };
+        });
 
         chatBodyEl.classList.remove('container--hidden');
         chatFooterEl.classList.remove('container--hidden');
@@ -1035,29 +1121,40 @@ function showRTCUserList(userlist) {
             elm.remove();
         }
     });
-    document.querySelectorAll('#active-rooms > li').forEach((elm) => {
-        if (!rtcULID.includes(elm.id)) {
-            // Get User Type and ID
-            let uType = elm.getAttribute('data-meta-utype');
-            let id = (uType == 'anon')? elm.getAttribute('data-meta-rid') : elm.getAttribute('data-meta-uid');
-
-            if (!elm.classList.contains('mdc-list-item--selected')){
-                // Remove element if not in focus
-                let m_elm = document.getElementById('m_' + id);
-                elm.remove();
-                m_elm.remove();
-            } else {
-                // Update element to offline if in focus
-                updateRTCUserStatus(id, 'Offline');
+    document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
+        let qry = 'li:not(.container-chat--sidemenu-rooms-usertype-header):not(.container-chat--sidemenu-rooms-usertype-empty)';
+        cont.querySelectorAll(qry).forEach((elm) => {
+            if (!rtcULID.includes(elm.id)) {
+                // Get User Type and ID
+                let uType = elm.getAttribute('data-meta-utype');
+                let id = (uType == 'anon')? elm.getAttribute('data-meta-rid') : elm.getAttribute('data-meta-uid');
+    
+                if (!elm.classList.contains('mdc-list-item--selected')){
+                    // Remove element if not in focus
+                    let m_elm = document.getElementById('m_' + id);
+                    elm.remove();
+                    m_elm.remove();
+                } else {
+                    // Update element to offline if in focus
+                    updateRTCUserStatus(id, 'Offline');
+                }
             }
-        }
+        });
     });
     // Show No Active Room if there are no users
-    if (document.querySelectorAll('#active-rooms > li').length > 0) {
-        document.querySelector('#no-active-room').classList.add('container--hidden');
-        filterRTCUserList(lastRTCFilterVal);
-    } else {
-        document.querySelector('#no-active-room').classList.remove('container--hidden');
+    let noActiveRooms = true;
+    document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
+        let qry = 'li:not(.container-chat--sidemenu-rooms-usertype-header):not(.container-chat--sidemenu-rooms-usertype-empty)';
+        if (cont.querySelectorAll(qry).length > 0) {
+            cont.querySelector('.container-chat--sidemenu-rooms-usertype-empty').classList.add('container--hidden');
+            if (cont.querySelectorAll('.mdc-list-item--selected').length > 0)
+                noActiveRooms = false;
+        } else {
+            cont.querySelector('.container-chat--sidemenu-rooms-usertype-empty').classList.remove('container--hidden');
+        }
+    });
+    filterRTCUserList(lastRTCFilterVal);
+    if (noActiveRooms) {
         showConversationUI(false, '');
     }
 
@@ -1095,7 +1192,12 @@ function transferRTCUser() {
     let empUserRadio = document.querySelector('input[name="d-transfer-radios"]:checked');
     
     if (empUserRadio) {
-        let userTransfer = document.querySelector('.container-chat--sidemenu-rooms').querySelector('.mdc-list-item--selected');
+        let userTransfer = null;
+        document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
+            if (cont.querySelector('.mdc-list-item--selected')) {
+                userTransfer = cont.querySelector('.mdc-list-item--selected');
+            };
+        });
         let r_id = userTransfer.getAttribute('data-meta-rid');
         let u_type = userTransfer.getAttribute('data-meta-utype');
         let uid = (u_type == 'anon')? r_id : userTransfer.getAttribute('data-meta-uid');

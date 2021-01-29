@@ -30,8 +30,15 @@ def _appointments():
 @home.route('/appointments/create/')
 @login_required
 def _appointmentscreate():
-    app.logger.debug('** SWING_CMS ** - CrearCitas')
+    app.logger.debug('** SWING_CMS ** - Crear Citas')
     return render_template('appointments_create.html')
+
+
+@home.route('/appointments/create/admin/')
+@login_required
+def _appointmentscreateadmin():
+    app.logger.debug('** SWING_CMS ** - Crear Citas Admin')
+    return render_template('appointments_create_admin.html')
 
 
 @home.route('/chat/')

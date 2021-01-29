@@ -86,6 +86,7 @@ class CatalogServices(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
     name_short = db.Column(db.String(6), unique=True, nullable=True)
+    enabled = db.Column(db.Boolean, unique=False, nullable=True, default=True)
     break_minutes = db.Column(db.Integer, unique=False, nullable=True, default=15)
     duration_minutes = db.Column(db.Integer, unique=False, nullable=True, default=45)
     service_user_role = db.Column(db.Integer, db.ForeignKey('catalog_user_roles.id'), nullable=True)
