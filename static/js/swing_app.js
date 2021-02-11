@@ -9,6 +9,7 @@ import { MDCDialog } from '@material/dialog';
 import { MDCDrawer } from "@material/drawer";
 import { MDCFloatingLabel } from '@material/floating-label';
 import { MDCIconButtonToggle } from '@material/icon-button';
+import { MDCLinearProgress } from '@material/linear-progress';
 import { MDCLineRipple } from '@material/line-ripple';
 import { MDCList } from "@material/list";
 import { MDCMenu, Corner } from '@material/menu';
@@ -31,7 +32,7 @@ import { Workbox } from 'workbox-window/Workbox.mjs';
 export function returnFormatDate(dateTime, type = '') {
     var dt = new Date(dateTime);
     var year = dt.getFullYear();
-    var month = dt.getMonth();
+    var month = dt.getMonth() + 1; //months starts at 0
     var day = dt.getDate();
     var hours = dt.getHours();
     var min = dt.getMinutes();
@@ -41,13 +42,13 @@ export function returnFormatDate(dateTime, type = '') {
     var hoursampm = ((hours + 11) % 12 + 1);
 
     if (month.toString().length == 1) {
-        month = '0' + (month +1);
+        month = '0' + month;
     }
     if (day.toString().length == 1) {
         day = '0' + day;
     }
-    if (hours.toString().length == 1) {
-        hours = '0' + hours;
+    if (hoursampm.toString().length == 1) {
+        hoursampm = '0' + hoursampm;
     }
     if (min.toString().length == 1) {
         min = '0' + min;
@@ -75,8 +76,9 @@ window.returnFormatDate = returnFormatDate;
 
 
 // Fetch API
-export function getFetch(url) {
-    fetch(url)
+export function getFetch(url, actionFn = null, options = {}) {
+    mdcTopBarLoading.open();
+    fetch(url, options)
         .then((response) => {
             if (response.status >= 200 && response.status < 300) {
                 return Promise.resolve(response)
@@ -89,13 +91,20 @@ export function getFetch(url) {
         })
         .then((data) => {
             console.log('Request succeeded with JSON response: ', data);
+            mdcTopBarLoading.close();
+            if (actionFn) {
+                let fn = (typeof actionFn == "string") ? window[actionFn] : actionFn;
+                fn(data);
+            }
         })
         .catch(function (error) {
             console.log('Request failed: ', error);
+            mdcTopBarLoading.close();
         });
 }
 
 export function postFetch(url, postData) {
+    mdcTopBarLoading.open();
     fetch(url, {
         method: 'POST',
         headers: {
@@ -110,12 +119,14 @@ export function postFetch(url, postData) {
         })
         .then((data) => {
             console.log('Request succeeded with JSON response: ', data);
+            mdcTopBarLoading.close();
             if (data.cmd == 'redirectURL') {
                 window.location.assign(data.action);
             }
         })
         .catch(function (error) {
             console.log('Request failed: ', error);
+            mdcTopBarLoading.close();
         });
 }
 
@@ -965,6 +976,14 @@ var mdcLineRipples = [].map.call(document.querySelectorAll('.mdc-line-ripple'), 
 });
 
 
+// Material Linear Progress
+export const mdcTopBarLoading = new MDCLinearProgress(document.querySelector('.s-topbar-loading'));
+
+var mdcLinearProgress = [].map.call(document.querySelectorAll('.mdc-linear-progress:not(.s-topbar-loading)'), function (el) {
+    return new MDCLinearProgress(el);
+});
+
+
 // Material Lists
 var mdcLists = [].map.call(document.querySelectorAll('.mdc-list:not(.mdc-menu__items):not(.mdc-select__list)'), function (el) {
     let elList = new MDCList(el);
@@ -1058,12 +1077,17 @@ const snackbar = new MDCSnackbar(document.querySelector('.mdc-snackbar'));
 
 
 // Material Selects
-var mdcSelects = [].map.call(document.querySelectorAll('.mdc-select'), function (el) {
+export var mdcSelects = [].map.call(document.querySelectorAll('.mdc-select'), function (el) {
     let mdcSel = new MDCSelect(el);
     let actionFn = el.getAttribute('data-action-fn');
+    let assignedVar = el.getAttribute('data-assigned-var');
     if (actionFn) {
         let fn = (typeof actionFn == "string") ? window[actionFn] : actionFn;
         mdcSel.listen('MDCSelect:change', () => fn(mdcSel.value));
+    }
+    if (assignedVar) {
+        MDCSelect.prototype.assignedVar = null;
+        mdcSel.assignedVar = assignedVar;
     }
     return mdcSel;
 });

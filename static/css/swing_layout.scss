@@ -93,6 +93,12 @@ body {
     }
 }
 
+.s-topbar-loading {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+}
+
 /* Container layouts */
 
 .container-appointment {
@@ -937,7 +943,7 @@ body {
 
 .jsCalendar.classic-theme.primary thead .jsCalendar-nav-left:hover,
 .jsCalendar.classic-theme.primary thead .jsCalendar-nav-right:hover {
-    background-color: darken(stv.$swing-theme-primary, 10%);;
+    background-color: darken(stv.$swing-theme-primary, 10%);
 }
 
 .jsCalendar.secondary tbody td.jsCalendar-current {
@@ -968,6 +974,30 @@ body {
 .jsCalendar.classic-theme.secondary thead .jsCalendar-nav-left:hover,
 .jsCalendar.classic-theme.secondary thead .jsCalendar-nav-right:hover {
     background-color: darken(stv.$swing-theme-secondary, 10%);;
+}
+
+.jsCalendar-date-available {
+    background-color: #12e288;
+}
+
+.jsCalendar-date-booked {
+    background-color: #ffd23f;
+}
+
+.jsCalendar-date-booked-full {
+    background-color: #ee4266;
+}
+
+.jsCalendar-date-unavailable {
+    color: #f0efeb !important;
+}
+
+.jsCalendar-date-weekend-currentmonth {
+    color: #c32525 !important;
+}
+
+.jsCalendar-date-weekend-othermonth {
+    color: #ffb4b4 !important;
 }
 
 /* Loader animation */

@@ -28,7 +28,7 @@
                     <label class="mdc-text-field mdc-text-field--filled">
                         <span class="mdc-text-field__ripple"></span>
                         <input id="f-appointment-ufilter-input" class="mdc-text-field__input" type="text" 
-                                aria-labelledby="f-appointment-ufilter-label" tabindex="-1">
+                                aria-labelledby="f-appointment-ufilter-label" tabindex="0">
                         <span class="mdc-floating-label" id="f-appointment-ufilter-label">Buscar usuaria</span>
                         <i class="material-icons mdc-text-field__icon">search</i>
                         <span class="mdc-line-ripple"></span>
@@ -38,7 +38,7 @@
                     <label class="mdc-text-field mdc-text-field--filled">
                         <span class="mdc-text-field__ripple"></span>
                         <input id="f-appointment-names-input" class="mdc-text-field__input" type="text" 
-                                aria-labelledby="f-appointment-names-label" tabindex="-1">
+                                aria-labelledby="f-appointment-names-label" tabindex="0">
                         <span class="mdc-floating-label" id="f-appointment-names-label">Nombres</span>
                         <span class="mdc-line-ripple"></span>
                     </label>
@@ -47,7 +47,7 @@
                     <label class="mdc-text-field mdc-text-field--filled">
                         <span class="mdc-text-field__ripple"></span>
                         <input id="f-appointment-lastnames-input" class="mdc-text-field__input" type="text" 
-                                aria-labelledby="f-appointment-lastnames-label" tabindex="-1">
+                                aria-labelledby="f-appointment-lastnames-label" tabindex="0">
                         <span class="mdc-floating-label" id="f-appointment-lastnames-label">Apellidos</span>
                         <span class="mdc-line-ripple"></span>
                     </label>
@@ -56,12 +56,12 @@
                     <label class="mdc-text-field mdc-text-field--filled">
                         <span class="mdc-text-field__ripple"></span>
                         <input id="f-appointment-birthdate-input" class="mdc-text-field__input" type="date" 
-                                aria-labelledby="f-appointment-birthdate-label" tabindex="-1">
+                                aria-labelledby="f-appointment-birthdate-label" tabindex="0">
                         <span class="mdc-floating-label" id="f-appointment-birthdate-label">Fecha de Nacimiento</span>
                         <span class="mdc-line-ripple"></span>
                     </label>
                 </div>
-                <div class="mdc-select" role="button">
+                <div class="mdc-select container-appointment-csc--state" role="button" data-action-fn="getCities">
                     <div class="mdc-select__anchor">
                         <span class="mdc-select__ripple"></span>
                         <input type="text" disabled readonly class="mdc-select__selected-text">
@@ -69,12 +69,12 @@
                         <span class="mdc-floating-label">Departamento</span>
                         <span class="mdc-line-ripple"></span>
                     </div>
-                    <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox">
+                    <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox" tabindex="0">
                         <ul id="f-appointment-department-select" class="mdc-list mdc-select__list">
                         </ul>
                     </div>
                 </div>
-                <div class="mdc-select" role="button">
+                <div class="mdc-select container-appointment-csc--city" role="button" data-assigned-var="mdcCitiesSelect">
                     <div class="mdc-select__anchor">
                         <span class="mdc-select__ripple"></span>
                         <input type="text" disabled readonly class="mdc-select__selected-text">
@@ -82,7 +82,7 @@
                         <span class="mdc-floating-label">Municipio</span>
                         <span class="mdc-line-ripple"></span>
                     </div>
-                    <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox">
+                    <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox" tabindex="0">
                         <ul id="f-appointment-city-select" class="mdc-list mdc-select__list">
                         </ul>
                     </div>
@@ -101,7 +101,7 @@
                         <span class="mdc-floating-label">Tipos de servicios</span>
                         <span class="mdc-line-ripple"></span>
                     </div>
-                    <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox">
+                    <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox" tabindex="0">
                         <ul id="f-appointment-service-select" class="mdc-list mdc-select__list">
                             <li class="mdc-list-item" data-value="psi">
                                 <span class="mdc-list-item__text">
@@ -163,43 +163,43 @@
                     <div class="mdc-card" onclick="selectAppointmentTime('8:00 a.m. - 8:45 a.m.');">
                         <div class="mdc-card__primary-action" tabindex="0">
                             <div class="mdc-typography--headline6 s-font-color-secondary">8:00 a.m. - 8:45 a.m.</div>
-                            <div class="mdc-typography--subtitle2">Matutino</div>
+                            <div class="mdc-typography--subtitle2">FECHA DE HOY</div>
                         </div>
                     </div>
                     <div class="mdc-card" onclick="selectAppointmentTime('9:00 a.m. - 9:45 a.m.');">
                         <div class="mdc-card__primary-action" tabindex="0">
                             <div class="mdc-typography--headline6 s-font-color-secondary">9:00 a.m. - 9:45 a.m.</div>
-                            <div class="mdc-typography--subtitle2">Matutino</div>
+                            <div class="mdc-typography--subtitle2">FECHA DE HOY</div>
                         </div>
                     </div>
                     <div class="mdc-card" onclick="selectAppointmentTime('10:00 a.m. - 10:45 a.m.');">
                         <div class="mdc-card__primary-action" tabindex="0">
                             <div class="mdc-typography--headline6 s-font-color-secondary">10:00 a.m. - 10:45 a.m.</div>
-                            <div class="mdc-typography--subtitle2">Matutino</div>
+                            <div class="mdc-typography--subtitle2">FECHA DE HOY</div>
                         </div>
                     </div>
                     <div class="mdc-card" onclick="selectAppointmentTime('11:00 a.m. - 11:45 a.m.');">
                         <div class="mdc-card__primary-action" tabindex="0">
                             <div class="mdc-typography--headline6 s-font-color-secondary">11:00 a.m. - 11:45 a.m.</div>
-                            <div class="mdc-typography--subtitle2">Matutino</div>
+                            <div class="mdc-typography--subtitle2">FECHA DE HOY</div>
                         </div>
                     </div>
                     <div class="mdc-card" onclick="selectAppointmentTime('1:00 p.m. - 1:45 p.m.');">
                         <div class="mdc-card__primary-action" tabindex="0">
                             <div class="mdc-typography--headline6 s-font-color-secondary">1:00 p.m. - 1:45 p.m.</div>
-                            <div class="mdc-typography--subtitle2">Vespertino</div>
+                            <div class="mdc-typography--subtitle2">FECHA DE HOY</div>
                         </div>
                     </div>
                     <div class="mdc-card" onclick="selectAppointmentTime('2:00 p.m. - 2:45 p.m.');">
                         <div class="mdc-card__primary-action" tabindex="0">
                             <div class="mdc-typography--headline6 s-font-color-secondary">2:00 p.m. - 2:45 p.m.</div>
-                            <div class="mdc-typography--subtitle2">Vespertino</div>
+                            <div class="mdc-typography--subtitle2">FECHA DE HOY</div>
                         </div>
                     </div>
                     <div class="mdc-card" onclick="selectAppointmentTime('3:00 p.m. - 3:45 p.m.');">
                         <div class="mdc-card__primary-action" tabindex="0">
                             <div class="mdc-typography--headline6 s-font-color-secondary">3:00 p.m. - 3:45 p.m.</div>
-                            <div class="mdc-typography--subtitle2">Vespertino</div>
+                            <div class="mdc-typography--subtitle2">FECHA DE HOY</div>
                         </div>
                     </div>
                 </div>
@@ -231,5 +231,5 @@
 {% block body_script_section %}
 <script src="{{ url_for('static', filename='js/jsCalendar.lang.es.js') }}"></script>
 <script src="{{ url_for('static', filename='js/jsCalendar.js') }}"></script>
-<script src="{{ url_for('static', filename='js/appointment-emp.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bundle/appointments-e.min.js') }}"></script>
 {% endblock %}

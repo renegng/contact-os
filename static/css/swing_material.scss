@@ -57,6 +57,8 @@
 @use "@material/layout-grid";
 @use "@material/layout-grid/mdc-layout-grid";
 @use "@material/line-ripple";
+@use "@material/linear-progress";
+@use "@material/linear-progress/mdc-linear-progress";
 @use "@material/list";
 @use "@material/list/mdc-list";
 @use "@material/menu";
@@ -101,6 +103,7 @@
 @include icon-button.core-styles;
 @include image-list.core-styles;
 @include line-ripple.core-styles;
+@include linear-progress.core-styles;
 @include list.core-styles;
 @include menu.core-styles;
 @include menu-surface.core-styles;
@@ -120,6 +123,10 @@
 /* Button */
 .mdc-button {
     height: 2.25rem;
+}
+
+.mdc-button--color-cancel {
+    @include button.ink-color(stv.$swing-theme-error);
 }
 
 .mdc-button--color-inverted {
