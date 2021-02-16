@@ -24,7 +24,7 @@
                 <h5 class="mdc-typography--headline5 s-font-color-primary">
                     Paso 1: Selecciona la usuaria
                 </h5>
-                <div>
+                <div class="mdc-menu-surface--anchor">
                     <label class="mdc-text-field mdc-text-field--filled">
                         <span class="mdc-text-field__ripple"></span>
                         <input id="f-appointment-ufilter-input" class="mdc-text-field__input" type="text" 
@@ -33,6 +33,22 @@
                         <i class="material-icons mdc-text-field__icon">search</i>
                         <span class="mdc-line-ripple"></span>
                     </label>
+                    <div id="searchUsersMenu" class="mdc-menu mdc-menu-surface container-appointmentadm-searchmenu" tabindex="-1">
+                        <ul class="mdc-list mdc-list--two-line mdc-menu__items" role="menu" aria-hidden="true">
+                            <li class="mdc-list-item" role="menuitem" tabindex="0">
+                                <span class="mdc-list-item__ripple"></span>
+                                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">person</i>
+                                <span class="mdc-list-item__text">
+                                    <span class="mdc-list-item__primary-text">René Guillermo Navarrete Guevara</span>
+                                    <span class="mdc-list-item__secondary-text">renegng@gmail.com</span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="container-appointmentadm-user--record-info container--hidden">
+                    <span class="mdc-typography--caption">-</span>
+                    <span class="mdc-typography--subtitle2">-</span>
                 </div>
                 <div>
                     <label class="mdc-text-field mdc-text-field--filled">
@@ -103,26 +119,13 @@
                     </div>
                     <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox" tabindex="0">
                         <ul id="f-appointment-service-select" class="mdc-list mdc-select__list">
-                            <li class="mdc-list-item" data-value="psi">
+                            {% for service in services %}
+                            <li class="mdc-list-item" data-value="{{ service.name_short }}">
                                 <span class="mdc-list-item__text">
-                                    Apoyo psicológico
+                                    {{ service.name }}
                                 </span>
                             </li>
-                            <li class="mdc-list-item" data-value="soc">
-                                <span class="mdc-list-item__text">
-                                    Apoyo social
-                                </span>
-                            </li>
-                            <li class="mdc-list-item" data-value="abo">
-                                <span class="mdc-list-item__text">
-                                    Asistencia legal
-                                </span>
-                            </li>
-                            <li class="mdc-list-item" data-value="gaa">
-                                <span class="mdc-list-item__text">
-                                    Grupos de autoayuda
-                                </span>
-                            </li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
@@ -132,7 +135,7 @@
                 <h5 class="mdc-typography--headline5 s-font-color-primary">
                     Paso 3: Selecciona la funcionaria
                 </h5>
-                <div class="container-appointment-service--user">
+                <div class="mdc-menu-surface--anchor">
                     <label class="mdc-text-field mdc-text-field--filled">
                         <span class="mdc-text-field__ripple"></span>
                         <input id="f-appointment-efilter-input" class="mdc-text-field__input" type="text" 
@@ -141,6 +144,22 @@
                         <i class="material-icons mdc-text-field__icon">search</i>
                         <span class="mdc-line-ripple"></span>
                     </label>
+                    <div id="searchEmployeesMenu" class="mdc-menu mdc-menu-surface container-appointmentadm-searchmenu" tabindex="-1">
+                        <ul class="mdc-list mdc-list--two-line mdc-menu__items" role="menu" aria-hidden="true">
+                            <li class="mdc-list-item" role="menuitem" tabindex="0">
+                                <span class="mdc-list-item__ripple"></span>
+                                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">person</i>
+                                <span class="mdc-list-item__text">
+                                    <span class="mdc-list-item__primary-text">René Guillermo Navarrete Guevara</span>
+                                    <span class="mdc-list-item__secondary-text">renegng@gmail.com</span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="container-appointmentadm-emp--record-info container--hidden">
+                    <span class="mdc-typography--caption">-</span>
+                    <span class="mdc-typography--subtitle2">-</span>
                 </div>
             </div>
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-4-tablet 
@@ -152,54 +171,101 @@
                 <div id="appointment-cal" class="auto-jsCalendar primary" data-language="es" data-month-format="month YYYY"
                      data-day-format="DDD" data-first-day-of-the-week="2">
                 </div>
+                <div class="jsCalendar-caption">
+                    <ul class="mdc-list mdc-list--non-interactive">
+                        <li class="mdc-list-item">
+                            <i class="mdc-list-item__graphic material-icons s-font-color-primary">trip_origin</i>
+                            <span class="mdc-list-item__text mdc-typography--subtitle2">Fecha seleccionada</span>
+                        </li>
+                        <li class="mdc-list-item">
+                            <i class="mdc-list-item__graphic material-icons jsCalendar-caption-available">trip_origin</i>
+                            <span class="mdc-list-item__text mdc-typography--subtitle2">Disponible</span>
+                        </li>
+                        <li class="mdc-list-item">
+                            <i class="mdc-list-item__graphic material-icons jsCalendar-caption-booked">trip_origin</i>
+                            <span class="mdc-list-item__text mdc-typography--subtitle2">Varias reservaciones</span>
+                        </li>
+                        <li class="mdc-list-item">
+                            <i class="mdc-list-item__graphic material-icons jsCalendar-caption-booked-full">trip_origin</i>
+                            <span class="mdc-list-item__text mdc-typography--subtitle2">Agotado</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-4-tablet 
-                        mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-top s-font-align-center
-                        container-appointmentadm-time">
-                <h5 class="mdc-typography--headline5 s-font-color-primary">
+                        mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-top container-appointmentadm-time">
+                <h5 class="mdc-typography--headline5 s-font-color-primary s-font-align-center">
                     Paso 5: Selecciona el horario
                 </h5>
                 <div id="appointment-hours" class="container-appointment-hours">
-                    <div class="mdc-card" onclick="selectAppointmentTime('8:00 a.m. - 8:45 a.m.');">
+                    <div class="mdc-card" onclick="selectAppointmentTime(this);">
                         <div class="mdc-card__primary-action" tabindex="0">
-                            <div class="mdc-typography--headline6 s-font-color-secondary">8:00 a.m. - 8:45 a.m.</div>
-                            <div class="mdc-typography--subtitle2">FECHA DE HOY</div>
+                            <div class="container-appointment-hours--daytime">
+                                <i class="material-icons mdc-text-field__icon s-font-color-chat-away">wb_sunny</i>
+                                <span class="mdc-typography--caption">Mañana</span>
+                            </div>
+                            <div class="mdc-typography--headline6 container-appointment-hours--time s-font-color-secondary">8:00 a.m. - 8:45 a.m.</div>
+                            <div class="mdc-typography--subtitle2 container-appointment-hours--date">-</div>
                         </div>
                     </div>
-                    <div class="mdc-card" onclick="selectAppointmentTime('9:00 a.m. - 9:45 a.m.');">
+                    <div class="mdc-card" onclick="selectAppointmentTime(this);">
                         <div class="mdc-card__primary-action" tabindex="0">
-                            <div class="mdc-typography--headline6 s-font-color-secondary">9:00 a.m. - 9:45 a.m.</div>
-                            <div class="mdc-typography--subtitle2">FECHA DE HOY</div>
+                            <div class="container-appointment-hours--daytime">
+                                <i class="material-icons mdc-text-field__icon s-font-color-chat-away">wb_sunny</i>
+                                <span class="mdc-typography--caption">Mañana</span>
+                            </div>
+                            <div class="mdc-typography--headline6 container-appointment-hours--time s-font-color-secondary">9:00 a.m. - 9:45 a.m.</div>
+                            <div class="mdc-typography--subtitle2 container-appointment-hours--date">-</div>
                         </div>
                     </div>
-                    <div class="mdc-card" onclick="selectAppointmentTime('10:00 a.m. - 10:45 a.m.');">
+                    <div class="mdc-card" onclick="selectAppointmentTime(this);">
                         <div class="mdc-card__primary-action" tabindex="0">
-                            <div class="mdc-typography--headline6 s-font-color-secondary">10:00 a.m. - 10:45 a.m.</div>
-                            <div class="mdc-typography--subtitle2">FECHA DE HOY</div>
+                            <div class="container-appointment-hours--daytime">
+                                <i class="material-icons mdc-text-field__icon s-font-color-chat-away">wb_sunny</i>
+                                <span class="mdc-typography--caption">Mañana</span>
+                            </div>
+                            <div class="mdc-typography--headline6 container-appointment-hours--time s-font-color-secondary">10:00 a.m. - 10:45 a.m.</div>
+                            <div class="mdc-typography--subtitle2 container-appointment-hours--date">-</div>
                         </div>
                     </div>
-                    <div class="mdc-card" onclick="selectAppointmentTime('11:00 a.m. - 11:45 a.m.');">
+                    <div class="mdc-card" onclick="selectAppointmentTime(this);">
                         <div class="mdc-card__primary-action" tabindex="0">
-                            <div class="mdc-typography--headline6 s-font-color-secondary">11:00 a.m. - 11:45 a.m.</div>
-                            <div class="mdc-typography--subtitle2">FECHA DE HOY</div>
+                            <div class="container-appointment-hours--daytime">
+                                <i class="material-icons mdc-text-field__icon s-font-color-chat-away">wb_sunny</i>
+                                <span class="mdc-typography--caption">Mañana</span>
+                            </div>
+                            <div class="mdc-typography--headline6 container-appointment-hours--time s-font-color-secondary">11:00 a.m. - 11:45 a.m.</div>
+                            <div class="mdc-typography--subtitle2 container-appointment-hours--date">-</div>
                         </div>
                     </div>
-                    <div class="mdc-card" onclick="selectAppointmentTime('1:00 p.m. - 1:45 p.m.');">
+                    <div class="mdc-card" onclick="selectAppointmentTime(this);">
                         <div class="mdc-card__primary-action" tabindex="0">
-                            <div class="mdc-typography--headline6 s-font-color-secondary">1:00 p.m. - 1:45 p.m.</div>
-                            <div class="mdc-typography--subtitle2">FECHA DE HOY</div>
+                            <div class="container-appointment-hours--daytime">
+                                <i class="material-icons mdc-text-field__icon s-font-color-chat-transferred">wb_twilight</i>
+                                <span class="mdc-typography--caption">Tarde</span>
+                            </div>
+                            <div class="mdc-typography--headline6 container-appointment-hours--time s-font-color-secondary">1:00 p.m. - 1:45 p.m.</div>
+                            <div class="mdc-typography--subtitle2 container-appointment-hours--date">-</div>
                         </div>
                     </div>
-                    <div class="mdc-card" onclick="selectAppointmentTime('2:00 p.m. - 2:45 p.m.');">
+                    <div class="mdc-card" onclick="selectAppointmentTime(this);">
                         <div class="mdc-card__primary-action" tabindex="0">
-                            <div class="mdc-typography--headline6 s-font-color-secondary">2:00 p.m. - 2:45 p.m.</div>
-                            <div class="mdc-typography--subtitle2">FECHA DE HOY</div>
+                            <div class="container-appointment-hours--daytime">
+                                <i class="material-icons mdc-text-field__icon s-font-color-chat-transferred">wb_twilight</i>
+                                <span class="mdc-typography--caption">Tarde</span>
+                            </div>
+                            <div class="mdc-typography--headline6 container-appointment-hours--time s-font-color-secondary">2:00 p.m. - 2:45 p.m.</div>
+                            <div class="mdc-typography--subtitle2 container-appointment-hours--date">-</div>
                         </div>
                     </div>
-                    <div class="mdc-card" onclick="selectAppointmentTime('3:00 p.m. - 3:45 p.m.');">
+                    <div class="mdc-card" onclick="selectAppointmentTime(this);">
                         <div class="mdc-card__primary-action" tabindex="0">
-                            <div class="mdc-typography--headline6 s-font-color-secondary">3:00 p.m. - 3:45 p.m.</div>
-                            <div class="mdc-typography--subtitle2">FECHA DE HOY</div>
+                            <div class="container-appointment-hours--daytime">
+                                <i class="material-icons mdc-text-field__icon s-font-color-chat-transferred">wb_twilight</i>
+                                <span class="mdc-typography--caption">Tarde</span>
+                            </div>
+                            <div class="mdc-typography--headline6 container-appointment-hours--time s-font-color-secondary">3:00 p.m. - 3:45 p.m.</div>
+                            <div class="mdc-typography--subtitle2 container-appointment-hours--date">-</div>
                         </div>
                     </div>
                 </div>
@@ -210,15 +276,33 @@
                 <h5 class="mdc-typography--headline5 s-font-color-primary">
                     Paso 6: Confirma tu cita
                 </h5>
-                <div class="mdc-typography--headline6 s-font-color-secondary container-appointment-confirm--service">
-                </div>
-                <div class="mdc-typography--headline6 s-font-color-secondary container-appointment-confirm--date">
-                </div>
-                <div class="mdc-typography--headline6 s-font-color-secondary container-appointment-confirm--time">
+                <div class="container-appointment-confirm--review">
+                    <ul class="mdc-list mdc-list--non-interactive">
+                        <li class="mdc-list-item">
+                            <i class="mdc-list-item__graphic material-icons s-font-color-secondary">how_to_reg</i>
+                            <span class="mdc-list-item__text mdc-typography--body1 container-appointment-confirm--user">-</span>
+                        </li>
+                        <li class="mdc-list-item">
+                            <i class="mdc-list-item__graphic material-icons s-font-color-secondary">handyman</i>
+                            <span class="mdc-list-item__text mdc-typography--body1 container-appointment-confirm--service">-</span>
+                        </li>
+                        <li class="mdc-list-item">
+                            <i class="mdc-list-item__graphic material-icons s-font-color-secondary">support_agent</i>
+                            <span class="mdc-list-item__text mdc-typography--body1 container-appointment-confirm--emp">-</span>
+                        </li>
+                        <li class="mdc-list-item">
+                            <i class="mdc-list-item__graphic material-icons s-font-color-secondary">today</i>
+                            <span class="mdc-list-item__text mdc-typography--body1 container-appointment-confirm--date">-</span>
+                        </li>
+                        <li class="mdc-list-item">
+                            <i class="mdc-list-item__graphic material-icons s-font-color-secondary">schedule</i>
+                            <span class="mdc-list-item__text mdc-typography--body1 container-appointment-confirm--time">-</span>
+                        </li>
+                    </ul>
                 </div>
                 <div class="container-appointment-confirm--submit">
                     <button class="mdc-button mdc-button--raised" aria-label="Submit Date" alt="Submit Date"
-                        data-action-type="redirect" data-action-val="/">
+                        data-action-type="redirect" data-action-val="/appointments/">
                         <div class="mdc-button__ripple"></div>
                         <span class="mdc-button__label">Enviar Solicitud</span>
                     </button>

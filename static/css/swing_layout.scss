@@ -127,14 +127,32 @@ body {
 
             .mdc-card {
                 margin: 1rem;
-                padding: 1.5rem 1rem;
                 width: 16rem;
+
+                .mdc-card__primary-action {
+                    padding: 1.5rem 1rem;
+                }
             }
         }
     }
 }
 
 .container-appointmentadm {
+    .container-appointmentadm-confirm {
+        .container-appointment-confirm--review {
+            display: flex;
+            justify-content: center;
+
+            .material-icons {
+                font-size: 1.75rem;
+            }
+        }
+
+        .container-appointment-confirm--submit {
+            margin-top: 1rem;
+        }
+    }
+
     .container-appointmentadm-date {
         grid-row-start: 1;
         grid-row: span 1;
@@ -148,6 +166,20 @@ body {
     .container-appointmentadm-emp {
         grid-column-start: 1;
         grid-row-start: 3;
+
+        .container-appointmentadm-emp--record-info {
+            display: flex;
+            flex-direction: column;
+            margin-left: 0.5rem;
+        }
+
+        div:not(:last-child) {
+            margin-bottom: 1rem;
+        }
+    }
+
+    .container-appointmentadm-searchmenu {
+        min-width: 100%;
     }
 
     .container-appointmentadm-service {
@@ -164,10 +196,22 @@ body {
             flex-wrap: wrap;
             justify-content: center;
 
+            .container-appointment-hours--daytime {
+                align-items: center;
+                display: flex;
+
+                span {
+                    margin-left: 0.5rem;
+                }
+            }
+
             .mdc-card {
                 margin: 1rem;
-                padding: 1.5rem 1rem;
                 width: 16rem;
+
+                .mdc-card__primary-action {
+                    padding: 1.5rem 1rem;
+                }
             }
         }
     }
@@ -175,6 +219,12 @@ body {
     .container-appointmentadm-user {
         grid-column-start: 1;
         grid-row-start: 1;
+
+        .container-appointmentadm-user--record-info {
+            display: flex;
+            flex-direction: column;
+            margin-left: 0.5rem;
+        }
 
         div:not(:last-child) {
             margin-bottom: 1rem;
@@ -998,6 +1048,23 @@ body {
 
 .jsCalendar-date-weekend-othermonth {
     color: #ffb4b4 !important;
+}
+
+.jsCalendar-caption {
+    display: flex;
+    justify-content: center;
+}
+
+.jsCalendar-caption-available {
+    color: #12e288;
+}
+
+.jsCalendar-caption-booked {
+    color: #ffd23f;
+}
+
+.jsCalendar-caption-booked-full {
+    color: #ee4266;
 }
 
 /* Loader animation */

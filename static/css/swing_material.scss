@@ -170,6 +170,11 @@
     }
 }
 
+.mdc-card--selected {
+    @include elevation.elevation(5);
+    transition: box-shadow ease-in 0.25s;
+}
+
 /* Checkbox and radio */
 .mdc-checkbox,
 .mdc-radio {
