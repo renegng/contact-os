@@ -46,10 +46,11 @@ To install Swing CMS, follow the next steps (under Ubuntu 16.04):
 
     ~: git clone git@github.com:renegng/contact-os.git
 
-4 - Inside the prevoius folder, install a Python 3.5 or greater virtual environment and the RDBMS (MySQL) prerequisites:
+4 - Inside the prevoius folder, install a Python 3.5 or greater virtual environment and the RDBMS (MySQL, ElasticSearch) prerequisites:
 
     ~: [python | python3 | python3.6 | python3.x] -m venv venv
     ~: sudo apt-get install build-essential python3-dev libmysqlclient-dev
+    ~: sudo apt-get install elasticsearch
 
 5 - Inside the prevoius folder, activate the virtual environment:
 
@@ -76,6 +77,7 @@ To install Swing CMS, follow the next steps (under Ubuntu 16.04):
     ~: pip install psycopg2-binary
     ~: pip install firebase-admin
     ~: pip install mysqlclient
+    ~: pip install elasticsearch
     ~: pip install cryptography
     ~: pip install sqlalchemy-utils
 

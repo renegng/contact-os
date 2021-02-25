@@ -36,6 +36,21 @@ def initPopulateDB():
     app.logger.info('** SWING_CMS ** - Populate Database FINISHED.')
 
 
+# Initialize Elastic Search Populate Function
+def initPopulateES():
+    try:
+        # Delete current indexes
+        User.delete_index()
+
+        # Index available records
+        User.reindex()
+
+        return jsonify({ 'status': 'success' })
+    except Exception as e:
+        app.logger.error('** SWING_CMS ** - Initialize Populate Elastic Search Error: {}'.format(e))
+        return jsonify({ 'status': 'error' })
+
+
 # Populate Default RTC Online User List
 def populateDefaultRTC_OUL():
     try:
