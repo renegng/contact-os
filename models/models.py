@@ -80,8 +80,8 @@ def add_to_index(index, model):
                     "case_accent_insensitive": {
                         "match_mapping_type": "string",
                         "mapping": {
-                            "analyzer": "standard_asciifolding",
-                            "search_analyzer": "standard"
+                            "analyzer": "asciif_ngram_lowcase",
+                            "search_analyzer": "asciif_lowcase"
                         }
                     }
                 }]
@@ -89,7 +89,14 @@ def add_to_index(index, model):
             "settings": {
                 "analysis": {
                     "analyzer": {
-                        "standard_asciifolding": {
+                        "asciif_lowcase": {
+                            "tokenizer": "standard",
+                            "filter": [
+                                "asciifolding",
+                                "lowercase"
+                            ]
+                        },
+                        "asciif_ngram_lowcase": {
                             "tokenizer": "standard",
                             "filter": [
                                 "asciifolding",
@@ -224,6 +231,21 @@ class Appointments(db.Model):
         )
 
 
+# Catalog - ID Document Type Class
+class CatalogIDDocumentType(db.Model):
+    __tablename__ = 'catalog_id_document_types'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(60), unique=True, nullable=False)
+    name_short = db.Column(db.String(6), unique=True, nullable=True)
+
+    def __repr__(self):
+        return jsonify(
+            id = self.id,
+            name = self.name,
+            name_short = self.name_short
+        )
+
+
 # Catalog - Operations Class
 class CatalogOperations(db.Model):
     __tablename__ = 'catalog_operations'
@@ -249,6 +271,7 @@ class CatalogServices(db.Model):
     break_minutes = db.Column(db.Integer, unique=False, nullable=True, default=15)
     duration_minutes = db.Column(db.Integer, unique=False, nullable=True, default=45)
     service_user_role = db.Column(db.Integer, db.ForeignKey('catalog_user_roles.id'), nullable=True)
+    sessions_schedule = db.Column(db.JSON, nullable=True)
 
     def __repr__(self):
         return jsonify(
@@ -540,12 +563,12 @@ class User(ElasticMixin, UserMixin, db.Model):
         return self.uid
     
     # Method to return user roles
-    def get_user_roles(self):
+    def get_user_roles(self, name_short = False):
         u_roles = []
 
         # Iterate through all roles
         for role in self.roles:
-            u_roles.append(role.user_role.name)
+            u_roles.append(role.user_role.name if not name_short else role.user_role.name_short)
         
         return u_roles
     
@@ -566,9 +589,11 @@ class User(ElasticMixin, UserMixin, db.Model):
 class UserExtraInfo(db.Model):
     __tablename__ = 'user_extra_info'
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    national_id_type = db.Column(db.Integer, db.ForeignKey('catalog_id_document_types.id'), nullable=True)
     national_id = db.Column(db.String(30), unique=False, nullable=True)
     last_names = db.Column(db.String(300), unique=False, nullable=True)
     names = db.Column(db.String(300), unique=False, nullable=True)
+    alias = db.Column(db.String(300), unique=False, nullable=True)
     avatar = db.Column(db.String(16), unique=False, nullable=True)
     country = db.Column(db.JSON, unique=False, nullable=True)
     state = db.Column(db.JSON, unique=False, nullable=True)
@@ -578,6 +603,7 @@ class UserExtraInfo(db.Model):
     def __repr__(self):
         return jsonify(
             id = self.id,
+            alias = self.alias,
             names = self.names,
             last_names = self.last_names,
             avatar = self.avatar,

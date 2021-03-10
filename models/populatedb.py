@@ -128,21 +128,93 @@ def populateDefaultUsers():
 
 
 # Populate Catalog Services Data
-def populateServicesCatalog():
+def populateServicesCatalog(column=None):
     try:
         app.logger.debug('** SWING_CMS ** - Populate Catalog Services')
 
-        # Add Services
-        advice = CatalogServices(name='Orientación', name_short='adv')
-        db.session.add(advice)
+        if column is None:
+            # Add Services
+            adv_usr_role = CatalogUserRoles.query.filter_by(name_short='emp').first()
+            advice = CatalogServices(name='Orientación', name_short='adv', service_user_role=adv_usr_role.id)
+            db.session.add(advice)
 
-        lawyer = CatalogServices(name='Asistencia Legal', name_short='law')
-        db.session.add(lawyer)
+            law_usr_role = CatalogUserRoles.query.filter_by(name_short='emp').first()
+            lawyer = CatalogServices(name='Asistencia Legal', name_short='law', service_user_role=law_usr_role.id)
+            db.session.add(lawyer)
 
-        support = CatalogServices(name='Soporte', name_short='sup')
-        db.session.add(support)
+            sup_usr_role = CatalogUserRoles.query.filter_by(name_short='emp').first()
+            support = CatalogServices(name='Soporte', name_short='sup', service_user_role=sup_usr_role.id)
+            db.session.add(support)
+            
+            db.session.commit()
         
-        db.session.commit()
+        elif column == 'sur':
+            # Add Service's User Role
+            services = CatalogServices.query.all()
+            
+            for service in services:
+                usr_role = CatalogUserRoles.query.filter_by(name_short=service.name_short).first()
+                
+                if usr_role is not None:
+                    service.service_user_role = usr_role.id
+                    db.session.add(service)
+            
+            db.session.commit()
+        
+        elif column == 'sch':
+            # Add Service's Sessions Schedule
+            advsrv = CatalogServices.query.filter_by(name_short='adv').first()
+            advsrv.sessions_schedule = [{
+                'weeks': 'all',
+                'wdays': ['mon', 'tue', 'wed', 'thu', 'fri'],
+                'hours': [
+                    {'start_time': '8:00am', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '9:00am', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '10:00am', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '11:00am', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '1:00pm', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'},
+                    {'start_time': '2:00pm', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'},
+                    {'start_time': '3:00pm', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'}
+                ]
+            }]
+            db.session.add(advsrv)
+
+            lawsrv = CatalogServices.query.filter_by(name_short='law').first()
+            lawsrv.sessions_schedule = [{
+                'weeks': 'all',
+                'wdays': ['mon', 'tue', 'wed', 'thu', 'fri'],
+                'hours': [
+                    {'start_time': '8:00am', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '9:00am', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '10:00am', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '11:00am', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '1:00pm', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'evening'},
+                    {'start_time': '2:00pm', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'evening'},
+                    {'start_time': '3:00pm', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'evening'}
+                ]
+            }]
+            db.session.add(lawsrv)
+
+            supsrv = CatalogServices.query.filter_by(name_short='sup').first()
+            supsrv.sessions_schedule = [{
+                'weeks': 'all',
+                'wdays': ['mon', 'tue', 'wed', 'thu', 'fri'],
+                'hours': [
+                    {'start_time': '8:00am', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '9:00am', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '10:00am', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '11:00am', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '1:00pm', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'evening'},
+                    {'start_time': '2:00pm', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'evening'},
+                    {'start_time': '3:00pm', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'evening'}
+                ]
+            }]
+            db.session.add(supsrv)
+
+            db.session.commit()
+
+        else: 
+            app.logger.debug('** SWING_CMS ** - Populate Catalog Services - Argument Invalid')
 
         return jsonify({ 'status': 'success' })
     except Exception as e:
@@ -283,5 +355,32 @@ def populateCatalogUserRoles():
         return jsonify({ 'status': 'success' })
     except Exception as e:
         app.logger.error('** SWING_CMS ** - Populate Catalog User Roles Error: {}'.format(e))
+        return jsonify({ 'status': 'error' })
+
+
+# Populate Specified Table
+def populateTable(dp_name, dp_options=None):
+    try:
+        app.logger.debug('** SWING_CMS ** - Populate Specified Table')
+
+        data_procedures = {
+            "catalog_operations": populateCatalogOperations,
+            "catalog_services": populateServicesCatalog,
+            "catalog_user_roles": populateCatalogUserRoles,
+            "default_rtc_oul": populateDefaultRTC_OUL,
+            "default_users": populateDefaultUsers,
+            "survey_answer_types": populateSurveysAnswerTypesCatalog,
+            "survey_uss": populateSurveyUserSatisfaction
+        }
+
+        if callable(data_procedures[dp_name]):
+            if dp_options is not None:
+                data_procedures[dp_name](dp_options)
+            else:
+                data_procedures[dp_name]()
+
+        return jsonify({ 'status': 'success' })
+    except Exception as e:
+        app.logger.error('** SWING_CMS ** - Populate Specified Table Error: {}'.format(e))
         return jsonify({ 'status': 'error' })
 

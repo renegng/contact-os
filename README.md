@@ -133,7 +133,8 @@ Proper credit for the following people/teams:
 - Google's Material Design, Workbox and Firebase team, for making the web awesome!
 - Polymer Project, for an amazing main HTML PWA Template structure.
 - Python, Flask, NodeJS, SQLAlchemy(-Utils), Migrate, Alembic, WTForms, Login, Cryptography GitHub and everyone's amazing frameworks.
-- PeerJS, simple-peer, SaltyRTC for their wonderful frameworks to implement WebRTC.
+- MySQL, Firebase, ElasticSearch for amazing Databases with amazing features.
+- SocketIO and simple-peer for their wonderful frameworks to implement WebRTC.
 - dr5hn's Countries States Cities Database for providing an amazing location DB.
 - Localforage for their simple and amazing localStorage wrapper.
 - jsCalendar for their amazing simple modern calendar library.
@@ -147,3 +148,4 @@ Proper credit for the following people/teams:
 - Icons made by <a href="https://www.flaticon.com/authors/fjstudio" title="fjstudio">fjstudio</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 - Icons made by <a href="https://www.flaticon.com/authors/dinosoftlabs" title="DinosoftLabs">DinosoftLabs</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 - Anchorme for URL detection and replacement
+- Sounds from <a href="https://www.zapsplat.com/" title="Zapsplat">zapsplat.com</a> and <a href="https://mixkit.co/" title="Mixkit">mixkit.com</a>

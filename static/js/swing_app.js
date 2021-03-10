@@ -78,7 +78,7 @@ window.returnFormatDate = returnFormatDate;
 // Fetch API
 export function getFetch(url, actionFn = null, options = {}) {
     mdcTopBarLoading.open();
-    fetch(url, options)
+    return fetch(url, options)
         .then((response) => {
             if (response.status >= 200 && response.status < 300) {
                 return Promise.resolve(response)
@@ -96,16 +96,18 @@ export function getFetch(url, actionFn = null, options = {}) {
                 let fn = (typeof actionFn == "string") ? window[actionFn] : actionFn;
                 fn(data);
             }
+            return Promise.resolve(data);
         })
         .catch(function (error) {
             console.log('Request failed: ', error);
             mdcTopBarLoading.close();
+            return Promise.reject(error);
         });
 }
 
 export function postFetch(url, postData) {
     mdcTopBarLoading.open();
-    fetch(url, {
+    return fetch(url, {
         method: 'POST',
         headers: {
             "Accept": "application/json",
@@ -114,20 +116,22 @@ export function postFetch(url, postData) {
         credentials: 'include',
         body: JSON.stringify(postData)
     })
-        .then((response) => {
-            return response.json();
-        })
-        .then((data) => {
-            console.log('Request succeeded with JSON response: ', data);
-            mdcTopBarLoading.close();
-            if (data.cmd == 'redirectURL') {
-                window.location.assign(data.action);
-            }
-        })
-        .catch(function (error) {
-            console.log('Request failed: ', error);
-            mdcTopBarLoading.close();
-        });
+    .then((response) => {
+        return response.json();
+    })
+    .then((data) => {
+        console.log('Request succeeded with JSON response: ', data);
+        mdcTopBarLoading.close();
+        if (data.cmd == 'redirectURL') {
+            window.location.assign(data.action);
+        }
+        return Promise.resolve(data);
+    })
+    .catch(function (error) {
+        console.log('Request failed: ', error);
+        mdcTopBarLoading.close();
+        return Promise.reject(error);
+    });
 }
 
 
