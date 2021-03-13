@@ -3,9 +3,52 @@ from datetime import timezone as tz
 from flask import Blueprint, request, url_for, jsonify, make_response
 from flask import current_app as app
 from flask_login import current_user, login_required
-from models.models import CatalogUserRoles, CatalogServices, User, UserXRole
+from models.models import CatalogIDDocumentTypes, CatalogUserRoles, CatalogServices, User, UserXRole
 
 api = Blueprint('api', __name__, template_folder='templates', static_folder='static')
+
+# Get the Service's Details
+@api.route('/api/detail/service/<string:service_id>/', methods = ['GET'])
+# @login_required
+def _getservice(service_id = None):
+    app.logger.debug('** SWING_CMS ** - API Service Detail')
+    try:
+        if request.method == 'GET':
+            if service_id is not None:
+                response = {
+                    'break_minutes': None,
+                    'duration_minutes': None,
+                    'enabled': None,
+                    'id': None,
+                    'name': None,
+                    'name_short': None,
+                    'service_user_role': None,
+                    'sessions_schedule': None,
+                    'status': 200
+                }
+
+                detail = CatalogServices.query.filter(CatalogServices.name_short == service_id).first()
+                if detail is not None:
+                    response['status'] = 200
+                    response['id'] = detail.id
+                    response['name'] = detail.name
+                    response['name_short'] = detail.name_short
+                    response['break_minutes'] = detail.break_minutes
+                    response['duration_minutes'] = detail.duration_minutes
+                    response['sessions_schedule'] = detail.sessions_schedule
+                    response['enabled'] = detail.enabled
+                    if detail.service_user_role is not None:
+                        serv_ur = CatalogServices.query.filter_by(id = detail.service_user_role).first()
+                        response['service_user_role'] = serv_ur.name_short
+
+                return jsonify(response)
+            else:
+                return jsonify({ 'status': 400 })
+        
+    except Exception as e:
+        app.logger.error('** SWING_CMS ** - API Service Detail Error: {}'.format(e))
+        return jsonify({ 'status': 'error', 'msg': e })
+
 
 # Get the User's Details
 @api.route('/api/detail/user/<int:user_id>/', methods = ['GET'])
@@ -26,6 +69,7 @@ def _getuser(user_id = None):
                     'name': None,
                     'names': None,
                     'national_id': None,
+                    'national_id_type': None,
                     'phonenumber': None,
                     'roles': None,
                     'state': None,
@@ -43,6 +87,9 @@ def _getuser(user_id = None):
                     response['enabled'] = detail.enabled
                     response['roles'] = detail.get_user_roles(True)
                     if detail.extra_info is not None:
+                        if detail.extra_info.national_id_type is not None:
+                            natid = CatalogIDDocumentTypes.query.filter_by(id = detail.extra_info.national_id_type).first()
+                            response['national_id_type'] = natid.name_short
                         response['national_id'] = detail.extra_info.national_id
                         response['last_names'] = detail.extra_info.last_names
                         response['names'] = detail.extra_info.names

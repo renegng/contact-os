@@ -232,17 +232,20 @@ class Appointments(db.Model):
 
 
 # Catalog - ID Document Type Class
-class CatalogIDDocumentType(db.Model):
+class CatalogIDDocumentTypes(db.Model):
     __tablename__ = 'catalog_id_document_types'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(60), unique=True, nullable=False)
     name_short = db.Column(db.String(6), unique=True, nullable=True)
+    enabled = db.Column(db.Boolean, unique=False, nullable=True, default=True)
+    length = db.Column(db.Integer, unique=False, nullable=True)
 
     def __repr__(self):
         return jsonify(
             id = self.id,
             name = self.name,
-            name_short = self.name_short
+            name_short = self.name_short,
+            length = self.length
         )
 
 

@@ -4,7 +4,7 @@ from datetime import timezone as tz
 from flask import Blueprint, redirect, render_template, request, url_for, jsonify, make_response
 from flask import current_app as app
 from flask_login import logout_user, current_user, login_required
-from models.models import CatalogServices, CatalogUserRoles, User, UserXRole
+from models.models import CatalogIDDocumentTypes, CatalogServices, CatalogUserRoles, User, UserXRole
 
 home = Blueprint('home', __name__, template_folder='templates', static_folder='static')
 
@@ -39,7 +39,8 @@ def _appointmentscreate():
 def _appointmentscreateadmin():
     app.logger.debug('** SWING_CMS ** - Crear Citas Admin')
     srv = CatalogServices.query.filter_by(enabled = True).order_by(CatalogServices.name.asc())
-    return render_template('appointments_create_admin.html', services=srv)
+    ids = CatalogIDDocumentTypes.query.filter_by(enabled = True).order_by(CatalogIDDocumentTypes.name.asc())
+    return render_template('appointments_create_admin.html', services=srv, ids_docs_types=ids)
 
 
 @home.route('/chat/')

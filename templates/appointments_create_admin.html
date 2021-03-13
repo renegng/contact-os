@@ -19,8 +19,8 @@
     </div>
     <div class="mdc-layout-grid container-appointmentadm">
         <div class="mdc-layout-grid__inner">
-            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 mdc-layout-grid__cell--align-top
-                        container-justify-center container-appointmentadm-user">
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-5-desktop mdc-layout-grid__cell--span-4-tablet
+                        mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-top container-justify-center container-appointmentadm-user">
                 <h5 class="mdc-typography--headline5 s-font-color-primary">
                     Paso 1: Selecciona la usuaria
                 </h5>
@@ -69,36 +69,23 @@
                         <span class="mdc-line-ripple"></span>
                     </label>
                 </div>
-                <div class="mdc-select" role="button">
+                <div class="mdc-select container-appointment-id-types" role="button" data-assigned-var="mdcNatIdTypeSelect">
                     <div class="mdc-select__anchor">
                         <span class="mdc-select__ripple"></span>
                         <input type="text" disabled readonly class="mdc-select__selected-text">
                         <i class="mdc-select__dropdown-icon"></i>
-                        <span class="mdc-floating-label">Tipos de identificación</span>
+                        <span class="mdc-floating-label">Tipo de identificación</span>
                         <span class="mdc-line-ripple"></span>
                     </div>
                     <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox" tabindex="0">
-                        <ul id="f-appointment-service-select" class="mdc-list mdc-select__list">
-                            <li class="mdc-list-item" data-value="dui">
+                        <ul id="f-appointment-nat-id-type-select" class="mdc-list mdc-select__list" name="u.national_id_type">
+                            {% for id_doc in ids_docs_types %}
+                            <li class="mdc-list-item" data-value="{{ id_doc.name_short }}">
                                 <span class="mdc-list-item__text">
-                                    Documento Único de Identidad (DUI)
+                                    {{ id_doc.name }}
                                 </span>
                             </li>
-                            <li class="mdc-list-item" data-value="pas">
-                                <span class="mdc-list-item__text">
-                                    Pasaporte
-                                </span>
-                            </li>
-                            <li class="mdc-list-item" data-value="res">
-                                <span class="mdc-list-item__text">
-                                    Carné de Residencia
-                                </span>
-                            </li>
-                            <li class="mdc-list-item" data-value="otr">
-                                <span class="mdc-list-item__text">
-                                    Otros
-                                </span>
-                            </li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
@@ -148,8 +135,8 @@
                     </div>
                 </div>
             </div>
-            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 mdc-layout-grid__cell--align-top
-                        container-justify-center container-appointmentadm-service">
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-7-desktop mdc-layout-grid__cell--span-4-tablet
+                        mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-top container-justify-center container-appointmentadm-service">
                 <h5 class="mdc-typography--headline5 s-font-color-primary">
                     Paso 2: Selecciona el servicio
                 </h5>
@@ -174,8 +161,8 @@
                     </div>
                 </div>
             </div>
-            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 mdc-layout-grid__cell--align-top
-                        container-justify-center container-appointmentadm-emp">
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-7-desktop mdc-layout-grid__cell--span-4-tablet
+                        mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-top container-justify-center container-appointmentadm-emp">
                 <h5 class="mdc-typography--headline5 s-font-color-primary">
                     Paso 3: Selecciona la funcionaria
                 </h5>
@@ -197,10 +184,10 @@
                     <span class="mdc-typography--caption">-</span>
                     <span class="mdc-typography--subtitle2">-</span>
                 </div>
+                <div class="container-placeholder"></div>
             </div>
-            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-4-tablet 
-                        mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-top s-font-align-center
-                        container-appointmentadm-date">
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-5-desktop mdc-layout-grid__cell--span-4-tablet
+                        mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-top s-font-align-center container-appointmentadm-date">
                 <h5 class="mdc-typography--headline5 s-font-color-primary">
                     Paso 4: Selecciona la fecha
                 </h5>
@@ -228,82 +215,14 @@
                     </ul>
                 </div>
             </div>
-            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-4-tablet 
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-7-desktop mdc-layout-grid__cell--span-4-tablet
                         mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-top container-appointmentadm-time">
                 <h5 class="mdc-typography--headline5 s-font-color-primary s-font-align-center">
                     Paso 5: Selecciona el horario
                 </h5>
-                <div id="appointment-hours" class="container-appointment-hours">
-                    <div class="mdc-card" onclick="selectAppointmentTime(this);">
-                        <div class="mdc-card__primary-action" tabindex="0">
-                            <div class="container-appointment-hours--daytime">
-                                <i class="material-icons mdc-text-field__icon s-font-color-chat-away">wb_sunny</i>
-                                <span class="mdc-typography--caption">Mañana</span>
-                            </div>
-                            <div class="mdc-typography--headline6 container-appointment-hours--time s-font-color-secondary">8:00 a.m. - 8:45 a.m.</div>
-                            <div class="mdc-typography--subtitle2 container-appointment-hours--date">-</div>
-                        </div>
-                    </div>
-                    <div class="mdc-card" onclick="selectAppointmentTime(this);">
-                        <div class="mdc-card__primary-action" tabindex="0">
-                            <div class="container-appointment-hours--daytime">
-                                <i class="material-icons mdc-text-field__icon s-font-color-chat-away">wb_sunny</i>
-                                <span class="mdc-typography--caption">Mañana</span>
-                            </div>
-                            <div class="mdc-typography--headline6 container-appointment-hours--time s-font-color-secondary">9:00 a.m. - 9:45 a.m.</div>
-                            <div class="mdc-typography--subtitle2 container-appointment-hours--date">-</div>
-                        </div>
-                    </div>
-                    <div class="mdc-card" onclick="selectAppointmentTime(this);">
-                        <div class="mdc-card__primary-action" tabindex="0">
-                            <div class="container-appointment-hours--daytime">
-                                <i class="material-icons mdc-text-field__icon s-font-color-chat-away">wb_sunny</i>
-                                <span class="mdc-typography--caption">Mañana</span>
-                            </div>
-                            <div class="mdc-typography--headline6 container-appointment-hours--time s-font-color-secondary">10:00 a.m. - 10:45 a.m.</div>
-                            <div class="mdc-typography--subtitle2 container-appointment-hours--date">-</div>
-                        </div>
-                    </div>
-                    <div class="mdc-card" onclick="selectAppointmentTime(this);">
-                        <div class="mdc-card__primary-action" tabindex="0">
-                            <div class="container-appointment-hours--daytime">
-                                <i class="material-icons mdc-text-field__icon s-font-color-chat-away">wb_sunny</i>
-                                <span class="mdc-typography--caption">Mañana</span>
-                            </div>
-                            <div class="mdc-typography--headline6 container-appointment-hours--time s-font-color-secondary">11:00 a.m. - 11:45 a.m.</div>
-                            <div class="mdc-typography--subtitle2 container-appointment-hours--date">-</div>
-                        </div>
-                    </div>
-                    <div class="mdc-card" onclick="selectAppointmentTime(this);">
-                        <div class="mdc-card__primary-action" tabindex="0">
-                            <div class="container-appointment-hours--daytime">
-                                <i class="material-icons mdc-text-field__icon s-font-color-chat-transferred">wb_twilight</i>
-                                <span class="mdc-typography--caption">Tarde</span>
-                            </div>
-                            <div class="mdc-typography--headline6 container-appointment-hours--time s-font-color-secondary">1:00 p.m. - 1:45 p.m.</div>
-                            <div class="mdc-typography--subtitle2 container-appointment-hours--date">-</div>
-                        </div>
-                    </div>
-                    <div class="mdc-card" onclick="selectAppointmentTime(this);">
-                        <div class="mdc-card__primary-action" tabindex="0">
-                            <div class="container-appointment-hours--daytime">
-                                <i class="material-icons mdc-text-field__icon s-font-color-chat-transferred">wb_twilight</i>
-                                <span class="mdc-typography--caption">Tarde</span>
-                            </div>
-                            <div class="mdc-typography--headline6 container-appointment-hours--time s-font-color-secondary">2:00 p.m. - 2:45 p.m.</div>
-                            <div class="mdc-typography--subtitle2 container-appointment-hours--date">-</div>
-                        </div>
-                    </div>
-                    <div class="mdc-card" onclick="selectAppointmentTime(this);">
-                        <div class="mdc-card__primary-action" tabindex="0">
-                            <div class="container-appointment-hours--daytime">
-                                <i class="material-icons mdc-text-field__icon s-font-color-chat-transferred">wb_twilight</i>
-                                <span class="mdc-typography--caption">Tarde</span>
-                            </div>
-                            <div class="mdc-typography--headline6 container-appointment-hours--time s-font-color-secondary">3:00 p.m. - 3:45 p.m.</div>
-                            <div class="mdc-typography--subtitle2 container-appointment-hours--date">-</div>
-                        </div>
-                    </div>
+                <div class="container-appointment-empty">
+                </div>
+                <div class="container-appointment-sessions">
                 </div>
             </div>
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12-desktop mdc-layout-grid__cell--span-8-tablet

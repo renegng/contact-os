@@ -6,11 +6,85 @@ import { MDCMenu, Corner } from '@material/menu';
 /************************** FUNCTIONS **************************/
 
 export const appCountry = 'SV';
-export var jsonUserDetails, citiesData, statesData = null;
+export var jsonUserDetails, jsonServiceDetails, citiesData, statesData = null;
 
 // MDC Assigned Components to Variables
 // This is done to reference specific MDC instantiated elements, their properties and functions
 export const mdcAssignedVars = {};
+
+// Create Service Sessions Containers
+function createServiceSessionsContainers() {
+    if (jsonServiceDetails) {
+        let appointElm = document.querySelector('.container-appointment-sessions');
+        
+        appointElm.innerHTML = '';
+        jsonServiceDetails.sessions_schedule.forEach((week_schedule) => {
+            let sessionContainer = document.createElement('div');
+            sessionContainer.classList.add('container-appointment-hours');
+            sessionContainer.setAttribute('data-app-week', week_schedule.weeks);
+            sessionContainer.setAttribute('data-app-days', week_schedule.wdays.join('-'));
+
+            let sessionHours = 0;
+            week_schedule.hours.forEach((session) => {
+                let hourContainer = document.createElement('div');
+                let hourPrimary = document.createElement('div');
+                let hourDaytime = document.createElement('div');
+                let hourHourElm = document.createElement('div');
+                let hourDateElm = document.createElement('div');
+                let hourDTtext = document.createElement('span');
+                let hourDTicon = document.createElement('i');
+
+                hourContainer.classList.add('mdc-card');
+                hourPrimary.classList.add('mdc-card__primary-action');
+                hourDaytime.classList.add('container-appointment-hours--daytime');
+                hourDTicon.classList.add('material-icons', 'mdc-text-field__icon');
+                hourDTtext.classList.add('mdc-typography--caption');
+                hourHourElm.classList.add('mdc-typography--headline6', 'container-appointment-hours--time', 's-font-color-secondary');
+                hourDateElm.classList.add('mdc-typography--subtitle2', 'container-appointment-hours--date');
+
+                hourContainer.setAttribute('onclick', 'selectAppointmentTime(this);');
+                hourPrimary.setAttribute('tabindex', '0');
+
+                let dtHour = new Date();
+                let sessDura = parseInt(session.duration);
+                let sessTime = session.start_time.split(':');
+                let sessMins = parseInt(sessTime[1]);
+                let sessHour = parseInt(sessTime[0]);
+                dtHour.setSeconds(0);
+                dtHour.setHours(sessHour);
+                dtHour.setMinutes(sessMins);
+                
+                if (sessHour >= 6 && sessHour < 12) {
+                    hourDTicon.classList.add('s-font-color-chat-away');
+                    hourDTicon.innerHTML = 'wb_sunny';
+                    hourDTtext.innerHTML = 'Mañana';
+                } else if (sessHour >= 12 && sessHour < 18) {
+                    hourDTicon.classList.add('s-font-color-chat-transferred');
+                    hourDTicon.innerHTML = 'wb_twilight';
+                    hourDTtext.innerHTML = 'Tarde';
+                }
+
+                let dtHourEnd = new Date(dtHour);
+                dtHourEnd.setMinutes(dtHourEnd.getMinutes() + sessDura);
+                hourHourElm.innerHTML = swcms.returnFormatDate(dtHour, 'time') + ' - ' + swcms.returnFormatDate(dtHourEnd, 'time');
+                hourDateElm.innerHTML = '-';
+
+                hourDaytime.appendChild(hourDTicon);
+                hourDaytime.appendChild(hourDTtext);
+                hourPrimary.appendChild(hourDaytime);
+                hourPrimary.appendChild(hourHourElm);
+                hourPrimary.appendChild(hourDateElm);
+                hourContainer.appendChild(hourPrimary);
+                sessionContainer.appendChild(hourContainer);
+
+                sessionHours++;
+            });
+
+            sessionContainer.setAttribute('data-app-sess', sessionHours);
+            appointElm.appendChild(sessionContainer);
+        });
+    }
+}
 
 // Create User Result List Element Container
 function createUserResultContainer(user = null) {
@@ -184,6 +258,20 @@ export function loadUserDetails(data) {
             case 'roles':
             case 'status':
                 break;
+
+            case 'national_id_type':
+                if (val){
+                    let natIdTypeElms = document.querySelectorAll('#f-appointment-nat-id-type-select > li');
+    
+                    natIdTypeElms.forEach((type, index) => {
+                        if (type.getAttribute('data-value') == val) {
+                            mdcAssignedVars['mdcNatIdTypeSelect'].selectedIndex = index;
+                        }
+                    });
+                } else {
+                    mdcAssignedVars['mdcNatIdTypeSelect'].selectedIndex = -1;
+                }
+                break;
             
             case 'city':
                 mdcAssignedVars['mdcCitiesSelect'].selectedIndex = -1;
@@ -287,11 +375,18 @@ window.loadUsersResults = loadUsersResults;
 
 // Select Appointment Service
 export function selectAppointmentService(value) {
+    let apiUrl = `/api/detail/service/${value}/`;
     let svcIdEl = document.getElementById('app_svc_id');
     let svcConfirmEl = document.querySelector('.container-appointment-confirm--service');
     let svcName = document.querySelector('#f-appointment-service-select > li[data-value="' + value + '"]');
+
     svcConfirmEl.textContent = svcName.textContent;
     svcIdEl.value = value;
+    
+    swcms.getFetch(apiUrl).then((data) => {
+        jsonServiceDetails = data;
+        createServiceSessionsContainers();
+    });
 }
 /* Allow 'window' context to reference the function */
 window.selectAppointmentService = selectAppointmentService;
@@ -333,9 +428,12 @@ export function setSelectedDateOnUI(date) {
     }
 
     document.querySelector('.container-appointment-confirm--date').textContent = formatDate;
-    document.querySelector('#appointment-hours').querySelectorAll('.container-appointment-hours--date').forEach((el) => {
-        el.textContent = formatDate;
-    });
+    let hoursCont = document.querySelector('.container-appointment-hours');
+    if (hoursCont) {
+        hoursCont.querySelectorAll('.container-appointment-hours--date').forEach((el) => {
+            el.textContent = formatDate;
+        });
+    }
 }
 
 

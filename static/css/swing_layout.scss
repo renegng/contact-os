@@ -154,9 +154,6 @@ body {
     }
 
     .container-appointmentadm-date {
-        grid-row-start: 1;
-        grid-row: span 1;
-
         #appointment-cal {
             display: flex;
             justify-content: center;
@@ -164,9 +161,6 @@ body {
     }
 
     .container-appointmentadm-emp {
-        grid-column-start: 1;
-        grid-row-start: 3;
-
         .container-appointmentadm-emp--record-info {
             display: flex;
             flex-direction: column;
@@ -182,15 +176,7 @@ body {
         min-width: 100%;
     }
 
-    .container-appointmentadm-service {
-        grid-column-start: 1;
-        grid-row-start: 2;
-    }
-
     .container-appointmentadm-time {
-        grid-row-start: 2;
-        grid-row: span 2;
-
         .container-appointment-hours {
             display: flex;
             flex-wrap: wrap;
@@ -217,16 +203,15 @@ body {
     }
 
     .container-appointmentadm-user {
-        grid-column-start: 1;
-        grid-row-start: 1;
-
+        grid-row: span 2;
+        
         .container-appointmentadm-user--record-info {
             display: flex;
             flex-direction: column;
             margin-left: 0.5rem;
         }
 
-        div:not(:last-child) {
+        div:not(:last-child):not(.mdc-select) {
             margin-bottom: 1rem;
         }
     }

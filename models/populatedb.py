@@ -2,7 +2,7 @@ from datetime import datetime as dt
 from datetime import timezone as tz
 from flask import current_app as app
 from flask import jsonify
-from models import db, CatalogServices, CatalogOperations, CatalogUserRoles, RTCOnlineUsers, User, UserXRole
+from models import db, CatalogIDDocumentTypes, CatalogServices, CatalogOperations, CatalogUserRoles, RTCOnlineUsers, User, UserXRole
 from models import CatalogSurveysAnswerTypes, Surveys, SurveysQuestions
 
 # -----------------------------------------------------------------------------------------------------
@@ -26,6 +26,9 @@ def initPopulateDB():
 
     # Add Services Catalog
     populateServicesCatalog()
+
+    # Add ID Document Type Catalog
+    populateCatalogIDDocType()
 
     # Add Default Users
     populateDefaultUsers()
@@ -151,6 +154,7 @@ def populateServicesCatalog(column=None):
         elif column == 'sur':
             # Add Service's User Role
             services = CatalogServices.query.all()
+            hasUpd = False
             
             for service in services:
                 usr_role = CatalogUserRoles.query.filter_by(name_short=service.name_short).first()
@@ -158,8 +162,10 @@ def populateServicesCatalog(column=None):
                 if usr_role is not None:
                     service.service_user_role = usr_role.id
                     db.session.add(service)
+                    hasUpd = True
             
-            db.session.commit()
+            if hasUpd:
+                db.session.commit()
         
         elif column == 'sch':
             # Add Service's Sessions Schedule
@@ -168,13 +174,13 @@ def populateServicesCatalog(column=None):
                 'weeks': 'all',
                 'wdays': ['mon', 'tue', 'wed', 'thu', 'fri'],
                 'hours': [
-                    {'start_time': '8:00am', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
-                    {'start_time': '9:00am', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
-                    {'start_time': '10:00am', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
-                    {'start_time': '11:00am', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
-                    {'start_time': '1:00pm', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'},
-                    {'start_time': '2:00pm', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'},
-                    {'start_time': '3:00pm', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'}
+                    {'start_time': '8:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '9:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '10:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '11:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '13:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'},
+                    {'start_time': '14:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'},
+                    {'start_time': '15:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'}
                 ]
             }]
             db.session.add(advsrv)
@@ -184,13 +190,11 @@ def populateServicesCatalog(column=None):
                 'weeks': 'all',
                 'wdays': ['mon', 'tue', 'wed', 'thu', 'fri'],
                 'hours': [
-                    {'start_time': '8:00am', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'morning'},
-                    {'start_time': '9:00am', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'morning'},
-                    {'start_time': '10:00am', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'morning'},
-                    {'start_time': '11:00am', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'morning'},
-                    {'start_time': '1:00pm', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'evening'},
-                    {'start_time': '2:00pm', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'evening'},
-                    {'start_time': '3:00pm', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'evening'}
+                    {'start_time': '10:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '11:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '13:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'evening'},
+                    {'start_time': '14:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'evening'},
+                    {'start_time': '15:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'evening'}
                 ]
             }]
             db.session.add(lawsrv)
@@ -200,13 +204,11 @@ def populateServicesCatalog(column=None):
                 'weeks': 'all',
                 'wdays': ['mon', 'tue', 'wed', 'thu', 'fri'],
                 'hours': [
-                    {'start_time': '8:00am', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
-                    {'start_time': '9:00am', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
-                    {'start_time': '10:00am', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
-                    {'start_time': '11:00am', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
-                    {'start_time': '1:00pm', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'evening'},
-                    {'start_time': '2:00pm', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'evening'},
-                    {'start_time': '3:00pm', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'evening'}
+                    {'start_time': '8:00', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '9:00', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '10:00', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '11:00', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '13:00', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'evening'},
                 ]
             }]
             db.session.add(supsrv)
@@ -335,6 +337,29 @@ def populateCatalogOperations():
         return jsonify({ 'status': 'error' })
 
 
+# Populate Catalog ID Document Type Data
+def populateCatalogIDDocType():
+    try:
+        app.logger.debug('** SWING_CMS ** - Populate ID Document Type')
+
+        # Add ID Document Type
+        nat_id = CatalogIDDocumentTypes(name='Identificación Nacional', name_short='nid')
+        db.session.add(nat_id)
+
+        passport = CatalogIDDocumentTypes(name='Pasaporte', name_short='pas')
+        db.session.add(passport)
+
+        driver_lic = CatalogIDDocumentTypes(name='Licencia de conducir', name_short='lic')
+        db.session.add(driver_lic)
+
+        db.session.commit()
+
+        return jsonify({ 'status': 'success' })
+    except Exception as e:
+        app.logger.error('** SWING_CMS ** - Populate ID Document Type Error: {}'.format(e))
+        return jsonify({ 'status': 'error' })
+
+
 # Populate Catalog User Roles Data
 def populateCatalogUserRoles():
     try:
@@ -364,6 +389,7 @@ def populateTable(dp_name, dp_options=None):
         app.logger.debug('** SWING_CMS ** - Populate Specified Table')
 
         data_procedures = {
+            "catalog_id_types": populateCatalogIDDocType,
             "catalog_operations": populateCatalogOperations,
             "catalog_services": populateServicesCatalog,
             "catalog_user_roles": populateCatalogUserRoles,
