@@ -1,0 +1,161 @@
+{% extends 'layout_main-footer_topbar.html' %}
+{% block page_description %}Wassenger SMS{% endblock %}
+{% block page_title %}Wassenger SMS{% endblock %}
+{% block head_section %}
+{% endblock %}
+{% block body %}
+<main class="s-main-content container-color-background">
+    <div class="mdc-layout-grid container-size-xs">
+        <div class="mdc-layout-grid__inner">
+            <header class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet 
+                           mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle s-font-align-center">
+                <img src="{{ url_for('static', filename='images/manifest/options_list.svg') }}" class="resize-image-2fit-30" alt="Logo Citas" />
+                <div class="mdc-typography--headline2 s-font-color-primary">
+                    Envío de Mensajes.
+                </div>
+            </header>
+        </div>
+    </div>
+    <div class="mdc-layout-grid container-size-xs">
+        <div class="mdc-layout-grid__inner">
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet 
+                           mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle s-font-align-center">
+                <p>
+                    <div class="mdc-select" role="button">
+                        <div class="mdc-select__anchor">
+                            <span class="mdc-select__ripple"></span>
+                            <input type="text" disabled readonly class="mdc-select__selected-text">
+                            <i class="mdc-select__dropdown-icon"></i>
+                            <span class="mdc-floating-label">Selecciona Grupo</span>
+                            <span class="mdc-line-ripple"></span>
+                        </div>
+                        <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox" tabindex="0">
+                            <ul id="f-appointment-service-select" class="mdc-list mdc-select__list">
+                                <li class="mdc-list-item" data-value="gc">
+                                    <span class="mdc-list-item__text">
+                                        Grupo de control
+                                    </span>
+                                </li>
+                                <li class="mdc-list-item" data-value="gt">
+                                    <span class="mdc-list-item__text">
+                                        Grupo de tratamiento
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </p>
+                <p>
+                    <div class="mdc-select" role="button">
+                        <div class="mdc-select__anchor">
+                            <span class="mdc-select__ripple"></span>
+                            <input type="text" disabled readonly class="mdc-select__selected-text">
+                            <i class="mdc-select__dropdown-icon"></i>
+                            <span class="mdc-floating-label">Selecciona Mensaje</span>
+                            <span class="mdc-line-ripple"></span>
+                        </div>
+                        <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox" tabindex="0">
+                            <ul id="f-appointment-service-select" class="mdc-list mdc-select__list">
+                                <li class="mdc-list-item" data-value="sms-c-1">
+                                    <span class="mdc-list-item__text">
+                                        Mensaje 1
+                                    </span>
+                                </li>
+                                <li class="mdc-list-item" data-value="sms-c-2">
+                                    <span class="mdc-list-item__text">
+                                        Mensaje 2
+                                    </span>
+                                </li>
+                                <li class="mdc-list-item" data-value="sms-c-3">
+                                    <span class="mdc-list-item__text">
+                                        Mensaje 3
+                                    </span>
+                                </li>
+                                <li class="mdc-list-item" data-value="sms-c-4">
+                                    <span class="mdc-list-item__text">
+                                        Mensaje 4
+                                    </span>
+                                </li>
+                                <li class="mdc-list-item" data-value="sms-c-5">
+                                    <span class="mdc-list-item__text">
+                                        Mensaje 5
+                                    </span>
+                                </li>
+                                <li class="mdc-list-item" data-value="sms-c-6">
+                                    <span class="mdc-list-item__text">
+                                        Mensaje 6
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </p>
+                <p>
+                    <div class="mdc-select" role="button">
+                        <div class="mdc-select__anchor">
+                            <span class="mdc-select__ripple"></span>
+                            <input type="text" disabled readonly class="mdc-select__selected-text">
+                            <i class="mdc-select__dropdown-icon"></i>
+                            <span class="mdc-floating-label">Mensajes por Minuto</span>
+                            <span class="mdc-line-ripple"></span>
+                        </div>
+                        <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox" tabindex="0">
+                            <ul id="f-appointment-service-select" class="mdc-list mdc-select__list">
+                                <li class="mdc-list-item" data-value="m2">
+                                    <span class="mdc-list-item__text">
+                                        2 Mensaje por minuto
+                                    </span>
+                                </li>
+                                <li class="mdc-list-item" data-value="m3">
+                                    <span class="mdc-list-item__text">
+                                        3 Mensajes por minuto
+                                    </span>
+                                </li>
+                                <li class="mdc-list-item" data-value="m4">
+                                    <span class="mdc-list-item__text">
+                                        4 Mensajes por minuto
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </p>
+                <p>
+                    <div class="mdc-select" role="button">
+                        <div class="mdc-select__anchor">
+                            <span class="mdc-select__ripple"></span>
+                            <input type="text" disabled readonly class="mdc-select__selected-text">
+                            <i class="mdc-select__dropdown-icon"></i>
+                            <span class="mdc-floating-label">Selecciona Teléfono</span>
+                            <span class="mdc-line-ripple"></span>
+                        </div>
+                        <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox" tabindex="0">
+                            <ul id="f-appointment-service-select" class="mdc-list mdc-select__list">
+                                <li class="mdc-list-item" data-value="t1">
+                                    <span class="mdc-list-item__text">
+                                        +503 7286 7368
+                                    </span>
+                                </li>
+                                <li class="mdc-list-item" data-value="t2">
+                                    <span class="mdc-list-item__text">
+                                        +503 7256 7341
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </p>
+                <p>
+                    <div class="container-appointment-confirm--submit">
+                        <button class="mdc-button mdc-button--raised" aria-label="Submit Date" alt="Submit Date"
+                            data-action-type="redirect" data-action-val="/">
+                            <div class="mdc-button__ripple"></div>
+                            <span class="mdc-button__label">Enviar Mensajes</span>
+                        </button>
+                    </div>
+                </p>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

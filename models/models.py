@@ -70,9 +70,17 @@ es = ElasticSearchInit()
 # ElasticSearch/SQLAlchemy implementation
 # **************************************************************************
 
+def es_refactor_index(index):
+    # This is an acronym for the app, making an index app exclusive
+    # Must be lowercase 
+    app_acr = 'ctos-'
+    ref_index = app_acr + str(index)
+    return ref_index
+
 def add_to_index(index, model):
     if not es.instance:
         return
+    index = es_refactor_index(index)
     if not es.instance.indices.exists(index=index):
         settings = {
             "mappings": {
@@ -129,6 +137,7 @@ def add_to_index(index, model):
 def query_index(index, query, page, per_page):
     if not es.instance:
         return [], 0
+    index = es_refactor_index(index)
     search = es.instance.search(
         index = index,
         body = {
@@ -148,6 +157,7 @@ def query_index(index, query, page, per_page):
 def remove_from_index(index, model = None):
     if not es.instance:
         return
+    index = es_refactor_index(index)
     if not model:
         es.instance.indices.delete(index=index, ignore=[404])
     else:
@@ -213,6 +223,7 @@ class Appointments(db.Model):
     service_id = db.Column(db.Integer, db.ForeignKey('catalog_services.id'), nullable=False)
     service_supp_id = db.Column(db.Integer, db.ForeignKey('services_supplement.id'), nullable=True)
     emp_assigned = db.Column(db.Integer, db.ForeignKey('user_x_employees_assigned.id'), nullable=False)
+    emp_accepted = db.Column(db.Boolean, nullable=True, default=False)
     conversation_id = db.Column(db.JSON, nullable=True)
     usr_attendance = db.Column(db.DateTime, nullable=True)
     emp_attendance = db.Column(db.DateTime, nullable=True)

@@ -28,6 +28,35 @@ import { Workbox } from 'workbox-window/Workbox.mjs';
 
 /************************** FUNCTIONS **************************/
 
+// Date getWeekOfMonth and getWeekOfYear implementation
+Date.prototype.getDayString = function() {
+    var weekdays = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    return weekdays[this.getDay()];
+};
+
+Date.prototype.getWeekOfMonth = function(isMondayFirstDayOfWeek = true) {
+    var d = new Date(this.getFullYear(), this.getMonth(), 1);
+    var firstWeekday = d.getDay() - isMondayFirstDayOfWeek;
+    if (firstWeekday < 0) firstWeekday = 6;
+    var offsetDate = this.getDate() + firstWeekday - 1;
+    return Math.floor(offsetDate / 7) + 1;
+};
+
+Date.prototype.getWeekOfYear = function() {
+    var d = new Date(this.getFullYear(), this.getMonth(), this.getDate());
+    var dayNum = d.getDay() || 7;
+    d.setDate(d.getDate() + 4 - dayNum);
+    var yearStart = new Date(d.getFullYear(),0,1);
+    return Math.ceil((((d - yearStart) / 86400000) + 1)/7)
+};
+
+export function newDate(dt = new Date()) {
+    return new Date(dt);
+}
+/* Allow 'window' context to reference the function */
+window.newDate = newDate;
+
+
 // Date Format
 export function returnFormatDate(dateTime, type = '') {
     var dt = new Date(dateTime);
@@ -1084,14 +1113,13 @@ const snackbar = new MDCSnackbar(document.querySelector('.mdc-snackbar'));
 export var mdcSelects = [].map.call(document.querySelectorAll('.mdc-select'), function (el) {
     let mdcSel = new MDCSelect(el);
     let actionFn = el.getAttribute('data-action-fn');
-    let assignedVar = el.getAttribute('data-assigned-var');
     if (actionFn) {
         let fn = (typeof actionFn == "string") ? window[actionFn] : actionFn;
         mdcSel.listen('MDCSelect:change', () => fn(mdcSel.value));
     }
-    if (assignedVar) {
+    if (el.hasAttribute('data-assigned-var')) {
         MDCSelect.prototype.assignedVar = null;
-        mdcSel.assignedVar = assignedVar;
+        mdcSel.assignedVar = el.getAttribute('name');
     }
     return mdcSel;
 });
@@ -1105,8 +1133,13 @@ var mdcTabBars = [].map.call(document.querySelectorAll('.mdc-tab-bar'), function
 
 
 // Material Textfields
-var mdcTextInputs = [].map.call(document.querySelectorAll('.mdc-text-field'), function (el) {
-    return new MDCTextField(el);
+export var mdcTextInputs = [].map.call(document.querySelectorAll('.mdc-text-field'), function (el) {
+    let mdcTxt = new MDCTextField(el);
+    if (el.hasAttribute('data-assigned-var')) {
+        MDCTextField.prototype.assignedVar = null;
+        mdcTxt.assignedVar = el.getAttribute('name');
+    }
+    return mdcTxt;
 });
 
 
@@ -1116,7 +1149,7 @@ var mdcTFHelperTexts = [].map.call(document.querySelectorAll('.mdc-text-field-he
 });
 
 
-// Material Textfields
+// Material Textfields Icons
 var mdcTextInputsIcons = [].map.call(document.querySelectorAll('.mdc-text-field-icon'), function (el) {
     return new MDCTextFieldIcon(el);
 });

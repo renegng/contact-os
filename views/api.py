@@ -3,7 +3,8 @@ from datetime import timezone as tz
 from flask import Blueprint, request, url_for, jsonify, make_response
 from flask import current_app as app
 from flask_login import current_user, login_required
-from models.models import CatalogIDDocumentTypes, CatalogUserRoles, CatalogServices, User, UserXRole
+from models.models import Appointments, CatalogIDDocumentTypes, CatalogUserRoles, CatalogServices
+from models.models import User, UserXEmployeeAssigned, UserXRole
 
 api = Blueprint('api', __name__, template_folder='templates', static_folder='static')
 
@@ -24,7 +25,7 @@ def _getservice(service_id = None):
                     'name_short': None,
                     'service_user_role': None,
                     'sessions_schedule': None,
-                    'status': 200
+                    'status': 404
                 }
 
                 detail = CatalogServices.query.filter(CatalogServices.name_short == service_id).first()
@@ -73,7 +74,7 @@ def _getuser(user_id = None):
                     'phonenumber': None,
                     'roles': None,
                     'state': None,
-                    'status': 200
+                    'status': 404
                 }
 
                 detail = User.query.filter(User.id == user_id).first()
@@ -103,6 +104,91 @@ def _getuser(user_id = None):
         
     except Exception as e:
         app.logger.error('** SWING_CMS ** - API User Detail Error: {}'.format(e))
+        return jsonify({ 'status': 'error', 'msg': e })
+
+
+# Get a list of Appointments
+@api.route('/api/list/appointments/<string:cmds>/<int:user_id>/', methods = ['GET'])
+# @login_required
+def _getappointments(cmds = None, user_id = None):
+    app.logger.debug('** SWING_CMS ** - API List Appointments')
+    try:
+        if request.method == 'GET':
+            if cmds is not None and user_id is not None:
+                cmd_lst = cmds.split('-')
+                dt_today = dt.now(tz.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+                
+                response = {
+                    'appointments': [],
+                    'datetime': dt_today,
+                    'id': user_id,
+                    'status': 404
+                }
+
+                for cmd in cmd_lst:
+                    details = None
+                    
+                    if cmd == 'assigned':
+                        # Appointments - created_by
+                        details = Appointments.query.join(UserXEmployeeAssigned).filter(
+                            Appointments.date_scheduled > dt_today,
+                            UserXEmployeeAssigned.user_id == Appointments.created_for,
+                            UserXEmployeeAssigned.employee_id == user_id
+                        ).order_by(Appointments.date_scheduled.asc())
+                    elif cmd == 'by':
+                        # Appointments - created_by
+                        details = Appointments.query.filter(
+                            Appointments.created_by == user_id,
+                            Appointments.date_scheduled > dt_today
+                        ).order_by(Appointments.date_scheduled.asc())
+                    elif cmd == 'for':
+                        # Appointments - created_for
+                        details = Appointments.query.filter(
+                            Appointments.created_for == user_id,
+                            Appointments.date_scheduled > dt_today
+                        ).order_by(Appointments.date_scheduled.asc())
+                    
+                    if details is not None:
+                        for record in details:
+                            usr_for = User.query.filter_by(id = record.created_for).first()
+                            emp_crt = User.query.filter_by(id = record.created_by).first()
+                            emp_asg = User.join(UserXEmployeeAssigned).filter(
+                                UserXEmployeeAssigned.id == record.emp_assigned,
+                                User.id == UserXEmployeeAssigned.employee_id
+                            ).first()
+                            service = CatalogServices.query.filter_by(id = record.service_id).first()
+                            
+                            response['appointments'].append({
+                                'id': record.id,
+                                'appointment_type': cmd,
+                                'cancelled': record.cancelled,
+                                'created_by': {
+                                    'name': emp_crt.name
+                                },
+                                'created_for': {
+                                    'attended': record.usr_attendance,
+                                    'name': usr_for.name
+                                },
+                                'date_created': record.date_created,
+                                'date_scheduled': record.date_scheduled,
+                                'emp_assigned': {
+                                    'accepted': record.emp_accepted,
+                                    'attended': record.emp_attendance,
+                                    'name': emp_asg.name
+                                },
+                                'service': {
+                                    'duration': service.duration_minutes,
+                                    'name': service.name,
+                                    'name_short': service.name_short
+                                }
+                            })
+
+                return jsonify(response)
+            else:
+                return jsonify({ 'status': 400 })
+            
+    except Exception as e:
+        app.logger.error('** SWING_CMS ** - API List Appointments Error: {}'.format(e))
         return jsonify({ 'status': 'error', 'msg': e })
 
 

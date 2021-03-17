@@ -6,7 +6,8 @@ import { MDCMenu, Corner } from '@material/menu';
 /************************** FUNCTIONS **************************/
 
 export const appCountry = 'SV';
-export var jsonUserDetails, jsonServiceDetails, citiesData, statesData = null;
+export var jsonEmpDetails, jsonEmpBusySch, jsonUserDetails, jsonServiceDetails = null;
+export var citiesData, statesData = null;
 
 // MDC Assigned Components to Variables
 // This is done to reference specific MDC instantiated elements, their properties and functions
@@ -142,14 +143,7 @@ export function getCities(selState) {
         swcms.getFetch(apiUrl, 'loadCities', requestOptions).then((response) => {
             // If User Detail is being loaded
             if (setUserCity) {
-                let citiesElms = document.querySelectorAll('#f-appointment-city-select > li');
-
-                citiesElms.forEach((city, index) => {
-                    if (city.getAttribute('data-value') == setUserCity.id) {
-                        mdcAssignedVars['mdcCitiesSelect'].selectedIndex = index;
-                    }
-                });
-
+                mdcAssignedVars['u.city'].value = setUserCity;
                 setUserCity = null;
             }
         });
@@ -202,7 +196,7 @@ export function loadCities(data) {
     let citListEl = document.querySelector('#f-appointment-city-select');
     let sortedData = data.sort((a, b) => a.name < b.name ? -1 : 1);
 
-    mdcAssignedVars['mdcCitiesSelect'].selectedIndex = -1;
+    mdcAssignedVars['u.city'].selectedIndex = -1;
     citListEl.innerHTML = '';
 
     sortedData.forEach((cit) => {
@@ -261,29 +255,22 @@ export function loadUserDetails(data) {
 
             case 'national_id_type':
                 if (val){
-                    let natIdTypeElms = document.querySelectorAll('#f-appointment-nat-id-type-select > li');
-    
-                    natIdTypeElms.forEach((type, index) => {
-                        if (type.getAttribute('data-value') == val) {
-                            mdcAssignedVars['mdcNatIdTypeSelect'].selectedIndex = index;
-                        }
-                    });
+                    mdcAssignedVars['u.national_id_type'].value = val;
                 } else {
-                    mdcAssignedVars['mdcNatIdTypeSelect'].selectedIndex = -1;
+                    mdcAssignedVars['u.national_id_type'].selectedIndex = -1;
                 }
                 break;
             
             case 'city':
-                mdcAssignedVars['mdcCitiesSelect'].selectedIndex = -1;
+                mdcAssignedVars['u.city'].selectedIndex = -1;
                 break;
             
             case 'state':
-                mdcAssignedVars['mdcStatesSelect'].selectedIndex = -1;
+                mdcAssignedVars['u.state'].selectedIndex = -1;
                 break;
             
             default:
-                let inputEl = document.getElementsByName('u.' + key);
-                if (inputEl) inputEl.value = (val)? val : '';
+                if (mdcAssignedVars['u.' + key]) mdcAssignedVars['u.' + key].value = (val)? val : '';
                 break;
         }
     });
@@ -292,27 +279,18 @@ export function loadUserDetails(data) {
         // Validate that State exists in the Dropdown
         if (!statesElms){
             getStates().then((response) => {
-                loadUserDetailsLocation(data.state, data.city);
+                setUserCity = data.city;
+                mdcAssignedVars['u.state'].value = data.state.iso2;
             });
         } else {
-            loadUserDetailsLocation(data.state, data.city);
+            setUserCity = data.city;
+            mdcAssignedVars['u.state'].value = data.state.iso2;
         }
     }
     jsonUserDetails = data;
 }
 /* Allow 'window' context to reference the function */
 window.loadUserDetails = loadUserDetails;
-
-function loadUserDetailsLocation(uState, uCity) {
-    let statesElms = document.querySelectorAll('#f-appointment-department-select > li');
-
-    statesElms.forEach((state, index) => {
-        if (state.getAttribute('data-value') == uState.iso2) {
-            setUserCity = uCity;
-            mdcAssignedVars['mdcStatesSelect'].selectedIndex = index;
-        }
-    });
-}
 
 // Load User Information
 export function loadUserInfo(evt, uType) {
@@ -337,6 +315,7 @@ export function loadUserInfo(evt, uType) {
 
             swcms.getFetch(apiUrl, 'loadUserDetails');
         } else {
+            let apiUrl = `/api/list/appointments/assigned/${usrId}/`;
             let empCont = document.querySelector('.container-appointmentadm-emp--record-info');
     
             empCont.querySelector('.mdc-typography--caption').textContent = usrName;
@@ -346,6 +325,11 @@ export function loadUserInfo(evt, uType) {
             document.querySelector('.container-appointment-confirm--emp').textContent = usrName;
             document.getElementById('f-appointment-efilter-input').value = usrName;
             document.getElementById('app_emp_id').value = usrId;
+
+            swcms.getFetch(apiUrl).then((data) => {
+                jsonEmpDetails = data;
+                appCal.refresh();
+            });
         }
     }
 }
@@ -387,6 +371,22 @@ export function selectAppointmentService(value) {
         jsonServiceDetails = data;
         createServiceSessionsContainers();
     });
+
+    mdcAssignedVars['e.name'].value = '';
+    document.querySelector('.container-appointmentadm-emp--record-info').classList.add('container--hidden');
+    document.querySelectorAll('.container-appointmentadm-emp--record-info > span').forEach((el) => {
+        el.innerHTML = '-';
+    });
+    document.querySelector('.container-appointment-sessions').classList.add('container--hidden');
+    document.querySelector('.container-appointment-empty').classList.remove('container--hidden');
+    document.querySelector('.container-appointment-confirm--emp').innerHTML = '';
+    document.querySelector('.container-appointment-confirm--date').innerHTML = '';
+    document.querySelector('.container-appointment-confirm--time').innerHTML = '';
+    document.getElementById('app_emp_id').value = '';
+    document.getElementById('app_sch_dt').value = '';
+    jsonEmpDetails = null;
+    jsonEmpBusySch = null;
+    appCal.refresh();
 }
 /* Allow 'window' context to reference the function */
 window.selectAppointmentService = selectAppointmentService;
@@ -412,28 +412,62 @@ export function selectAppointmentTime(elm) {
 /* Allow 'window' context to reference the function */
 window.selectAppointmentTime = selectAppointmentTime;
 
-// Set Current Selected Date on Hours Cards
-export function setSelectedDateOnUI(date) {
-    let formatDate = swcms.returnFormatDate(date, 'date');
+// Show Schedule Sessions depending on the Selected Date and Service and Employee's Availability
+export function showSelectedSessions(date) {
+    let dt = swcms.newDate(date);
+    let formatDate = swcms.returnFormatDate(dt, 'date');
     let curSelected = document.querySelector('.mdc-card--selected');
 
     if (curSelected) {
+        let timeConfirmHidEl = document.getElementsByName('app_sch_dt');
         let timeConfirmEl = document.querySelector('.container-appointment-confirm--time');
 
         curSelected.classList.remove('mdc-card--selected');
         curSelected.querySelector('.container-appointment-hours--time').classList.remove('s-font-color-primary');
         curSelected.querySelector('.container-appointment-hours--time').classList.add('s-font-color-secondary');
 
+        timeConfirmHidEl.value = '';
         timeConfirmEl.textContent = '';
     }
 
-    document.querySelector('.container-appointment-confirm--date').textContent = formatDate;
-    let hoursCont = document.querySelector('.container-appointment-hours');
-    if (hoursCont) {
-        hoursCont.querySelectorAll('.container-appointment-hours--date').forEach((el) => {
-            el.textContent = formatDate;
+    if (jsonServiceDetails && jsonEmpDetails) {
+        let sessionsExists = false;
+
+        // Validate All Service Sessions against Selected Day
+        document.querySelectorAll('.container-appointment-hours').forEach((hoursContainer) => {
+            let isDateWeekEven = (dt.getWeekOfYear() % 2 == 0)? 'even' : 'odd';
+            let hcWeeks = hoursContainer.getAttribute('data-app-week');
+            let hcDays = hoursContainer.getAttribute('data-app-days');
+
+            if (hcWeeks == isDateWeekEven || hcWeeks == 'all') {
+                if (hcDays.includes(dt.getDayString())) {
+                    sessionsExists = true;
+                    hoursContainer.classList.remove('container--hidden');
+                    hoursContainer.classList.add('container-appointment-hours--active');
+                    
+                    // Validate Busy Schedules against Available Sessions
+                    hoursContainer.querySelectorAll('.container-appointment-hours--date').forEach((el) => {
+                        el.textContent = formatDate;
+                    });
+                } else {
+                    hoursContainer.classList.remove('container-appointment-hours--active');
+                    hoursContainer.classList.add('container--hidden');
+                }
+            } else {
+                hoursContainer.classList.remove('container-appointment-hours--active');
+                hoursContainer.classList.add('container--hidden');
+            }
         });
+
+        if (sessionsExists) {
+            document.querySelector('.container-appointment-empty').classList.add('container--hidden');
+            document.querySelector('.container-appointment-sessions').classList.remove('container--hidden');
+        } else {
+            document.querySelector('.container-appointment-empty').classList.remove('container--hidden');
+            document.querySelector('.container-appointment-sessions').classList.add('container--hidden');
+        }
     }
+    document.querySelector('.container-appointment-confirm--date').textContent = formatDate;
 }
 
 
@@ -482,7 +516,7 @@ document.querySelector('#searchEmployeesMenu').addEventListener('MDCMenu:selecte
 
 /************************** ON PAGE LOAD **************************/
 
-var appCal;
+export var appCal = null;
 // Get jsCalendar instance
 window.addEventListener('load', () => {
     appCal = jsCalendar.get('#appointment-cal');
@@ -501,7 +535,6 @@ window.addEventListener('load', () => {
     // Click on date behavior
     appCal.onDateClick((event, date) => {
         appCal.set(date);
-        setSelectedDateOnUI(date);
     });
 
     // Make changes on the date elements
@@ -515,17 +548,20 @@ window.addEventListener('load', () => {
             element.classList.add('jsCalendar-date-unavailable');
             element.classList.remove('jsCalendar-date-weekend-currentmonth', 'jsCalendar-date-weekend-othermonth');
         }
-        // Color days between Monday and Friday as green
-        if (date.getDay() > 0 && date.getDay() < 6 && date > minDate && date < maxDate && info.isCurrentMonth) {
-            if (info.isCurrent) {
-                element.classList.remove('jsCalendar-date-available');
-            } else {
-                element.classList.add('jsCalendar-date-available');
+        // Color days between Monday and Friday when both Service Details and Employee Schedule is available
+        if (jsonServiceDetails && jsonEmpDetails){
+            if (date.getDay() > 0 && date.getDay() < 6 && date > minDate && date < maxDate && info.isCurrentMonth) {
+                if (info.isCurrent) {
+                    element.classList.remove('jsCalendar-date-available');
+                } else {
+                    element.classList.add('jsCalendar-date-available');
+                }
             }
         }
+
         // Display the current date on the hours cards
         if (info.isCurrent) {
-            setSelectedDateOnUI(date);
+            showSelectedSessions(date);
         }
     });
 
@@ -539,5 +575,10 @@ window.addEventListener('load', () => {
     swcms.mdcSelects.forEach((sel) => {
         if (sel.assignedVar)
             mdcAssignedVars[sel.assignedVar] = sel;
+    });
+
+    swcms.mdcTextInputs.forEach((txt) => {
+        if (txt.assignedVar)
+            mdcAssignedVars[txt.assignedVar] = txt;
     });
 });
