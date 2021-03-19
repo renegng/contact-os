@@ -99,6 +99,7 @@
 @include dialog.core-styles;
 @include fab.core-styles;
 @include floating-label.core-styles;
+@include helper-text.helper-text-core-styles;
 @include icon.icon-core-styles;
 @include icon-button.core-styles;
 @include image-list.core-styles;
@@ -305,6 +306,32 @@
 .mdc-snackbar {
     margin: 0;
     z-index: 2;
+
+    .mdc-snackbar__label-error {
+        color: #dc143c;
+        display: none;
+        font-weight: bold;
+        padding-left: 1rem;
+    }
+
+    .mdc-snackbar__label-success {
+        color: #35ac19;
+        display: none;
+        font-weight: bold;
+        padding-left: 1rem;
+    }
+
+    &.mdc-snackbar__label-error-show {
+        .mdc-snackbar__label-error {
+            display: block;
+        }
+    }
+
+    &.mdc-snackbar__label-success-show {
+        .mdc-snackbar__label-success {
+            display: block;
+        }
+    }
 }
 
 /* Switch */

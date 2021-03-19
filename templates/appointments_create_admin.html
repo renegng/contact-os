@@ -21,7 +21,7 @@
         <div class="mdc-layout-grid__inner">
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-5-desktop mdc-layout-grid__cell--span-4-tablet
                         mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-top container-justify-center container-appointmentadm-user">
-                <h5 class="mdc-typography--headline5 s-font-color-primary">
+                <h5 class="mdc-typography--headline5 s-font-color-primary" id="step-one">
                     Paso 1: Selecciona la usuaria
                 </h5>
                 <div class="mdc-menu-surface--anchor">
@@ -43,16 +43,21 @@
                     <span class="mdc-typography--subtitle2">-</span>
                 </div>
                 <div>
-                    <label class="mdc-text-field mdc-text-field--filled" name="u.names" data-assigned-var>
+                    <label class="mdc-text-field mdc-text-field--filled" id="u.names" data-assigned-var>
                         <span class="mdc-text-field__ripple"></span>
-                        <input id="f-appointment-names-input" class="mdc-text-field__input" type="text"
-                                aria-labelledby="f-appointment-names-label" tabindex="0" maxlength="300">
+                        <input id="f-appointment-names-input" class="mdc-text-field__input" type="text" tabindex="0" maxlength="300"
+                                aria-labelledby="f-appointment-names-label">
+                                <!-- aria-controls="f-appointment-names-helper"
+                                aria-describedby="f-appointment-names-helper"> -->
                         <span class="mdc-floating-label" id="f-appointment-names-label">Nombres</span>
                         <span class="mdc-line-ripple"></span>
                     </label>
+                    <!-- <div class="mdc-text-field-helper-line">
+                        <div class="mdc-text-field-helper-text" id="f-appointment-names-helper" aria-hidden="true">HELP TEXT</div>
+                    </div> -->
                 </div>
                 <div>
-                    <label class="mdc-text-field mdc-text-field--filled" name="u.last_names" data-assigned-var>
+                    <label class="mdc-text-field mdc-text-field--filled" id="u.last_names" data-assigned-var>
                         <span class="mdc-text-field__ripple"></span>
                         <input id="f-appointment-lastnames-input" class="mdc-text-field__input" type="text"
                                 aria-labelledby="f-appointment-lastnames-label" tabindex="0" maxlength="300">
@@ -61,7 +66,7 @@
                     </label>
                 </div>
                 <div>
-                    <label class="mdc-text-field mdc-text-field--filled" name="u.birthdate" data-assigned-var>
+                    <label class="mdc-text-field mdc-text-field--filled" id="u.birthdate" data-assigned-var>
                         <span class="mdc-text-field__ripple"></span>
                         <input id="f-appointment-birthdate-input" class="mdc-text-field__input" type="date"
                                 aria-labelledby="f-appointment-birthdate-label" tabindex="0">
@@ -69,7 +74,7 @@
                         <span class="mdc-line-ripple"></span>
                     </label>
                 </div>
-                <div class="mdc-select container-appointment-id-types" role="button" name="u.national_id_type" data-assigned-var>
+                <div class="mdc-select container-appointment-id-types" role="button" id="u.national_id_type" data-assigned-var>
                     <div class="mdc-select__anchor">
                         <span class="mdc-select__ripple"></span>
                         <input type="text" disabled readonly class="mdc-select__selected-text">
@@ -90,7 +95,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="mdc-text-field mdc-text-field--filled" name="u.national_id" data-assigned-var>
+                    <label class="mdc-text-field mdc-text-field--filled" id="u.national_id" data-assigned-var>
                         <span class="mdc-text-field__ripple"></span>
                         <input id="f-appointment-nationalid-input" class="mdc-text-field__input" type="text"
                                 aria-labelledby="f-appointment-nationalid-label" tabindex="0" maxlength="30">
@@ -99,7 +104,7 @@
                     </label>
                 </div>
                 <div>
-                    <label class="mdc-text-field mdc-text-field--filled" name="u.phonenumber" data-assigned-var>
+                    <label class="mdc-text-field mdc-text-field--filled" id="u.phonenumber" data-assigned-var>
                         <span class="mdc-text-field__ripple"></span>
                         <input id="f-appointment-phonenumber-input" class="mdc-text-field__input" type="tel"
                                 aria-labelledby="f-appointment-phonenumber-label" tabindex="0" maxlength="20">
@@ -107,7 +112,7 @@
                         <span class="mdc-line-ripple"></span>
                     </label>
                 </div>
-                <div class="mdc-select container-appointment-csc--state" role="button" name="u.state" data-action-fn="getCities" data-assigned-var>
+                <div class="mdc-select container-appointment-csc--state" role="button" id="u.state" data-action-fn="getCities" data-assigned-var>
                     <div class="mdc-select__anchor">
                         <span class="mdc-select__ripple"></span>
                         <input type="text" disabled readonly class="mdc-select__selected-text">
@@ -120,7 +125,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="mdc-select container-appointment-csc--city" role="button" name="u.city" data-assigned-var>
+                <div class="mdc-select container-appointment-csc--city" role="button" id="u.city" data-assigned-var>
                     <div class="mdc-select__anchor">
                         <span class="mdc-select__ripple"></span>
                         <input type="text" disabled readonly class="mdc-select__selected-text">
@@ -136,7 +141,7 @@
             </div>
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-7-desktop mdc-layout-grid__cell--span-4-tablet
                         mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-top container-justify-center container-appointmentadm-service">
-                <h5 class="mdc-typography--headline5 s-font-color-primary">
+                <h5 class="mdc-typography--headline5 s-font-color-primary" id="step-two">
                     Paso 2: Selecciona el servicio
                 </h5>
                 <div class="mdc-select container-appointment-service--services" role="button" data-action-fn="selectAppointmentService">
@@ -162,11 +167,11 @@
             </div>
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-7-desktop mdc-layout-grid__cell--span-4-tablet
                         mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-top container-justify-center container-appointmentadm-emp">
-                <h5 class="mdc-typography--headline5 s-font-color-primary">
+                <h5 class="mdc-typography--headline5 s-font-color-primary" id="step-three">
                     Paso 3: Selecciona la funcionaria
                 </h5>
                 <div class="mdc-menu-surface--anchor">
-                    <label class="mdc-text-field mdc-text-field--filled" name="e.name" data-assigned-var>
+                    <label class="mdc-text-field mdc-text-field--filled" id="e.name" data-assigned-var>
                         <span class="mdc-text-field__ripple"></span>
                         <input id="f-appointment-efilter-input" class="mdc-text-field__input" type="text" 
                                 aria-labelledby="f-appointment-efilter-label" tabindex="-1">
@@ -187,7 +192,7 @@
             </div>
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-5-desktop mdc-layout-grid__cell--span-4-tablet
                         mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-top s-font-align-center container-appointmentadm-date">
-                <h5 class="mdc-typography--headline5 s-font-color-primary">
+                <h5 class="mdc-typography--headline5 s-font-color-primary" id="step-four">
                     Paso 4: Selecciona la fecha
                 </h5>
                 <div id="appointment-cal" class="auto-jsCalendar primary" data-language="es" data-month-format="month YYYY"
@@ -216,7 +221,7 @@
             </div>
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-7-desktop mdc-layout-grid__cell--span-4-tablet
                         mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-top container-appointmentadm-time">
-                <h5 class="mdc-typography--headline5 s-font-color-primary s-font-align-center">
+                <h5 class="mdc-typography--headline5 s-font-color-primary s-font-align-center" id="step-five">
                     Paso 5: Selecciona el horario
                 </h5>
                 <div class="container-appointment-empty s-font-align-center">
@@ -244,17 +249,17 @@
                         <li class="mdc-list-item">
                             <i class="mdc-list-item__graphic material-icons s-font-color-secondary">how_to_reg</i>
                             <span class="mdc-list-item__text mdc-typography--body1 container-appointment-confirm--user">-</span>
-                            <input type="hidden" name="app_usr_id" id="app_usr_id" value="">
+                            <input type="hidden" id="app_usr_id" value="">
                         </li>
                         <li class="mdc-list-item">
                             <i class="mdc-list-item__graphic material-icons s-font-color-secondary">handyman</i>
                             <span class="mdc-list-item__text mdc-typography--body1 container-appointment-confirm--service">-</span>
-                            <input type="hidden" name="app_svc_id" id="app_svc_id" value="">
+                            <input type="hidden" id="app_svc_id" value="">
                         </li>
                         <li class="mdc-list-item">
                             <i class="mdc-list-item__graphic material-icons s-font-color-secondary">support_agent</i>
                             <span class="mdc-list-item__text mdc-typography--body1 container-appointment-confirm--emp">-</span>
-                            <input type="hidden" name="app_emp_id" id="app_emp_id" value="">
+                            <input type="hidden" id="app_emp_id" value="">
                         </li>
                         <li class="mdc-list-item">
                             <i class="mdc-list-item__graphic material-icons s-font-color-secondary">today</i>
@@ -263,13 +268,13 @@
                         <li class="mdc-list-item">
                             <i class="mdc-list-item__graphic material-icons s-font-color-secondary">schedule</i>
                             <span class="mdc-list-item__text mdc-typography--body1 container-appointment-confirm--time">-</span>
-                            <input type="hidden" name="app_sch_dt" id="app_sch_dt" value="">
+                            <input type="hidden" id="app_sch_dt" value="">
                         </li>
                     </ul>
                 </div>
                 <div class="container-appointment-confirm--submit">
-                    <button class="mdc-button mdc-button--raised" aria-label="Submit Date" alt="Submit Date"
-                        data-action-type="redirect" data-action-val="/appointments/">
+                    <button class="mdc-button mdc-button--raised" aria-label="Submit Appointment" alt="Submit Appointment"
+                        data-action-type="submit" data-action-fn="saveAppointment">
                         <div class="mdc-button__ripple"></div>
                         <span class="mdc-button__label">Reservar cita</span>
                     </button>

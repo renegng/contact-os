@@ -8,10 +8,23 @@ from models.models import User, UserXEmployeeAssigned, UserXRole
 
 api = Blueprint('api', __name__, template_folder='templates', static_folder='static')
 
+# Set the Appointment's Details
+@api.route('/api/detail/appointment/', methods = ['POST'])
+# @login_required
+def _d_appointment():
+    app.logger.debug('** SWING_CMS ** - API Appointment Detail')
+    try:
+        # POST: Save Appointment
+        if request.method == 'POST':
+            pass
+    except Exception as e:
+        app.logger.error('** SWING_CMS ** - API Appointment Detail Error: {}'.format(e))
+        return jsonify({ 'status': 'error', 'msg': e })
+
 # Get the Service's Details
 @api.route('/api/detail/service/<string:service_id>/', methods = ['GET'])
 # @login_required
-def _getservice(service_id = None):
+def _d_service(service_id = None):
     app.logger.debug('** SWING_CMS ** - API Service Detail')
     try:
         if request.method == 'GET':
@@ -54,7 +67,7 @@ def _getservice(service_id = None):
 # Get the User's Details
 @api.route('/api/detail/user/<int:user_id>/', methods = ['GET'])
 # @login_required
-def _getuser(user_id = None):
+def _d_user(user_id = None):
     app.logger.debug('** SWING_CMS ** - API User Detail')
     try:
         if request.method == 'GET':
@@ -110,7 +123,7 @@ def _getuser(user_id = None):
 # Get a list of Appointments
 @api.route('/api/list/appointments/<string:cmds>/<int:user_id>/', methods = ['GET'])
 # @login_required
-def _getappointments(cmds = None, user_id = None):
+def _l_appointments(cmds = None, user_id = None):
     app.logger.debug('** SWING_CMS ** - API List Appointments')
     try:
         if request.method == 'GET':
@@ -133,18 +146,21 @@ def _getappointments(cmds = None, user_id = None):
                         details = Appointments.query.join(UserXEmployeeAssigned).filter(
                             Appointments.date_scheduled > dt_today,
                             UserXEmployeeAssigned.user_id == Appointments.created_for,
-                            UserXEmployeeAssigned.employee_id == user_id
+                            UserXEmployeeAssigned.employee_id == user_id,
+                            Appointments.cancelled == False
                         ).order_by(Appointments.date_scheduled.asc())
                     elif cmd == 'by':
                         # Appointments - created_by
                         details = Appointments.query.filter(
                             Appointments.created_by == user_id,
+                            Appointments.cancelled == False,
                             Appointments.date_scheduled > dt_today
                         ).order_by(Appointments.date_scheduled.asc())
                     elif cmd == 'for':
                         # Appointments - created_for
                         details = Appointments.query.filter(
                             Appointments.created_for == user_id,
+                            Appointments.cancelled == False,
                             Appointments.date_scheduled > dt_today
                         ).order_by(Appointments.date_scheduled.asc())
                     
@@ -195,7 +211,7 @@ def _getappointments(cmds = None, user_id = None):
 # Get a list of Users
 @api.route('/api/list/users/', methods = ['GET'])
 # @login_required
-def _getusers():
+def _l_users():
     app.logger.debug('** SWING_CMS ** - API List Users')
     try:
         if request.method == 'GET':

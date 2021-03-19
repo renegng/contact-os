@@ -172,7 +172,7 @@ def populateServicesCatalog(column=None):
             advsrv = CatalogServices.query.filter_by(name_short='adv').first()
             advsrv.sessions_schedule = [{
                 'weeks': 'all',
-                'wdays': ['mon', 'tue', 'wed', 'thu', 'fri'],
+                'wdays': ['tue', 'wed', 'thu'],
                 'hours': [
                     {'start_time': '8:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
                     {'start_time': '9:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
@@ -181,6 +181,22 @@ def populateServicesCatalog(column=None):
                     {'start_time': '13:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'},
                     {'start_time': '14:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'},
                     {'start_time': '15:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'}
+                ]
+            },{
+                'weeks': 'even',
+                'wdays': ['mon', 'fri'],
+                'hours': [
+                    {'start_time': '9:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '10:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '14:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'},
+                    {'start_time': '15:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'}
+                ]
+            },{
+                'weeks': 'odd',
+                'wdays': ['mon', 'fri'],
+                'hours': [
+                    {'start_time': '10:30', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '14:30', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'}
                 ]
             }]
             db.session.add(advsrv)

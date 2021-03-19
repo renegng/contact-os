@@ -13,6 +13,32 @@ export var citiesData, statesData = null;
 // This is done to reference specific MDC instantiated elements, their properties and functions
 export const mdcAssignedVars = {};
 
+// Create Employee's Busy Schedule
+function createBusyEmployeeSchedule() {
+    if (jsonEmpDetails) {
+        jsonEmpBusySch = {
+            'id':jsonEmpDetails.id
+        };
+        jsonEmpDetails.appointments.forEach((appt) => {
+            let dt = new Date(appt.date_scheduled);
+            let dtEnd = new Date(dt);
+            let sessDura = parseInt(appt.service.duration);
+            let dtDateOnly = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+
+            dtEnd.setMinutes(dtEnd.getMinutes() + sessDura);
+
+            if (!(dtDateOnly.getTime() in jsonEmpBusySch)) {
+                jsonEmpBusySch[dtDateOnly.getTime()] = [];
+            }
+
+            jsonEmpBusySch[dtDateOnly.getTime()].push({
+                'startTime': dt.getTime(),
+                'endTime': dtEnd.getTime()
+            });
+        });
+    }
+}
+
 // Create Service Sessions Containers
 function createServiceSessionsContainers() {
     if (jsonServiceDetails) {
@@ -67,6 +93,8 @@ function createServiceSessionsContainers() {
 
                 let dtHourEnd = new Date(dtHour);
                 dtHourEnd.setMinutes(dtHourEnd.getMinutes() + sessDura);
+                hourHourElm.setAttribute('data-app-sess-s', dtHour.getTime());
+                hourHourElm.setAttribute('data-app-sess-f', dtHourEnd.getTime());
                 hourHourElm.innerHTML = swcms.returnFormatDate(dtHour, 'time') + ' - ' + swcms.returnFormatDate(dtHourEnd, 'time');
                 hourDateElm.innerHTML = '-';
 
@@ -328,6 +356,7 @@ export function loadUserInfo(evt, uType) {
 
             swcms.getFetch(apiUrl).then((data) => {
                 jsonEmpDetails = data;
+                createBusyEmployeeSchedule();
                 appCal.refresh();
             });
         }
@@ -356,6 +385,83 @@ export function loadUsersResults(data) {
 }
 /* Allow 'window' context to reference the function */
 window.loadUsersResults = loadUsersResults;
+
+// Save Appointment
+export function saveAppointment() {
+    let postData = {
+        'uid': null,
+        'sid': null,
+        'eid': null,
+        'sch': null,
+        'udata': null
+    };
+
+    // Validate if all variables are in place
+    if (document.getElementById('app_usr_id').value) {
+        postData.uid = document.getElementById('app_usr_id').value;
+    } else {
+        showSBMsg('Seleccione una usuaria', 'error', 'scroll', document.getElementById('step-one'));
+        return false;
+    }
+
+    if (document.getElementById('app_svc_id').value) {
+        postData.sid = document.getElementById('app_svc_id').value;
+    } else {
+        showSBMsg('Seleccione un servicio', 'error', 'scroll', document.getElementById('step-two'));
+        return false;
+    }
+
+    if (document.getElementById('app_emp_id').value) {
+        postData.eid = document.getElementById('app_emp_id').value;
+    } else {
+        showSBMsg('Seleccione una funcionaria', 'error', 'scroll', document.getElementById('step-three'));
+        return false;
+    }
+
+    if (document.getElementById('app_sch_dt').value) {
+        postData.sch = document.getElementById('app_sch_dt').value;
+    } else {
+        showSBMsg('Seleccione un horario', 'error', 'scroll', document.getElementById('step-five'));
+        return false;
+    }
+
+    let apiUrl = '/api/detail/appointment/';
+    let userData = Object.assign({}, jsonUserDetails);
+
+    // Get User Data
+    userData.names = mdcAssignedVars['u.names'].value || null;
+    userData.last_names = mdcAssignedVars['u.last_names'].value || null;
+    userData.birthdate = mdcAssignedVars['u.birthdate'].value || null;
+    userData.national_id_type = mdcAssignedVars['u.national_id_type'].value || null;
+    userData.national_id = mdcAssignedVars['u.national_id'].value || null;
+    userData.phonenumber = mdcAssignedVars['u.phonenumber'].value || null;
+    if (mdcAssignedVars['u.state'].value) {
+        userData.country = appCountry;
+        statesData.forEach((state) => {
+            if (state.iso2 == mdcAssignedVars['u.state'].value) {
+                userData.state = state;
+            }
+        });
+    }
+    if (mdcAssignedVars['u.city'].value) {
+        citiesData.forEach((city) => {
+            if (city.id == mdcAssignedVars['u.city'].value) {
+                userData.city = city;
+            }
+        });
+    }
+
+    // If User Data has been updated, include User Data
+    if (JSON.stringify(userData) != JSON.stringify(jsonUserDetails)) {
+        postData.udata = userData;
+    }
+
+    console.log(postData);
+
+    // swcms.postFetch(apiUrl, postData);
+}
+/* Allow 'window' context to reference the function */
+window.saveAppointment = saveAppointment;
 
 // Select Appointment Service
 export function selectAppointmentService(value) {
@@ -407,10 +513,53 @@ export function selectAppointmentTime(elm) {
     elm.querySelector('.container-appointment-hours--time').classList.remove('s-font-color-secondary');
     elm.querySelector('.container-appointment-hours--time').classList.add('s-font-color-primary');
 
+    document.getElementById('app_sch_dt').value = elm.querySelector('.container-appointment-hours--time').getAttribute('data-app-sess-s');
     timeConfirmEl.textContent = timeSelectedEl;
 }
 /* Allow 'window' context to reference the function */
 window.selectAppointmentTime = selectAppointmentTime;
+
+// Show Snackbar Error Message
+const appointmentSB = {
+    'actionHandler': () => { console.log('Appointment Snackbar Message...'); },
+    'actionText': 'OK',
+    'message': 'Default message...',
+    'showError': false,
+    'showSuccess': false,
+    'timeout': 7000
+};
+function showSBMsg(msg, eos = null, aht = null, ahvar = null) {
+    // Show Error, Success or No Prefix
+    if (eos && eos == 'error') {
+        appointmentSB.showError = true;
+        appointmentSB.showSuccess = false;
+    } else if (eos && eos == 'success') {
+        appointmentSB.showError = false;
+        appointmentSB.showSuccess = true;
+    } else {
+        appointmentSB.showError = false;
+        appointmentSB.showSuccess = false;
+    }
+    // Assign appropriate Action Handler Type
+    if (aht && aht == 'redirect' && ahvar) {
+        // Redirect to URL
+        appointmentSB.actionHandler = () => {
+            window.location.assign(ahvar);
+        };
+    } else if (aht && aht == 'scroll' && ahvar) {
+        // Scroll View to Error Section Element
+        appointmentSB.actionHandler = () => {
+            ahvar.scrollIntoView();
+        };
+    } else {
+        appointmentSB.actionHandler = () => {
+            console.log('Appointment Snackbar Message...');
+        };
+    }
+    // Message for the Snackbar
+    appointmentSB.message = msg;
+    swcms.initSnackbar(null, appointmentSB);
+}
 
 // Show Schedule Sessions depending on the Selected Date and Service and Employee's Availability
 export function showSelectedSessions(date) {
@@ -419,7 +568,7 @@ export function showSelectedSessions(date) {
     let curSelected = document.querySelector('.mdc-card--selected');
 
     if (curSelected) {
-        let timeConfirmHidEl = document.getElementsByName('app_sch_dt');
+        let timeConfirmHidEl = document.getElementById('app_sch_dt');
         let timeConfirmEl = document.querySelector('.container-appointment-confirm--time');
 
         curSelected.classList.remove('mdc-card--selected');
@@ -446,8 +595,9 @@ export function showSelectedSessions(date) {
                     hoursContainer.classList.add('container-appointment-hours--active');
                     
                     // Validate Busy Schedules against Available Sessions
-                    hoursContainer.querySelectorAll('.container-appointment-hours--date').forEach((el) => {
-                        el.textContent = formatDate;
+                    hoursContainer.querySelectorAll('.mdc-card').forEach((el) => {
+                        // el.querySelectorAll('.container-appointment-hours--date');
+                        // el.textContent = formatDate;
                     });
                 } else {
                     hoursContainer.classList.remove('container-appointment-hours--active');

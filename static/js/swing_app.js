@@ -151,7 +151,7 @@ export function postFetch(url, postData) {
     .then((data) => {
         console.log('Request succeeded with JSON response: ', data);
         mdcTopBarLoading.close();
-        if (data.cmd == 'redirectURL') {
+        if ('cmd' in data && data.cmd == 'redirectURL') {
             window.location.assign(data.action);
         }
         return Promise.resolve(data);
@@ -759,15 +759,27 @@ export function showTabContent(e) {
 // Snackbar init function
 let sbCurrEvent = null;
 export function initSnackbar(sb, initObject) {
-    sb.labelText = initObject.message;
-    sb.actionButtonText = initObject.actionText;
-    sb.timeoutMs = initObject.timeout;
+    if (!sb) sb = snackbar;
     if (sb.isOpen) {
         sb.close('New snackbar initialization...');
     }
     if (sbCurrEvent) {
         sb.unlisten('MDCSnackbar:closed', sbCurrEvent);
     }
+    if ('showError' in initObject && initObject.showError) {
+        sb.foundation_.adapter_.addClass('mdc-snackbar__label-error-show');
+    } else {
+        sb.foundation_.adapter_.removeClass('mdc-snackbar__label-error-show');
+    }
+    if ('showSuccess' in initObject && initObject.showSuccess) {
+        sb.foundation_.adapter_.addClass('mdc-snackbar__label-success-show');
+    } else {
+        sb.foundation_.adapter_.removeClass('mdc-snackbar__label-success-show');
+    }
+
+    sb.labelText = initObject.message;
+    sb.actionButtonText = initObject.actionText;
+    sb.timeoutMs = initObject.timeout;
     sbCurrEvent = ((evt) => {
         if (evt.detail.reason == 'action') {
             initObject.actionHandler();
@@ -1119,7 +1131,7 @@ export var mdcSelects = [].map.call(document.querySelectorAll('.mdc-select'), fu
     }
     if (el.hasAttribute('data-assigned-var')) {
         MDCSelect.prototype.assignedVar = null;
-        mdcSel.assignedVar = el.getAttribute('name');
+        mdcSel.assignedVar = el.getAttribute('id');
     }
     return mdcSel;
 });
@@ -1137,7 +1149,7 @@ export var mdcTextInputs = [].map.call(document.querySelectorAll('.mdc-text-fiel
     let mdcTxt = new MDCTextField(el);
     if (el.hasAttribute('data-assigned-var')) {
         MDCTextField.prototype.assignedVar = null;
-        mdcTxt.assignedVar = el.getAttribute('name');
+        mdcTxt.assignedVar = el.getAttribute('id');
     }
     return mdcTxt;
 });

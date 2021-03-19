@@ -336,6 +336,10 @@ class Chat():
     date = db.Column(db.DateTime, primary_key=True, default=dt.now(tz.utc))
     users = db.Column(EncryptedType(JSONType, get_crypto_key, AesEngine, 'pkcs5'), nullable=False)
     messages = db.Column(EncryptedType(JSONType, get_crypto_key, AesEngine, 'pkcs5'), nullable=False)
+    # date_usr_msg = db.Column(db.DateTime, nullable=False)
+    # date_emp_msg = db.Column(db.DateTime, nullable=False)
+    # date_usr_reply = db.Column(db.DateTime, nullable=False)
+    # date_emp_reply = db.Column(db.DateTime, nullable=False)
 
     def __init__(self):
         self.users = []
