@@ -1,10 +1,11 @@
+from . import crypto_key, db, removeItemFromList, updateItemFromList
 from datetime import datetime as dt
 from datetime import timezone as tz
 from flask import Blueprint, request, url_for, jsonify, make_response
 from flask import current_app as app
 from flask_login import current_user, login_required
 from models.models import Appointments, CatalogIDDocumentTypes, CatalogUserRoles, CatalogServices
-from models.models import User, UserXEmployeeAssigned, UserXRole
+from models.models import User, UserExtraInfo, UserXEmployeeAssigned, UserXRole
 
 api = Blueprint('api', __name__, template_folder='templates', static_folder='static')
 
@@ -16,7 +17,48 @@ def _d_appointment():
     try:
         # POST: Save Appointment
         if request.method == 'POST':
-            pass
+            usr_id = request.json['uid']
+            emp_id = request.json['eid']
+            srv_id = request.json['sid']
+            sch_date = request.json['sch']
+            usr_data = request.json['udata']
+
+            # Update User information
+            if usr_data is not None:
+                _u_userinfo(usr_data)
+
+            # Get scheduled hours in UTC - Javascript Timestamp needs to be divided by 1000 (miliseconds)
+            scheduled_dt = dt.fromtimestamp((sch_date / 1000), tz.utc)
+            # Get Service ID
+            service = CatalogServices.query.filter_by(name_short = srv_id).first()
+            # Get Employee Assigned ID
+            employee_assigned = UserXEmployeeAssigned.query.filter_by(
+                employee_id = emp_id,
+                enabled = True,
+                service_id = service.id,
+                user_id = usr_id
+            ).order_by(UserXEmployeeAssigned.datecreated.desc()).first()
+
+            if employee_assigned is None:
+                employee_assigned = UserXEmployeeAssigned()
+                employee_assigned.employee_id = emp_id
+                employee_assigned.user_id = usr_id
+                employee_assigned.service_id = service.id
+                db.session.add(employee_assigned)
+            
+            appointment = Appointments()
+            appointment.created_by = current_user.id
+            appointment.created_for = usr_id
+            appointment.date_scheduled = scheduled_dt
+            appointment.emp_assigned = employee_assigned.id
+            appointment.service_id = service.id
+            if not current_user.is_user_role(['usr']):
+                appointment.emp_accepted = True
+            db.session.add(appointment)
+
+            db.session.commit()
+
+            return jsonify({ 'status': 200, 'msg': 'Cita creada' })
     except Exception as e:
         app.logger.error('** SWING_CMS ** - API Appointment Detail Error: {}'.format(e))
         return jsonify({ 'status': 'error', 'msg': e })
@@ -73,6 +115,7 @@ def _d_user(user_id = None):
         if request.method == 'GET':
             if user_id is not None:
                 response = {
+                    'alias': None,
                     'birthdate': None,
                     'city': None,
                     'country': None,
@@ -96,10 +139,11 @@ def _d_user(user_id = None):
                     response['id'] = user_id
                     response['name'] = detail.name
                     response['email'] = detail.email
-                    response['birthdate'] = detail.birthdate
                     response['phonenumber'] = detail.phonenumber
                     response['enabled'] = detail.enabled
                     response['roles'] = detail.get_user_roles(True)
+                    if detail.birthdate is not None:
+                        response['birthdate'] = detail.birthdate.strftime('%Y-%m-%d')
                     if detail.extra_info is not None:
                         if detail.extra_info.national_id_type is not None:
                             natid = CatalogIDDocumentTypes.query.filter_by(id = detail.extra_info.national_id_type).first()
@@ -107,6 +151,7 @@ def _d_user(user_id = None):
                         response['national_id'] = detail.extra_info.national_id
                         response['last_names'] = detail.extra_info.last_names
                         response['names'] = detail.extra_info.names
+                        response['alias'] = detail.extra_info.alias
                         response['country'] = detail.extra_info.country
                         response['state'] = detail.extra_info.state
                         response['city'] = detail.extra_info.city
@@ -142,7 +187,7 @@ def _l_appointments(cmds = None, user_id = None):
                     details = None
                     
                     if cmd == 'assigned':
-                        # Appointments - created_by
+                        # Appointments - emp_assigned
                         details = Appointments.query.join(UserXEmployeeAssigned).filter(
                             Appointments.date_scheduled > dt_today,
                             UserXEmployeeAssigned.user_id == Appointments.created_for,
@@ -165,13 +210,12 @@ def _l_appointments(cmds = None, user_id = None):
                         ).order_by(Appointments.date_scheduled.asc())
                     
                     if details is not None:
+                        response['status'] = 200
                         for record in details:
                             usr_for = User.query.filter_by(id = record.created_for).first()
                             emp_crt = User.query.filter_by(id = record.created_by).first()
-                            emp_asg = User.join(UserXEmployeeAssigned).filter(
-                                UserXEmployeeAssigned.id == record.emp_assigned,
-                                User.id == UserXEmployeeAssigned.employee_id
-                            ).first()
+                            emp_tab = UserXEmployeeAssigned.query.filter_by(id = record.emp_assigned).first()
+                            emp_asg = User.query.filter_by(id = emp_tab.employee_id).first()
                             service = CatalogServices.query.filter_by(id = record.service_id).first()
                             
                             response['appointments'].append({
@@ -267,5 +311,43 @@ def _l_users():
         
     except Exception as e:
         app.logger.error('** SWING_CMS ** - API List Users Error: {}'.format(e))
+        return jsonify({ 'status': 'error', 'msg': e })
+
+
+# Update User Info
+def _u_userinfo(js):
+    app.logger.debug('** SWING_CMS ** - API Save User Info')
+    try:
+        user = User.query.filter_by(id = js['id']).first()
+        
+        if user.extra_info is None:
+            user_extra = UserExtraInfo()
+            user_extra.id = user.id
+            
+            db.session.add(user_extra)
+            db.session.commit()
+            db.session.refresh(user)
+        
+        user.extra_info.alias = js['alias']
+        user.extra_info.names = js['names']
+        user.extra_info.last_names = js['last_names']
+        user.extra_info.country = js['country']
+        user.extra_info.state = js['state']
+        user.extra_info.city = js['city']
+        if js['national_id_type'] is not None:
+            natid = CatalogIDDocumentTypes.query.filter_by(name_short = js['national_id_type']).first()
+            user.extra_info.national_id = js['national_id']
+            user.extra_info.national_id_type = natid.id
+
+        if js['birthdate'] is not None:
+            date_format = '%Y-%m-%d'
+            user.birthdate = dt.strptime(js['birthdate'], date_format)
+        user.phonenumber = js['phonenumber']
+        
+        db.session.add(user)
+        db.session.commit()
+
+    except Exception as e:
+        app.logger.error('** SWING_CMS ** - API Save User Info Error: {}'.format(e))
         return jsonify({ 'status': 'error', 'msg': e })
 

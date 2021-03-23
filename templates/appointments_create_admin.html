@@ -69,7 +69,7 @@
                     <label class="mdc-text-field mdc-text-field--filled" id="u.birthdate" data-assigned-var>
                         <span class="mdc-text-field__ripple"></span>
                         <input id="f-appointment-birthdate-input" class="mdc-text-field__input" type="date"
-                                aria-labelledby="f-appointment-birthdate-label" tabindex="0">
+                                aria-labelledby="f-appointment-birthdate-label" tabindex="0" min="1900-01-01">
                         <span class="mdc-floating-label" id="f-appointment-birthdate-label">Fecha de Nacimiento</span>
                         <span class="mdc-line-ripple"></span>
                     </label>
@@ -273,7 +273,7 @@
                     </ul>
                 </div>
                 <div class="container-appointment-confirm--submit">
-                    <button class="mdc-button mdc-button--raised" aria-label="Submit Appointment" alt="Submit Appointment"
+                    <button id="submitSaveButton" class="mdc-button mdc-button--raised" aria-label="Submit Appointment" alt="Submit Appointment"
                         data-action-type="submit" data-action-fn="saveAppointment">
                         <div class="mdc-button__ripple"></div>
                         <span class="mdc-button__label">Reservar cita</span>

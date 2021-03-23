@@ -6,8 +6,8 @@ import { MDCMenu, Corner } from '@material/menu';
 /************************** FUNCTIONS **************************/
 
 export const appCountry = 'SV';
-export var jsonEmpDetails, jsonEmpBusySch, jsonUserDetails, jsonServiceDetails = null;
-export var citiesData, statesData = null;
+export var appCal, citiesData, maxDate, minDate, setUserCity, statesData = null;
+export var jsonEmpDetails, jsonEmpBusySch, jsonServiceDetails, jsonUserDetails = null;
 
 // MDC Assigned Components to Variables
 // This is done to reference specific MDC instantiated elements, their properties and functions
@@ -17,25 +17,96 @@ export const mdcAssignedVars = {};
 function createBusyEmployeeSchedule() {
     if (jsonEmpDetails) {
         jsonEmpBusySch = {
+            'busySchedule': [],
+            'conflicts': {},
             'id':jsonEmpDetails.id
         };
         jsonEmpDetails.appointments.forEach((appt) => {
             let dt = new Date(appt.date_scheduled);
             let dtEnd = new Date(dt);
             let sessDura = parseInt(appt.service.duration);
-            let dtDateOnly = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
 
             dtEnd.setMinutes(dtEnd.getMinutes() + sessDura);
 
-            if (!(dtDateOnly.getTime() in jsonEmpBusySch)) {
-                jsonEmpBusySch[dtDateOnly.getTime()] = [];
-            }
-
-            jsonEmpBusySch[dtDateOnly.getTime()].push({
+            jsonEmpBusySch.busySchedule.push({
                 'startTime': dt.getTime(),
-                'endTime': dtEnd.getTime()
+                'finishTime': dtEnd.getTime()
             });
         });
+
+        // Figure all employee's schedule conflicts
+        if (jsonEmpBusySch.busySchedule) {
+            let dateLoop = swcms.newDate(minDate);
+            let busySched = Array.from(jsonEmpBusySch.busySchedule);
+            
+            // Analyze all dates between Min and Max Dates allowed
+            while (dateLoop <= maxDate) {
+                let isDateWeekEven = (dateLoop.getWeekOfYear() % 2 == 0)? 'even' : 'odd';
+
+                jsonServiceDetails.sessions_schedule.forEach((week_schedule) => {
+                    if (week_schedule.weeks == isDateWeekEven || week_schedule.weeks == 'all') {
+                        if (week_schedule.wdays.includes(dateLoop.getDayString())) {
+                            // Validate Busy Schedules against Available Sessions
+                            week_schedule.hours.forEach((sess) => {
+                                // Calculate Session Starting Time
+                                let sesStartTime = swcms.newDate(dateLoop);
+                                let sessDura = parseInt(sess.duration);
+                                let sessTime = sess.start_time.split(':');
+                                let sessMins = parseInt(sessTime[1]);
+                                let sessHour = parseInt(sessTime[0]);
+                                sesStartTime.setSeconds(0);
+                                sesStartTime.setHours(sessHour);
+                                sesStartTime.setMinutes(sessMins);
+
+                                // Calculate Session Ending Time
+                                let sesFinishTime = swcms.newDate(sesStartTime);
+                                sesFinishTime.setMinutes(sesFinishTime.getMinutes() + sessDura);
+
+                                let removeSchedules = [];
+                                // Analyze Employee's Busy Schedule Against the Services Sessions
+                                busySched.forEach((meeting, index) => {
+                                    let empStartTime = swcms.newDate(parseInt(meeting.startTime));
+                                    let empFinishTime = swcms.newDate(parseInt(meeting.finishTime));
+
+                                    // Employee is found Busy at this date at this hour for this session
+                                    if (sesFinishTime.getTime() >= empStartTime.getTime() && sesStartTime.getTime() <= empFinishTime.getTime()) {
+                                        let formatDate = swcms.returnFormatDate(dateLoop, 'date');
+
+                                        if (!(formatDate in jsonEmpBusySch.conflicts)) {
+                                            jsonEmpBusySch.conflicts[formatDate] = {
+                                                'con_count': 1,
+                                                'max_count': week_schedule.hours.length,
+                                                'sessions': [{
+                                                    'startTime': sesStartTime.getTime(),
+                                                    'finishTime': sesFinishTime.getTime()
+                                                }]
+                                            };
+                                        } else {
+                                            jsonEmpBusySch.conflicts[formatDate].con_count = jsonEmpBusySch.conflicts[formatDate].con_count + 1;
+                                            jsonEmpBusySch.conflicts[formatDate].sessions.push({
+                                                'startTime': sesStartTime.getTime(),
+                                                'finishTime': sesFinishTime.getTime()
+                                            });
+                                        }
+                                    }
+
+                                    // Remove meeting for next iteration if it's older than current date analyzed
+                                    // if (empFinishTime < dateLoop.getTime()) {
+                                    //     removeSchedules.push(index);
+                                    //     return;
+                                    // }
+                                });
+                                // Remove Employee's Meetings older than Dates Analyzed
+                                removeSchedules.forEach((index) => { busySched.splice(index, 1); });
+                            });
+                        }
+                    }
+                });
+
+                // Analyze Next Day
+                dateLoop.setDate(dateLoop.getDate() + 1);
+            }
+        }
     }
 }
 
@@ -89,6 +160,10 @@ function createServiceSessionsContainers() {
                     hourDTicon.classList.add('s-font-color-chat-transferred');
                     hourDTicon.innerHTML = 'wb_twilight';
                     hourDTtext.innerHTML = 'Tarde';
+                } else {
+                    hourDTicon.classList.add('s-icon-color-linkedin');
+                    hourDTicon.innerHTML = 'nights_stay';
+                    hourDTtext.innerHTML = 'Noche';
                 }
 
                 let dtHourEnd = new Date(dtHour);
@@ -157,7 +232,6 @@ function createUserResultContainer(user = null) {
 }
 
 // Get Cities
-var setUserCity = null;
 export function getCities(selState) {
     if (selState) {
         let apiUrl = `https://api.countrystatecity.in/v1/countries/${appCountry}/states/${selState}/cities`;
@@ -168,10 +242,10 @@ export function getCities(selState) {
             redirect: 'follow'
         };
         headers.append("X-CSCAPI-KEY", cscApiKey.apiKey);
-        swcms.getFetch(apiUrl, 'loadCities', requestOptions).then((response) => {
+        swcms.getFetch(apiUrl, 'loadCities', requestOptions).then((data) => {
             // If User Detail is being loaded
             if (setUserCity) {
-                mdcAssignedVars['u.city'].value = setUserCity;
+                mdcAssignedVars['u.city'].value = setUserCity.id;
                 setUserCity = null;
             }
         });
@@ -190,7 +264,7 @@ export function getStates() {
         redirect: 'follow'
     };
     headers.append("X-CSCAPI-KEY", cscApiKey.apiKey);
-    swcms.getFetch(apiUrl, 'loadDepartments', requestOptions);
+    swcms.getFetch(apiUrl, 'loadStates', requestOptions);
 }
 /* Allow 'window' context to reference the function */
 window.getStates = getStates;
@@ -227,7 +301,7 @@ export function loadCities(data) {
     mdcAssignedVars['u.city'].selectedIndex = -1;
     citListEl.innerHTML = '';
 
-    sortedData.forEach((cit) => {
+    sortedData.forEach((cit, index) => {
         let citContainer = document.createElement('li');
         let citName = document.createElement('span');
 
@@ -239,18 +313,20 @@ export function loadCities(data) {
 
         citContainer.appendChild(citName);
         citListEl.appendChild(citContainer);
+
+        mdcAssignedVars['u.city'].foundation_.menuItemValues[index] = cit.id;
     });
     citiesData = data;
 }
 /* Allow 'window' context to reference the function */
 window.loadCities = loadCities;
 
-// Load Departments
-export function loadDepartments(data) {
+// Load States
+export function loadStates(data) {
     let depListEl = document.querySelector('#f-appointment-department-select');
     let sortedData = data.sort((a, b) => a.name < b.name ? -1 : 1);
 
-    sortedData.forEach((dep) => {
+    sortedData.forEach((dep, index) => {
         let depContainer = document.createElement('li');
         let depName = document.createElement('span');
 
@@ -262,16 +338,17 @@ export function loadDepartments(data) {
 
         depContainer.appendChild(depName);
         depListEl.appendChild(depContainer);
+
+        mdcAssignedVars['u.state'].foundation_.menuItemValues[index] = dep.iso2;
     });
     statesData = data;
 }
 /* Allow 'window' context to reference the function */
-window.loadDepartments = loadDepartments;
+window.loadStates = loadStates;
 
 // Load User Details
 export function loadUserDetails(data) {
     Object.entries(data).forEach(([key, val]) => {
-        console.log(`Key: ${key}, Value: ${val}`);
         switch (key) {
             case 'country':
             case 'enabled':
@@ -398,7 +475,7 @@ export function saveAppointment() {
 
     // Validate if all variables are in place
     if (document.getElementById('app_usr_id').value) {
-        postData.uid = document.getElementById('app_usr_id').value;
+        postData.uid = parseInt(document.getElementById('app_usr_id').value);
     } else {
         showSBMsg('Seleccione una usuaria', 'error', 'scroll', document.getElementById('step-one'));
         return false;
@@ -412,14 +489,14 @@ export function saveAppointment() {
     }
 
     if (document.getElementById('app_emp_id').value) {
-        postData.eid = document.getElementById('app_emp_id').value;
+        postData.eid = parseInt(document.getElementById('app_emp_id').value);
     } else {
         showSBMsg('Seleccione una funcionaria', 'error', 'scroll', document.getElementById('step-three'));
         return false;
     }
 
     if (document.getElementById('app_sch_dt').value) {
-        postData.sch = document.getElementById('app_sch_dt').value;
+        postData.sch = parseInt(document.getElementById('app_sch_dt').value);
     } else {
         showSBMsg('Seleccione un horario', 'error', 'scroll', document.getElementById('step-five'));
         return false;
@@ -429,12 +506,14 @@ export function saveAppointment() {
     let userData = Object.assign({}, jsonUserDetails);
 
     // Get User Data
-    userData.names = mdcAssignedVars['u.names'].value || null;
-    userData.last_names = mdcAssignedVars['u.last_names'].value || null;
-    userData.birthdate = mdcAssignedVars['u.birthdate'].value || null;
+    userData.names = mdcAssignedVars['u.names'].value.trim() || null;
+    userData.last_names = mdcAssignedVars['u.last_names'].value.trim() || null;
     userData.national_id_type = mdcAssignedVars['u.national_id_type'].value || null;
-    userData.national_id = mdcAssignedVars['u.national_id'].value || null;
-    userData.phonenumber = mdcAssignedVars['u.phonenumber'].value || null;
+    userData.national_id = mdcAssignedVars['u.national_id'].value.trim() || null;
+    userData.phonenumber = mdcAssignedVars['u.phonenumber'].value.trim() || null;
+    if (Date.parse(mdcAssignedVars['u.birthdate'].value)) {
+        userData.birthdate = mdcAssignedVars['u.birthdate'].value;
+    }
     if (mdcAssignedVars['u.state'].value) {
         userData.country = appCountry;
         statesData.forEach((state) => {
@@ -457,8 +536,19 @@ export function saveAppointment() {
     }
 
     console.log(postData);
-
-    // swcms.postFetch(apiUrl, postData);
+    document.getElementById('submitSaveButton').disabled = true;
+    swcms.postFetch(apiUrl, postData).then((data) => {
+        if (data.status == 200) {
+            showSBMsg(data.msg, 'success', 'redirect', '/appointments/');
+            window.setTimeout(() => { window.location.assign('/appointments/'); }, 3000);
+        } else {
+            showSBMsg(data.msg, 'error');
+            document.getElementById('submitSaveButton').disabled = false;
+        }
+    }).catch((error) => {
+        showSBMsg(error, 'error');
+        document.getElementById('submitSaveButton').disabled = false;
+    });
 }
 /* Allow 'window' context to reference the function */
 window.saveAppointment = saveAppointment;
@@ -485,9 +575,9 @@ export function selectAppointmentService(value) {
     });
     document.querySelector('.container-appointment-sessions').classList.add('container--hidden');
     document.querySelector('.container-appointment-empty').classList.remove('container--hidden');
-    document.querySelector('.container-appointment-confirm--emp').innerHTML = '';
-    document.querySelector('.container-appointment-confirm--date').innerHTML = '';
-    document.querySelector('.container-appointment-confirm--time').innerHTML = '';
+    document.querySelector('.container-appointment-confirm--emp').innerHTML = '-';
+    document.querySelector('.container-appointment-confirm--date').innerHTML = '-';
+    document.querySelector('.container-appointment-confirm--time').innerHTML = '-';
     document.getElementById('app_emp_id').value = '';
     document.getElementById('app_sch_dt').value = '';
     jsonEmpDetails = null;
@@ -500,6 +590,7 @@ window.selectAppointmentService = selectAppointmentService;
 // Select Appointmemt Time
 export function selectAppointmentTime(elm) {
     let curSelected = document.querySelector('.mdc-card--selected');
+    let dateConfirmEl = document.querySelector('.container-appointment-confirm--date');
     let timeConfirmEl = document.querySelector('.container-appointment-confirm--time');
     let timeSelectedEl = elm.querySelector('.container-appointment-hours--time').textContent;
 
@@ -513,7 +604,13 @@ export function selectAppointmentTime(elm) {
     elm.querySelector('.container-appointment-hours--time').classList.remove('s-font-color-secondary');
     elm.querySelector('.container-appointment-hours--time').classList.add('s-font-color-primary');
 
-    document.getElementById('app_sch_dt').value = elm.querySelector('.container-appointment-hours--time').getAttribute('data-app-sess-s');
+    let dtDateConfEl = dateConfirmEl.textContent.split('/');
+    let dtSessStart = swcms.newDate(parseInt(elm.querySelector('.container-appointment-hours--time').getAttribute('data-app-sess-s')));
+    dtSessStart.setFullYear(parseInt(dtDateConfEl[2]));
+    dtSessStart.setMonth(parseInt(dtDateConfEl[1])-1);
+    dtSessStart.setDate(parseInt(dtDateConfEl[0]));
+    dtSessStart.setSeconds(0);
+    document.getElementById('app_sch_dt').value = dtSessStart.getTime();
     timeConfirmEl.textContent = timeSelectedEl;
 }
 /* Allow 'window' context to reference the function */
@@ -528,12 +625,12 @@ const appointmentSB = {
     'showSuccess': false,
     'timeout': 7000
 };
-function showSBMsg(msg, eos = null, aht = null, ahvar = null) {
+function showSBMsg(msg, state = null, actionHandler = null, actionHandlerArg = null) {
     // Show Error, Success or No Prefix
-    if (eos && eos == 'error') {
+    if (state && state == 'error') {
         appointmentSB.showError = true;
         appointmentSB.showSuccess = false;
-    } else if (eos && eos == 'success') {
+    } else if (state && state == 'success') {
         appointmentSB.showError = false;
         appointmentSB.showSuccess = true;
     } else {
@@ -541,15 +638,15 @@ function showSBMsg(msg, eos = null, aht = null, ahvar = null) {
         appointmentSB.showSuccess = false;
     }
     // Assign appropriate Action Handler Type
-    if (aht && aht == 'redirect' && ahvar) {
+    if (actionHandler && actionHandler == 'redirect' && actionHandlerArg) {
         // Redirect to URL
         appointmentSB.actionHandler = () => {
-            window.location.assign(ahvar);
+            window.location.assign(actionHandlerArg);
         };
-    } else if (aht && aht == 'scroll' && ahvar) {
+    } else if (actionHandler && actionHandler == 'scroll' && actionHandlerArg) {
         // Scroll View to Error Section Element
         appointmentSB.actionHandler = () => {
-            ahvar.scrollIntoView();
+            actionHandlerArg.scrollIntoView();
         };
     } else {
         appointmentSB.actionHandler = () => {
@@ -576,7 +673,7 @@ export function showSelectedSessions(date) {
         curSelected.querySelector('.container-appointment-hours--time').classList.add('s-font-color-secondary');
 
         timeConfirmHidEl.value = '';
-        timeConfirmEl.textContent = '';
+        timeConfirmEl.textContent = '-';
     }
 
     if (jsonServiceDetails && jsonEmpDetails) {
@@ -590,14 +687,56 @@ export function showSelectedSessions(date) {
 
             if (hcWeeks == isDateWeekEven || hcWeeks == 'all') {
                 if (hcDays.includes(dt.getDayString())) {
-                    sessionsExists = true;
                     hoursContainer.classList.remove('container--hidden');
                     hoursContainer.classList.add('container-appointment-hours--active');
                     
                     // Validate Busy Schedules against Available Sessions
                     hoursContainer.querySelectorAll('.mdc-card').forEach((el) => {
-                        // el.querySelectorAll('.container-appointment-hours--date');
-                        // el.textContent = formatDate;
+                        let isBusy, isPastTime = false;
+                        let curTime = swcms.newDate();
+                        let sesDateElm = el.querySelector('.container-appointment-hours--date');
+                        let sesTimeElm = el.querySelector('.container-appointment-hours--time');
+                        let elmStartTime = swcms.newDate(parseInt(sesTimeElm.getAttribute('data-app-sess-s')));
+                        let elmFinishTime = swcms.newDate(parseInt(sesTimeElm.getAttribute('data-app-sess-f')));
+                        let sesStartTime = swcms.newDate(new Date(
+                            dt.getFullYear(),
+                            dt.getMonth(),
+                            dt.getDate(),
+                            elmStartTime.getHours(),
+                            elmStartTime.getMinutes(),
+                            elmStartTime.getSeconds()
+                        ));
+                        let sesFinishTime = swcms.newDate(
+                            sesStartTime.getTime() + (elmFinishTime.getTime() - elmStartTime.getTime())
+                        );
+
+                        if (jsonEmpBusySch) {
+                            if (formatDate in jsonEmpBusySch.conflicts) {
+                                jsonEmpBusySch.conflicts[formatDate].sessions.forEach((meeting) => {
+                                    let empStartTime = swcms.newDate(parseInt(meeting.startTime));
+                                    let empFinishTime = swcms.newDate(parseInt(meeting.finishTime));
+
+                                    if (sesFinishTime.getTime() >= empStartTime.getTime() && sesStartTime.getTime() <= empFinishTime.getTime()) {
+                                        isBusy = true;
+                                    }
+                                });
+                            }
+                        }
+
+                        // Validate if Current Session has already expired (1 Hour Before)
+                        curTime.setHours(curTime.getHours());
+                        if (sesStartTime.getTime() < curTime.getTime()) {
+                            isPastTime = true;
+                        }
+
+                        if (isBusy || isPastTime) {
+                            el.classList.add('container--hidden');
+                            sesDateElm.textContent = '-';
+                        } else {
+                            el.classList.remove('container--hidden');
+                            sesDateElm.textContent = formatDate;
+                            sessionsExists = true;
+                        }
                     });
                 } else {
                     hoursContainer.classList.remove('container-appointment-hours--active');
@@ -666,20 +805,25 @@ document.querySelector('#searchEmployeesMenu').addEventListener('MDCMenu:selecte
 
 /************************** ON PAGE LOAD **************************/
 
-export var appCal = null;
 // Get jsCalendar instance
 window.addEventListener('load', () => {
     appCal = jsCalendar.get('#appointment-cal');
     
     // Calendar configuration
     // Minimum date to allow is Today
-    let minDate = new Date();
+    minDate = swcms.newDate();
     minDate.setDate(minDate.getDate() - 1);
+    minDate.setHours(0);
+    minDate.setMinutes(0);
+    minDate.setSeconds(0);
     appCal.min(minDate);
 
     // Maximum date to allow is Two Months from now
-    let maxDate = new Date();
+    maxDate = swcms.newDate();
     maxDate.setMonth(maxDate.getMonth() + 2);
+    maxDate.setHours(0);
+    maxDate.setMinutes(0);
+    maxDate.setSeconds(0);
     appCal.max(maxDate);
     
     // Click on date behavior
@@ -704,7 +848,23 @@ window.addEventListener('load', () => {
                 if (info.isCurrent) {
                     element.classList.remove('jsCalendar-date-available');
                 } else {
-                    element.classList.add('jsCalendar-date-available');
+                    let formatDate = swcms.returnFormatDate(date, 'date');
+
+                    if (formatDate in jsonEmpBusySch.conflicts) {
+                        let conflicts = parseInt(jsonEmpBusySch.conflicts[formatDate].con_count);
+                        let daySessions = parseInt(jsonEmpBusySch.conflicts[formatDate].max_count);
+                        let percAvailable = conflicts / daySessions;
+
+                        if (percAvailable <= 0.5) {
+                            element.classList.add('jsCalendar-date-available');
+                        } else if (percAvailable > 0.5 && percAvailable < 1) {
+                            element.classList.add('jsCalendar-date-booked');
+                        } else if (percAvailable >= 1) {
+                            element.classList.add('jsCalendar-date-booked-full');
+                        }
+                    } else {
+                        element.classList.add('jsCalendar-date-available');
+                    }
                 }
             }
         }

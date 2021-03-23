@@ -206,11 +206,15 @@ def populateServicesCatalog(column=None):
                 'weeks': 'all',
                 'wdays': ['mon', 'tue', 'wed', 'thu', 'fri'],
                 'hours': [
+                    {'start_time': '05:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'night'},
                     {'start_time': '10:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'morning'},
                     {'start_time': '11:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'morning'},
                     {'start_time': '13:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'evening'},
                     {'start_time': '14:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'evening'},
-                    {'start_time': '15:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'evening'}
+                    {'start_time': '15:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'evening'},
+                    {'start_time': '17:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'night'},
+                    {'start_time': '19:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'night'},
+                    {'start_time': '21:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'night'}
                 ]
             }]
             db.session.add(lawsrv)
@@ -218,13 +222,22 @@ def populateServicesCatalog(column=None):
             supsrv = CatalogServices.query.filter_by(name_short='sup').first()
             supsrv.sessions_schedule = [{
                 'weeks': 'all',
-                'wdays': ['mon', 'tue', 'wed', 'thu', 'fri'],
+                'wdays': ['mon', 'tue', 'wed', 'thu'],
                 'hours': [
                     {'start_time': '8:00', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
                     {'start_time': '9:00', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
                     {'start_time': '10:00', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
                     {'start_time': '11:00', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
-                    {'start_time': '13:00', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'evening'},
+                    {'start_time': '13:00', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'evening'}
+                ]
+            },{
+                'weeks': 'all',
+                'wdays': ['fri'],
+                'hours': [
+                    {'start_time': '10:00', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '14:00', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'evening'},
+                    {'start_time': '18:00', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'evening'},
+                    {'start_time': '22:00', 'duration': supsrv.duration_minutes, 'break_time': supsrv.break_minutes, 'tod': 'night'}
                 ]
             }]
             db.session.add(supsrv)
