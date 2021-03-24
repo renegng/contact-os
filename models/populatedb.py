@@ -188,6 +188,7 @@ def populateServicesCatalog(column=None):
                 'hours': [
                     {'start_time': '9:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
                     {'start_time': '10:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'morning'},
+                    {'start_time': '12:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'},
                     {'start_time': '14:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'},
                     {'start_time': '15:00', 'duration': advsrv.duration_minutes, 'break_time': advsrv.break_minutes, 'tod': 'evening'}
                 ]
@@ -206,7 +207,7 @@ def populateServicesCatalog(column=None):
                 'weeks': 'all',
                 'wdays': ['mon', 'tue', 'wed', 'thu', 'fri'],
                 'hours': [
-                    {'start_time': '05:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'night'},
+                    {'start_time': '05:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'dawn'},
                     {'start_time': '10:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'morning'},
                     {'start_time': '11:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'morning'},
                     {'start_time': '13:00', 'duration': lawsrv.duration_minutes, 'break_time': lawsrv.break_minutes, 'tod': 'evening'},

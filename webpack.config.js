@@ -138,6 +138,43 @@ var wpAppointmentsUsr = new Object({
     }
 });
 
+// Creates the view appointments bundle
+var wpAppointmentsEmp = new Object({
+    entry: [
+        './static/js/appointments-view.js'
+    ],
+    output: {
+        filename: 'static/js/bundle/appointments-v.min.js',
+        library: 'swapn',
+        libraryTarget: 'var',
+        path: __dirname
+    },
+    externals: {
+        jsCalendar: 'jsCalendar'
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+                query: {
+                    plugins: [
+                        '@babel/plugin-proposal-class-properties'
+                    ],
+                    presets: [
+                        [
+                            '@babel/preset-env', {
+                                'useBuiltIns': 'entry',
+                                'corejs': {'version': '3', 'proposals': true},
+                            }
+                        ]
+                    ]
+                }
+            }
+        ]
+    }
+});
+
 // Creates the initiator bundle - NOT IN USE
 var wpRTCInitiator = new Object({
     entry: [

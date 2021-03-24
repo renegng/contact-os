@@ -68,6 +68,12 @@ function createBusyEmployeeSchedule() {
                                     let empStartTime = swcms.newDate(parseInt(meeting.startTime));
                                     let empFinishTime = swcms.newDate(parseInt(meeting.finishTime));
 
+                                    // Remove meeting for next iteration if it's older than current date analyzed
+                                    if (empFinishTime.getTime() < sesStartTime.getTime()) {
+                                        removeSchedules.push(index);
+                                        return;
+                                    }
+
                                     // Employee is found Busy at this date at this hour for this session
                                     if (sesFinishTime.getTime() >= empStartTime.getTime() && sesStartTime.getTime() <= empFinishTime.getTime()) {
                                         let formatDate = swcms.returnFormatDate(dateLoop, 'date');
@@ -89,15 +95,9 @@ function createBusyEmployeeSchedule() {
                                             });
                                         }
                                     }
-
-                                    // Remove meeting for next iteration if it's older than current date analyzed
-                                    // if (empFinishTime < dateLoop.getTime()) {
-                                    //     removeSchedules.push(index);
-                                    //     return;
-                                    // }
                                 });
                                 // Remove Employee's Meetings older than Dates Analyzed
-                                removeSchedules.forEach((index) => { busySched.splice(index, 1); });
+                                removeSchedules.forEach((elm) => { busySched.splice(elm, 1); });
                             });
                         }
                     }
@@ -152,7 +152,11 @@ function createServiceSessionsContainers() {
                 dtHour.setHours(sessHour);
                 dtHour.setMinutes(sessMins);
                 
-                if (sessHour >= 6 && sessHour < 12) {
+                if (sessHour >= 0 && sessHour < 6) {
+                    hourDTicon.classList.add('s-icon-color-twitter');
+                    hourDTicon.innerHTML = 'dark_mode';
+                    hourDTtext.innerHTML = 'Madrugada';
+                } else if (sessHour >= 6 && sessHour < 12) {
                     hourDTicon.classList.add('s-font-color-chat-away');
                     hourDTicon.innerHTML = 'wb_sunny';
                     hourDTtext.innerHTML = 'Mañana';
@@ -160,7 +164,7 @@ function createServiceSessionsContainers() {
                     hourDTicon.classList.add('s-font-color-chat-transferred');
                     hourDTicon.innerHTML = 'wb_twilight';
                     hourDTtext.innerHTML = 'Tarde';
-                } else {
+                } else if (sessHour >= 18 && sessHour <= 23) {
                     hourDTicon.classList.add('s-icon-color-linkedin');
                     hourDTicon.innerHTML = 'nights_stay';
                     hourDTtext.innerHTML = 'Noche';

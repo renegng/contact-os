@@ -1139,7 +1139,17 @@ export var mdcSelects = [].map.call(document.querySelectorAll('.mdc-select'), fu
 
 // Material Tab
 var mdcTabBars = [].map.call(document.querySelectorAll('.mdc-tab-bar'), function (el) {
-    return new MDCTabBar(el);
+    let mdcTab = new MDCTabBar(el);
+    let actionFn = el.getAttribute('data-action-fn');
+    if (actionFn) {
+        let fn = (typeof actionFn == "string") ? window[actionFn] : actionFn;
+        mdcTab.listen('MDCTabBar:activated', (evt) => fn(evt.detail.index));
+    }
+    if (el.hasAttribute('data-assigned-var')) {
+        MDCTabBar.prototype.assignedVar = null;
+        mdcTab.assignedVar = el.getAttribute('id');
+    }
+    return mdcTab;
 });
 // document.querySelector('#mdc-tab-bar__id-noticias').addEventListener('MDCTabBar:activated', evt => showTabContent(evt));
 
