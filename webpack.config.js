@@ -139,7 +139,7 @@ var wpAppointmentsUsr = new Object({
 });
 
 // Creates the view appointments bundle
-var wpAppointmentsEmp = new Object({
+var wpAppointmentsView = new Object({
     entry: [
         './static/js/appointments-view.js'
     ],
@@ -249,7 +249,8 @@ var wpRTCReceiver = new Object({
 module.exports = [
     // wpRTCInitiator,
     // wpRTCReceiver,
-    wpAppointmentsUsr,
     wpAppointmentsEmp,
+    wpAppointmentsUsr,
+    wpAppointmentsView,
     wpBundle
 ];

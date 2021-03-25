@@ -294,12 +294,6 @@ def _terminosdelservicio():
     return render_template('terminosdelservicio.html')
 
 
-@home.route('/wassenger/')
-def _wassenger():
-    app.logger.debug('** SWING_CMS ** - Wassenger')
-    return render_template('wassenger.html')
-
-
 @home.route('/welcome/')
 def _welcome():
     app.logger.debug('** SWING_CMS ** - Welcome')
