@@ -204,8 +204,8 @@ class ElasticMixin(object):
             when.append((ids[i], i))
         return cls.query.filter(cls.id.in_(ids)).order_by(db.case(when, value=cls.id)), total
 
-db.event.listen(db.session, 'before_commit', ElasticMixin.before_commit)
 db.event.listen(db.session, 'after_commit', ElasticMixin.after_commit)
+db.event.listen(db.session, 'before_commit', ElasticMixin.before_commit)
 
 
 # **************************************************************************
@@ -340,6 +340,14 @@ class Chat():
     # date_emp_msg = db.Column(db.DateTime, nullable=False)
     # date_usr_reply = db.Column(db.DateTime, nullable=False)
     # date_emp_reply = db.Column(db.DateTime, nullable=False)
+    # json = {
+    #   usr_con: date,
+    #   emp_con: date, 
+    #   usr_1st_msg: date,
+    #   emp_1st_msg: date,
+    #   usr_1st_reply: date,
+    #   emp_1st_reply: date
+    # }
 
     def __init__(self):
         self.users = []
