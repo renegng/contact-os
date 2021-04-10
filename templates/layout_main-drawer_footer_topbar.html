@@ -1,6 +1,6 @@
 {% extends 'layout_main.html' %}
 {% block drawer %}
-<aside class="s-drawer mdc-drawer">
+<aside class="s-drawer mdc-drawer {% block drawer_type %}{% endblock %}">
     <div class="mdc-drawer__header">
         <img id="logo-nav-drawer" src="{{ url_for('static', filename='images/manifest/contact-os.svg') }}"
             alt="Logo Contact-Os" />
@@ -128,10 +128,6 @@
                     </ul>
                 </div>
             </div>
-            <!-- <button id="loginButton" class="mdc-button mdc-button--outlined mdc-button--color-inverted" aria-label="Login" alt="Login">
-                <div class="mdc-button__ripple"></div>
-                <span class="mdc-button__label">Iniciar Sesión</span>
-            </button> -->
         </section>
     </div>
 </header>

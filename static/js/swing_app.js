@@ -915,6 +915,7 @@ const topAppBarNavEl = document.querySelector('.mdc-top-app-bar__navigation-icon
 if (drawerEl && topAppBarEl) {
     const mainContentEl = document.querySelector('.mdc-drawer-app-content');
     const drawerItemsEl = document.querySelector('.mdc-drawer__content .mdc-list');
+    const drwScrCloneEl = document.querySelector('.mdc-drawer-scrim').cloneNode(true);
 
     const topAppBar = MDCTopAppBar.attachTo(topAppBarEl);
     topAppBar.setScrollTarget(mainContentEl);
@@ -922,9 +923,16 @@ if (drawerEl && topAppBarEl) {
     let isDrawerModal = false;
     let drawerItemHref = null;
     let isHrefNoHistory = false;
+    let isDrawerDismissible = drawerEl.classList.contains('mdc-drawer--dismissible');
 
     const initModalDrawer = () => {
         isDrawerModal = true;
+        if (isDrawerDismissible) {
+            if (!(document.querySelector('.mdc-drawer-scrim'))) {
+                mainContentEl.insertAdjacentElement('beforebegin', drwScrCloneEl);
+            }
+            drawerEl.classList.remove("mdc-drawer--dismissible");
+        }
         drawerEl.classList.add("mdc-drawer--modal");
         topAppBarNavEl.classList.remove("mdc-top-app-bar__navigation-icon--hidden");
 
@@ -950,18 +958,37 @@ if (drawerEl && topAppBarEl) {
         return drawer;
     }
 
-    const initPermanentDrawer = () => {
+    const initViewableDrawer = () => {
         isDrawerModal = false;
+        
         drawerEl.classList.remove("mdc-drawer--modal");
-        topAppBarNavEl.classList.add("mdc-top-app-bar__navigation-icon--hidden");
 
-        const permDrawerList = new MDCList(drawerItemsEl);
-        permDrawerList.wrapFocus = true;
+        if (isDrawerDismissible) {
+            if ((document.querySelector('.mdc-drawer-scrim'))) {
+                document.querySelector('.mdc-drawer-scrim').remove();
+            }
+            drawerEl.classList.add("mdc-drawer--dismissible");
+            topAppBarNavEl.classList.remove("mdc-top-app-bar__navigation-icon--hidden");
 
-        return permDrawerList;
+            const drawer = MDCDrawer.attachTo(drawerEl);
+            drawer.open = true;
+
+            topAppBar.listen('MDCTopAppBar:nav', () => {
+                drawer.open = !drawer.open;
+            });
+
+            return drawer;
+        } else {
+            topAppBarNavEl.classList.add("mdc-top-app-bar__navigation-icon--hidden");
+
+            const drawer = new MDCList(drawerItemsEl);
+            drawer.wrapFocus = true;
+
+            return drawer;
+        }
     }
 
-    let drawer = window.matchMedia("(max-width: 52.49em)").matches ? initModalDrawer() : initPermanentDrawer();
+    let drawer = window.matchMedia("(max-width: 52.49em)").matches ? initModalDrawer() : initViewableDrawer();
     
     drawerItemsEl.addEventListener('click', (event) => {
         drawerItemHref = event.target.href;
@@ -977,14 +1004,14 @@ if (drawerEl && topAppBarEl) {
         }
     });
 
-    // Toggle between permanent drawer and modal drawer at breakpoint 52.49em
+    // Toggle between viewable drawer and modal drawer at breakpoint 52.49em
     const resizeHandler = () => {
-        if (window.matchMedia("(max-width: 52.49em)").matches && drawer instanceof MDCList) {
+        if (window.matchMedia("(max-width: 52.49em)").matches && (drawer instanceof MDCList || drawer instanceof MDCDrawer)) {
             drawer.destroy();
             drawer = initModalDrawer();
         } else if (window.matchMedia("(min-width: 52.5em)").matches && drawer instanceof MDCDrawer) {
             drawer.destroy();
-            drawer = initPermanentDrawer();
+            drawer = initViewableDrawer();
         }
     }
 
