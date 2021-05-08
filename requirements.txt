@@ -16,7 +16,7 @@ cymem==2.0.3
 dnspython==1.16.0
 elasticsearch==7.11.0
 es-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/es_core_news_sm-2.3.1/es_core_news_sm-2.3.1.tar.gz
-eventlet==0.28.0
+eventlet==0.31.0
 firebase-admin==4.4.0
 Flask==1.1.2
 Flask-Babel==2.0.0
