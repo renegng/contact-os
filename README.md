@@ -138,7 +138,8 @@ Proper credit for the following people/teams:
 - SocketIO and simple-peer for their wonderful frameworks to implement WebRTC.
 - dr5hn's Countries States Cities Database for providing an amazing location DB.
 - Localforage for their simple and amazing localStorage wrapper.
-- jsCalendar for their amazing simple modern calendar library.
+- jsCalendar and LitePicker for their amazing simple modern calendar library.
+- Chart.js for their lite and modern data graphs charts.
 - Traversy Media, for incredible tips & tricks overall.
 - Visual Studio Code, for an incredible IDE.
 - Twitter Twemoji for the amazing emojis.

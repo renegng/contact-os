@@ -38,6 +38,13 @@
                 <i class="material-icons mdc-list-item__graphic" aria-hidden="true">event</i>
                 <span class="mdc-list-item__text">Citas</span>
             </a>
+                {% if current_user.is_user_role(['adm','emp']) %}
+            <a class="mdc-list-item" href="/statistics/" aria-current="page">
+                <span class="mdc-list-item__ripple"></span>
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">poll</i>
+                <span class="mdc-list-item__text">Estadísticas</span>
+            </a>
+                {% endif %}
             {% else %}
             <a class="mdc-list-item" href="/chat/" aria-current="page">
                 <span class="mdc-list-item__ripple"></span>

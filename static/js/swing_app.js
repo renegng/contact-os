@@ -28,10 +28,18 @@ import { Workbox } from 'workbox-window/Workbox.mjs';
 
 /************************** FUNCTIONS **************************/
 
-// Date getWeekOfMonth and getWeekOfYear implementation
+// Date utils implementation
 Date.prototype.getDayString = function() {
     var weekdays = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
     return weekdays[this.getDay()];
+};
+
+Date.prototype.getFirstDayOfWeekDate = function(isMondayFirstDayOfWeek = true) {
+    var d = new Date(this.getFullYear(), this.getMonth(), this.getDate());
+    var firstWeekday = this.getDay() - isMondayFirstDayOfWeek;
+    if (firstWeekday < 0) firstWeekday = 6;
+    d.setDate(this.getDate() - firstWeekday);
+    return d;
 };
 
 Date.prototype.getWeekOfMonth = function(isMondayFirstDayOfWeek = true) {

@@ -1,0 +1,150 @@
+{% extends 'layout_main-drawer--dismissible_footer_topbar.html' %}
+{% block page_description %}Contact-Os Estadísticas, Estadísticas, Ver Estadísticas, Mis Estadísticas{% endblock %}
+{% block page_title %}Contact-Os Estadísticas{% endblock %}
+{% block head_section %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jsCalendar.css') }}">
+{% endblock %}
+{% block body %}
+<main class="s-main-content container-color-background">
+    <div class="mdc-layout-grid container-size-xs">
+        <div class="mdc-layout-grid__inner">
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-5-desktop mdc-layout-grid__cell--span-8-tablet 
+                        mdc-layout-grid__cell--align-middle container-justify-center s-font-align-center">
+                <img class="resize-image-2fit-50" src="{{ url_for('static', filename='images/manifest/stats.svg') }}" alt="Logo Funciones" />
+            </div>
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-7-desktop mdc-layout-grid__cell--span-8-tablet 
+                        mdc-layout-grid__cell--align-middle container-justify-center">
+                <div class="mdc-typography--headline2 s-font-color-primary">
+                    Estadísticas
+                </div>
+                <div class="mdc-typography--headline4 s-font-color-secondary">
+                    Reportería de Contact-Os.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mdc-layout-grid container-stats">
+        <div class="mdc-layout-grid__inner">
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4-desktop mdc-layout-grid__cell--span-4-tablet
+                        mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-top container-justify-center">
+                <p class="mdc-typography--subtitle1 s-font-color-primary">
+                    Filtra por fecha:
+                </p>
+                <div>
+                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--label-floating" id="filter-date" data-assigned-var>
+                        <span class="mdc-text-field__ripple"></span>
+                        <input id="f-filter-date-input" class="mdc-text-field__input" type="text"
+                                aria-labelledby="f-filter-date-label" tabindex="0" value="mm/dd/yyyy">
+                        <span class="mdc-floating-label mdc-floating-label--float-above" id="f-filter-date-label">Filtra por fecha</span>
+                        <span class="mdc-line-ripple"></span>
+                    </label>
+                </div>
+                <p class="mdc-typography--subtitle1 s-font-color-primary">
+                    Exportar datos:
+                </p>
+                <div class="container-stats-export">
+                    <button id="exportExcelButton" class="mdc-button mdc-button--raised button-stats-export--excel"
+                            aria-label="Export to Excel" alt="Export to Excel">
+                        <div class="mdc-button__ripple"></div>
+                        <i class="mdc-button__icon far fa-file-excel" aria-hidden="true"></i>
+                        <span class="mdc-button__label">Excel</span>
+                    </button>
+                    <button id="exportPDFButton" class="mdc-button mdc-button--raised button-stats-export--pdf"
+                            aria-label="Export to PDF" alt="Export to PDF">
+                        <div class="mdc-button__ripple"></div>
+                        <i class="mdc-button__icon far fa-file-pdf" aria-hidden="true"></i>
+                        <span class="mdc-button__label">PDF</span>
+                    </button>
+                </div>
+            </div>
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8-desktop mdc-layout-grid__cell--span-4-tablet
+                        mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-top container-stats-list">
+                <div class="mdc-card s-mdc-card__stats-size-s">
+                    <div class="mdc-card__primary-action" tabindex="0">
+                        <div class="s-mdc-card__stats-title">
+                            <i class="material-icons s-font-color-very-satisfied">signal_wifi_4_bar</i>
+                            <div class="mdc-typography--subtitle2">
+                                Atenciones exitosas
+                            </div>
+                        </div>
+                        <div class="mdc-typography--headline2 s-font-color-primary s-mdc-card__stats-result">
+                            350
+                        </div>
+                        <div class="mdc-typography--caption s-font-color-secondary s-mdc-card__stats-comment">
+                            Comunicación sin interrupciones
+                        </div>
+                    </div>
+                </div>
+                <div class="mdc-card s-mdc-card__stats-size-s">
+                    <div class="mdc-card__primary-action" tabindex="0">
+                        <div class="s-mdc-card__stats-title">
+                            <i class="material-icons s-font-color-dissatisfied">signal_wifi_statusbar_connected_no_internet_4</i>
+                            <div class="mdc-typography--subtitle2">
+                                Atenciones con interrupción
+                            </div>
+                        </div>
+                        <div class="mdc-typography--headline2 s-font-color-primary s-mdc-card__stats-result">
+                            200
+                        </div>
+                        <div class="mdc-typography--caption s-font-color-secondary s-mdc-card__stats-comment">
+                            Comunicación con intermitencias
+                        </div>
+                    </div>
+                </div>
+                <div class="mdc-card s-mdc-card__stats-size-s">
+                    <div class="mdc-card__primary-action" tabindex="0">
+                        <div class="s-mdc-card__stats-title">
+                            <i class="material-icons s-font-color-very-dissatisfied">signal_wifi_connected_no_internet_4</i>
+                            <div class="mdc-typography--subtitle2">
+                                Atenciones fallidas
+                            </div>
+                        </div>
+                        <div class="mdc-typography--headline2 s-font-color-primary s-mdc-card__stats-result">
+                            50
+                        </div>
+                        <div class="mdc-typography--caption s-font-color-secondary s-mdc-card__stats-comment">
+                            No logró comunicarse
+                        </div>
+                    </div>
+                </div>
+                <div class="mdc-card s-mdc-card__stats-size-s">
+                    <div class="mdc-card__primary-action" tabindex="0">
+                        <div class="s-mdc-card__stats-title">
+                            <i class="material-icons s-font-color-chat-away">timer</i>
+                            <div class="mdc-typography--subtitle2">
+                                Duración promedio
+                            </div>
+                        </div>
+                        <div class="mdc-typography--headline2 s-font-color-primary s-mdc-card__stats-result">
+                            37 min.
+                        </div>
+                        <div class="mdc-typography--caption s-font-color-secondary s-mdc-card__stats-comment">
+                            Tiempo promedio que dura una atención
+                        </div>
+                    </div>
+                </div>
+                <div class="mdc-card s-mdc-card__stats-size-l">
+                    <div class="mdc-card__primary-action" tabindex="0">
+                        <div class="s-mdc-card__stats-title">
+                            <i class="material-icons s-font-color-secondary">query_stats</i>
+                            <div class="mdc-typography--subtitle2">
+                                Vista de visitas
+                            </div>
+                        </div>
+                        <canvas id="graph-stats--visits" class="s-mdc-card__stats-result">
+                        </canvas>
+                        <div class="mdc-typography--caption s-font-color-secondary s-mdc-card__stats-comment">
+                            Visitas de usuarias a la plataforma
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+{% block bottombar %}
+{% endblock %}
+{% block body_script_section %}
+<script src="{{ url_for('static', filename='js/bundle/stats.min.js') }}"></script>
+{% endblock %}

@@ -288,6 +288,13 @@ def _politicaprivacidad():
     return render_template('politicaprivacidad.html')
 
 
+@home.route('/statistics/')
+@login_required
+def _statistics():
+    app.logger.debug('** SWING_CMS ** - Statistics')
+    return render_template('stats.html')
+
+
 @home.route('/terminosdelservicio/')
 def _terminosdelservicio():
     app.logger.debug('** SWING_CMS ** - TerminosDelServicio')

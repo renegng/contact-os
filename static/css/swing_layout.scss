@@ -836,6 +836,75 @@ body {
     position: relative;
 }
 
+.container-stats-export {
+    .mdc-button {
+        margin: 0.1rem;
+    }
+
+    // .button-stats-export--excel {
+    //     background-color: #1D6F42 !important;
+    // }
+
+    // .button-stats-export--pdf {
+    //     background-color: #FF0000 !important;
+    // }
+}
+
+.container-stats-list {
+    display: flex;
+    flex-flow: wrap;
+    justify-content: space-evenly;
+
+    .mdc-card {
+        margin: 0.25rem 0.2rem;
+        min-width: 14rem;
+        text-align: start;
+
+        .mdc-card__primary-action {
+            padding: 0.5rem 1rem;
+
+            .s-mdc-card__stats-result {
+                margin: 1rem 0.25rem;
+                text-align: center;
+            }
+
+            .s-mdc-card__stats-title {
+                align-items: center;
+                display: flex;
+                margin: 0.35rem 0;
+
+                div {
+                    margin-left: 0.75rem;
+                }
+
+                i {
+                    font-size: 3rem;
+                }
+            }
+        }
+    }
+
+    .s-mdc-card__stats-size-xs {
+        max-width: 14rem;
+    }
+
+    .s-mdc-card__stats-size-s {
+        max-width: 18rem;
+    }
+
+    .s-mdc-card__stats-size-m {
+        max-width: 20rem;
+    }
+
+    .s-mdc-card__stats-size-l {
+        max-width: 30rem;
+    }
+
+    .s-mdc-card__stats-size-full {
+        max-width: 100%;
+    }
+}
+
 /* Font Theming */
 
 .fa {
