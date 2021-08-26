@@ -21,7 +21,7 @@ var wpBundle = new Object({
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                query: {
+                options: {
                     presets: [
                         [
                             '@babel/preset-env', {
@@ -41,10 +41,18 @@ var wpBundle = new Object({
                         },
                     },
                     { loader: 'extract-loader' },
-                    { loader: 'css-loader' },
+                    { loader: 'css-loader',
+                        options: {
+                            esModule: false,
+                        },
+                    },
                     { loader: 'postcss-loader',
                         options: {
-                            plugins: () => [autoprefixer()]
+                            postcssOptions: {
+                                plugins: [
+                                    autoprefixer()
+                                ]
+                            }
                         },
                     },
                     { loader: 'sass-loader',
@@ -85,7 +93,7 @@ var wpAppointmentsEmp = new Object({
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                query: {
+                options: {
                     plugins: [
                         '@babel/plugin-proposal-class-properties'
                     ],
@@ -120,7 +128,7 @@ var wpAppointmentsUsr = new Object({
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                query: {
+                options: {
                     plugins: [
                         '@babel/plugin-proposal-class-properties'
                     ],
@@ -157,7 +165,7 @@ var wpAppointmentsView = new Object({
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                query: {
+                options: {
                     plugins: [
                         '@babel/plugin-proposal-class-properties'
                     ],
@@ -191,7 +199,7 @@ var wpStatistics = new Object({
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                query: {
+                options: {
                     plugins: [
                         '@babel/plugin-proposal-class-properties'
                     ],
@@ -225,7 +233,7 @@ var wpRTCInitiator = new Object({
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                query: {
+                options: {
                     plugins: [
                         '@babel/plugin-proposal-class-properties'
                     ],
@@ -259,7 +267,7 @@ var wpRTCReceiver = new Object({
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                query: {
+                options: {
                     plugins: [
                         '@babel/plugin-proposal-class-properties'
                     ],

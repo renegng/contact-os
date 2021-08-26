@@ -329,19 +329,19 @@ body {
         }
 
         .container-avcalls--videos-16x9 {
-            padding-bottom: (9/16) * 100%;
+            padding-bottom: calc(9 / 16 * 100%);
         }
 
         .container-avcalls--videos-2x3 {
-            padding-bottom: (3/2) * 100%;
+            padding-bottom: calc(3 / 2 * 100%);
         }
 
         .container-avcalls--videos-3x2 {
-            padding-bottom: (2/3) * 100%;
+            padding-bottom: calc(2 / 3 * 100%);
         }
 
         .container-avcalls--videos-9x16 {
-            padding-bottom: (16/9) * 100%;
+            padding-bottom: calc(16 / 9 * 100%);
         }
     }
 }
@@ -604,7 +604,7 @@ body {
             .container-chat--sidemenu-header-info-data-status-menu {
                 z-index: 2;
 
-                .mdc-list-item__graphic {
+                .mdc-deprecated-list-item__graphic {
                     font-size: 0.75rem;
                     margin-right: 1rem;
                 }
@@ -619,6 +619,13 @@ body {
             }
         }
 
+        .container-chat--sidemenu-filters {
+            display: flex;
+            flex-direction: row;
+            flex-shrink: 0;
+            width: 95%;
+        }
+
         .container-chat--sidemenu-rooms {
             max-height: 65vh;
             overflow: auto;
@@ -629,41 +636,35 @@ body {
                 }
             }
 
-            .mdc-list--avatar-list {
+            .mdc-deprecated-list--avatar-list {
                 padding: 0;
 
-                .mdc-list-item {
+                .mdc-deprecated-list-item {
                     padding-left: 0rem;
                 }
 
-                .mdc-list-item__graphic {
+                .mdc-deprecated-list-item__graphic {
                     margin-left: 0.25rem;
                     margin-right: 1rem;
                 }
 
-                .mdc-list-item__graphic-status {
+                .mdc-deprecated-list-item__graphic-status {
                     font-size: 0.75rem;
                     margin: 2rem 0 0 2rem;
                     position: absolute;
                 }
 
-                .mdc-list-item__meta {
+                .mdc-deprecated-list-item__meta {
                     i {
                         font-size: 1.35rem;
                         margin-left: 1rem;
                     }
                 }
 
-                .mdc-list-item__secondary-text {
+                .mdc-deprecated-list-item__secondary-text {
                     font-size: 0.75rem;
                 }
             }
-        }
-
-        .container-chat--sidemenu-filters {
-            display: flex;
-            flex-direction: row;
-            flex-shrink: 0;
         }
     }
 
@@ -761,7 +762,7 @@ body {
     justify-content: space-around;
     overflow: auto;
 
-    .mdc-list-item__graphic {
+    .mdc-deprecated-list-item__graphic {
         font-size: 3rem;
         margin: 0;
     }
@@ -774,7 +775,7 @@ body {
         min-width: 25rem;
     }
 
-    .mdc-list-item__graphic-status {
+    .mdc-deprecated-list-item__graphic-status {
         font-size: 0.75rem;
         margin: 2rem 0 0 2rem;
         position: absolute;

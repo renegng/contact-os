@@ -1,5 +1,5 @@
 /************************** EMPLOYEE APPOINTMENTS **************************/
-import * as cscApiKey from '../../instance/js/swing_countrycitystate-api-key.json';
+import { default as cscApiKey } from '../../instance/js/swing_countrycitystate-api-key.json';
 import { MDCMenu, Corner } from '@material/menu';
 
 
@@ -129,6 +129,7 @@ function createServiceSessionsContainers() {
                 let hourDaytime = document.createElement('div');
                 let hourHourElm = document.createElement('div');
                 let hourDateElm = document.createElement('div');
+                let hourRipple = document.createElement('div');
                 let hourDTtext = document.createElement('span');
                 let hourDTicon = document.createElement('i');
 
@@ -139,6 +140,7 @@ function createServiceSessionsContainers() {
                 hourDTtext.classList.add('mdc-typography--caption');
                 hourHourElm.classList.add('mdc-typography--headline6', 'container-appointment-hours--time', 's-font-color-secondary');
                 hourDateElm.classList.add('mdc-typography--subtitle2', 'container-appointment-hours--date');
+                hourRipple.classList.add('mdc-card__ripple');
 
                 hourContainer.setAttribute('onclick', 'selectAppointmentTime(this);');
                 hourPrimary.setAttribute('tabindex', '0');
@@ -182,6 +184,7 @@ function createServiceSessionsContainers() {
                 hourPrimary.appendChild(hourDaytime);
                 hourPrimary.appendChild(hourHourElm);
                 hourPrimary.appendChild(hourDateElm);
+                hourPrimary.appendChild(hourRipple);
                 hourContainer.appendChild(hourPrimary);
                 sessionContainer.appendChild(hourContainer);
 
@@ -203,12 +206,12 @@ function createUserResultContainer(user = null) {
     let userTxtC = document.createElement('span');
     let userIcon = document.createElement('i');
 
-    userContainer.classList.add('mdc-list-item');
-    rippleEl.classList.add('mdc-list-item__ripple');
-    userIcon.classList.add('material-icons', 'mdc-list-item__graphic');
-    userTxtC.classList.add('mdc-list-item__text');
-    userName.classList.add('mdc-list-item__primary-text')
-    userEmail.classList.add('mdc-list-item__secondary-text');
+    userContainer.classList.add('mdc-deprecated-list-item');
+    rippleEl.classList.add('mdc-deprecated-list-item__ripple');
+    userIcon.classList.add('material-icons', 'mdc-deprecated-list-item__graphic');
+    userTxtC.classList.add('mdc-deprecated-list-item__text');
+    userName.classList.add('mdc-deprecated-list-item__primary-text')
+    userEmail.classList.add('mdc-deprecated-list-item__secondary-text');
 
     userIcon.setAttribute('aria-hidden', 'true');
     userContainer.setAttribute('role', 'menuitem');
@@ -307,19 +310,26 @@ export function loadCities(data) {
 
     sortedData.forEach((cit, index) => {
         let citContainer = document.createElement('li');
+        let citRipple = document.createElement('span');
         let citName = document.createElement('span');
 
-        citContainer.classList.add('mdc-list-item');
-        citName.classList.add('mdc-list-item__text');
+        citContainer.classList.add('mdc-deprecated-list-item');
+        citRipple.classList.add('mdc-deprecated-list-item__ripple');
+        citName.classList.add('mdc-deprecated-list-item__text');
 
         citName.textContent = cit.name;
         citContainer.setAttribute('data-value', cit.id);
 
+        citContainer.appendChild(citRipple);
         citContainer.appendChild(citName);
         citListEl.appendChild(citContainer);
 
-        mdcAssignedVars['u.city'].foundation_.menuItemValues[index] = cit.id;
+        mdcAssignedVars['u.city'].menuItemValues[index] = cit.id;
     });
+    
+    // Call the following method whenever menu options are dynamically updated
+    mdcAssignedVars['u.city'].layoutOptions();
+    
     citiesData = data;
 }
 /* Allow 'window' context to reference the function */
@@ -332,19 +342,25 @@ export function loadStates(data) {
 
     sortedData.forEach((dep, index) => {
         let depContainer = document.createElement('li');
+        let depRipple = document.createElement('span');
         let depName = document.createElement('span');
 
-        depContainer.classList.add('mdc-list-item');
-        depName.classList.add('mdc-list-item__text');
+        depContainer.classList.add('mdc-deprecated-list-item');
+        depRipple.classList.add('mdc-deprecated-list-item__ripple');
+        depName.classList.add('mdc-deprecated-list-item__text');
 
         depName.textContent = dep.name.replace(' Department', '');
         depContainer.setAttribute('data-value', dep.iso2);
 
+        depContainer.appendChild(depRipple);
         depContainer.appendChild(depName);
         depListEl.appendChild(depContainer);
 
-        mdcAssignedVars['u.state'].foundation_.menuItemValues[index] = dep.iso2;
+        mdcAssignedVars['u.state'].menuItemValues[index] = dep.iso2;
     });
+    // Call the following method whenever menu options are dynamically updated
+    mdcAssignedVars['u.state'].layoutOptions();
+
     statesData = data;
 }
 /* Allow 'window' context to reference the function */
@@ -407,8 +423,8 @@ export function loadUserInfo(evt, uType) {
     
     // Verify if it's a valid User Record
     if (usrId != -1) {
-        let usrName = evt.detail.item.querySelector('.mdc-list-item__primary-text').textContent;
-        let usrEmail = evt.detail.item.querySelector('.mdc-list-item__secondary-text').textContent;
+        let usrName = evt.detail.item.querySelector('.mdc-deprecated-list-item__primary-text').textContent;
+        let usrEmail = evt.detail.item.querySelector('.mdc-deprecated-list-item__secondary-text').textContent;
     
         if (uType == 'usr') {
             let apiUrl = `/api/detail/user/${usrId}/`;

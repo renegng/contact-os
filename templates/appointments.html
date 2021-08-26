@@ -37,14 +37,14 @@
                         data-day-format="DDD" data-first-day-of-the-week="2">
                     </div>
                     <div class="jsCalendar-caption">
-                        <ul class="mdc-list mdc-list--non-interactive">
-                            <li class="mdc-list-item">
-                                <i class="mdc-list-item__graphic material-icons s-font-color-primary">trip_origin</i>
-                                <span class="mdc-list-item__text mdc-typography--subtitle2">Fecha seleccionada</span>
+                        <ul class="mdc-deprecated-list mdc-deprecated-list--non-interactive">
+                            <li class="mdc-deprecated-list-item">
+                                <i class="mdc-deprecated-list-item__graphic material-icons s-font-color-primary">trip_origin</i>
+                                <span class="mdc-deprecated-list-item__text mdc-typography--subtitle2">Fecha seleccionada</span>
                             </li>
-                            <li class="mdc-list-item">
-                                <i class="mdc-list-item__graphic material-icons jsCalendar-caption-available">trip_origin</i>
-                                <span class="mdc-list-item__text mdc-typography--subtitle2">Citas agendadas</span>
+                            <li class="mdc-deprecated-list-item">
+                                <i class="mdc-deprecated-list-item__graphic material-icons jsCalendar-caption-available">trip_origin</i>
+                                <span class="mdc-deprecated-list-item__text mdc-typography--subtitle2">Citas agendadas</span>
                             </li>
                         </ul>
                     </div>
@@ -132,6 +132,7 @@
                                 <div class="mdc-typography--caption s-font-color-secondary s-mdc-card__appointment-createdby">
                                     <b>Creado por:</b> {{ appointment.created_by.name }}
                                 </div>
+                                <div class="mdc-card__ripple"></div>
                             </div>
                             <div class="mdc-card__actions">
                                 <button class="mdc-button mdc-button--outlined mdc-card__action mdc-card__action--button mdc-button--color-cancel">
@@ -182,6 +183,7 @@
                                 <div class="mdc-typography--caption s-font-color-secondary s-mdc-card__appointment-createdby">
                                     <b>Creado por:</b> {{ appointment.created_by.name }}
                                 </div>
+                                <div class="mdc-card__ripple"></div>
                             </div>
                             <div class="mdc-card__actions">
                                 <button class="mdc-button mdc-button--outlined mdc-card__action mdc-card__action--button mdc-button--color-cancel">
@@ -257,6 +259,7 @@
                                         {{ appointment.time_scheduled_start }} - {{ appointment.time_scheduled_end }}
                                     </div>
                                 </div>
+                                <div class="mdc-card__ripple"></div>
                             </div>
                             <div class="mdc-card__actions">
                                 <button class="mdc-button mdc-button--outlined mdc-card__action mdc-card__action--button mdc-button--color-cancel">

@@ -1,6 +1,5 @@
 /************************** IMPORTS **************************/
 
-// import AOS from 'aos';
 import anchorme from 'anchorme';
 import 'core-js';
 import 'regenerator-runtime/runtime';
@@ -114,7 +113,7 @@ window.returnFormatDate = returnFormatDate;
 
 // Fetch API
 export function getFetch(url, actionFn = null, options = {}) {
-    mdcTopBarLoading.foundation_.adapter_.removeClass('container--hidden');
+    mdcTopBarLoading.foundation.adapter.removeClass('container--hidden');
     mdcTopBarLoading.open();
     return fetch(url, options)
         .then((response) => {
@@ -130,7 +129,7 @@ export function getFetch(url, actionFn = null, options = {}) {
         .then((data) => {
             console.log('Request succeeded with JSON response: ', data);
             mdcTopBarLoading.close();
-            mdcTopBarLoading.foundation_.adapter_.addClass('container--hidden');
+            mdcTopBarLoading.foundation.adapter.addClass('container--hidden');
             if (actionFn) {
                 let fn = (typeof actionFn == "string") ? window[actionFn] : actionFn;
                 fn(data);
@@ -140,13 +139,13 @@ export function getFetch(url, actionFn = null, options = {}) {
         .catch(function (error) {
             console.log('Request failed: ', error);
             mdcTopBarLoading.close();
-            mdcTopBarLoading.foundation_.adapter_.addClass('container--hidden');
+            mdcTopBarLoading.foundation.adapter.addClass('container--hidden');
             return Promise.reject(error);
         });
 }
 
 export function postFetch(url, postData) {
-    mdcTopBarLoading.foundation_.adapter_.removeClass('container--hidden');
+    mdcTopBarLoading.foundation.adapter.removeClass('container--hidden');
     mdcTopBarLoading.open();
     return fetch(url, {
         method: 'POST',
@@ -163,7 +162,7 @@ export function postFetch(url, postData) {
     .then((data) => {
         console.log('Request succeeded with JSON response: ', data);
         mdcTopBarLoading.close();
-        mdcTopBarLoading.foundation_.adapter_.addClass('container--hidden');
+        mdcTopBarLoading.foundation.adapter.addClass('container--hidden');
         if ('cmd' in data && data.cmd == 'redirectURL') {
             window.location.assign(data.action);
         }
@@ -172,7 +171,7 @@ export function postFetch(url, postData) {
     .catch(function (error) {
         console.log('Request failed: ', error);
         mdcTopBarLoading.close();
-        mdcTopBarLoading.foundation_.adapter_.addClass('container--hidden');
+        mdcTopBarLoading.foundation.adapter.addClass('container--hidden');
         return Promise.reject(error);
     });
 }
@@ -451,11 +450,11 @@ function startUserMedia(av, state) {
         console.log(err);
         displayCallUI('ended');
         if (err.name == 'NotAllowedError') {
-            initSnackbar(snackbar, failedGetUserMediaSBDataObj);
+            initSnackbar(mdcSnackbarElm, failedGetUserMediaSBDataObj);
         } else {
             let errMsgSBDataObj = Object.assign({}, failedGetUserMediaSBDataObj);
             errMsgSBDataObj.message = err.name;
-            initSnackbar(snackbar, errMsgSBDataObj);
+            initSnackbar(mdcSnackbarElm, errMsgSBDataObj);
         }
         if (state != 'init') {
             sendPeerChatMessage(
@@ -773,7 +772,7 @@ export function showTabContent(e) {
 // Snackbar init function
 let sbCurrEvent = null;
 export function initSnackbar(sb, initObject) {
-    if (!sb) sb = snackbar;
+    if (!sb) sb = mdcSnackbarElm;
     if (sb.isOpen) {
         sb.close('New snackbar initialization...');
     }
@@ -781,14 +780,14 @@ export function initSnackbar(sb, initObject) {
         sb.unlisten('MDCSnackbar:closed', sbCurrEvent);
     }
     if ('showError' in initObject && initObject.showError) {
-        sb.foundation_.adapter_.addClass('mdc-snackbar__label-error-show');
+        sb.foundation.adapter.addClass('mdc-snackbar__label-error-show');
     } else {
-        sb.foundation_.adapter_.removeClass('mdc-snackbar__label-error-show');
+        sb.foundation.adapter.removeClass('mdc-snackbar__label-error-show');
     }
     if ('showSuccess' in initObject && initObject.showSuccess) {
-        sb.foundation_.adapter_.addClass('mdc-snackbar__label-success-show');
+        sb.foundation.adapter.addClass('mdc-snackbar__label-success-show');
     } else {
-        sb.foundation_.adapter_.removeClass('mdc-snackbar__label-success-show');
+        sb.foundation.adapter.removeClass('mdc-snackbar__label-success-show');
     }
 
     sb.labelText = initObject.message;
@@ -831,7 +830,7 @@ export function showUserRTCConSnackbar(state, arg = '') {
             if (arg) { sbdo.message = sbdo.message.replace('Usuari@', arg); }
             break;
     }
-    initSnackbar(snackbar, sbdo);
+    initSnackbar(mdcSnackbarElm, sbdo);
 }
 /* Allow 'window' context to reference the function */
 window.showUserRTCConSnackbar = showUserRTCConSnackbar;
@@ -858,7 +857,7 @@ export function shareRedirect(e) {
     shareTitle = encodeURIComponent(shareTitle);
 
     // Open a new window to share the content
-    var shareAppName = e.detail.item.getElementsByClassName('mdc-list-item__text')[0].textContent;
+    var shareAppName = e.detail.item.getElementsByClassName('mdc-deprecated-list-item__text')[0].textContent;
     shareAppName = shareAppName.toLowerCase().trim();
 
     switch (shareAppName) {
@@ -884,12 +883,15 @@ export function shareRedirect(e) {
             console.log("No implementation for SHARING to app named: " + shareAppName);
     }
 }
+/* Allow 'window' context to reference the function */
+window.shareRedirect = shareRedirect;
 
+/* Import Account Redirect Function and make it available in the window scope */
+/* Allow 'window' context to reference the function */
+window.accountRedirect = accountRedirect;
 
 /************************** LIBRARIES INIT **************************/
 
-// Initialize AOS
-// AOS.init();
 
 
 /************************** MATERIAL DESIGN COMPONENTS INIT **************************/
@@ -922,7 +924,7 @@ const topAppBarEl = document.querySelector('.mdc-top-app-bar');
 const topAppBarNavEl = document.querySelector('.mdc-top-app-bar__navigation-icon');
 if (drawerEl && topAppBarEl) {
     const mainContentEl = document.querySelector('.mdc-drawer-app-content');
-    const drawerItemsEl = document.querySelector('.mdc-drawer__content .mdc-list');
+    const drawerItemsEl = document.querySelector('.mdc-drawer__content .mdc-deprecated-list');
     const drwScrCloneEl = document.querySelector('.mdc-drawer-scrim').cloneNode(true);
 
     const topAppBar = MDCTopAppBar.attachTo(topAppBarEl);
@@ -1030,7 +1032,7 @@ if (drawerEl && topAppBarEl) {
     Array.from(drawerItemsEl.children).forEach((child, index) => {
         let menuURL = child.getAttribute('href');
         if (menuURL != null && menuURL == myURL) {
-            child.classList.add("mdc-list-item--activated");
+            child.classList.add("mdc-deprecated-list-item--activated");
         }
     });
 } else if (topAppBarEl) {
@@ -1071,7 +1073,7 @@ var mdcLinearProgress = [].map.call(document.querySelectorAll('.mdc-linear-progr
 
 
 // Material Lists
-var mdcLists = [].map.call(document.querySelectorAll('.mdc-list:not(.mdc-menu__items):not(.mdc-select__list)'), function (el) {
+export var mdcLists = [].map.call(document.querySelectorAll('.mdc-deprecated-list:not(.mdc-menu__items):not(.mdc-select__list)'), function (el) {
     let elList = new MDCList(el);
     let elID = el.getAttribute('id');
     let actionFn = el.getAttribute('data-action-fn');
@@ -1084,54 +1086,29 @@ var mdcLists = [].map.call(document.querySelectorAll('.mdc-list:not(.mdc-menu__i
 
 
 // Material Menu
-var accountMenu = null;
-var accountMenuButton = null;
-if (document.querySelector('#accountMenu')) {
-    accountMenu = new MDCMenu(document.querySelector('#accountMenu'));
-    accountMenuButton = document.querySelector('#accountButton');
-}
-if (accountMenuButton != null) {
-    accountMenuButton.addEventListener('click', () => (accountMenu.open = !accountMenu.open));
-    accountMenu.setAnchorCorner(Corner.BOTTOM_START);
-    document.querySelector('#accountMenu').addEventListener('MDCMenu:selected', evt => accountRedirect(evt));
-}
-
-var accountStatus = null;
-var accountStatusButton = null;
-if (document.querySelector('#accountStatus')) {
-    accountStatus = new MDCMenu(document.querySelector('#accountStatus'));
-    accountStatusButton = document.querySelector('#header-accountImage');
-}
-if (accountStatusButton != null) {
-    let fn = window['updateRTCUserPersonalStatus'];
-    accountStatusButton.addEventListener('click', () => (accountStatus.open = !accountStatus.open));
-    accountStatus.setAnchorCorner(Corner.BOTTOM_START);
-    document.querySelector('#accountStatus').addEventListener('MDCMenu:selected', evt => fn(evt));
-}
-
-var moreOptionMenu = null;
-var moreOptionMenuButton = null;
-if (document.querySelector('#moreOptionsMenu')) {
-    moreOptionMenu = new MDCMenu(document.querySelector('#moreOptionsMenu'));
-    moreOptionMenuButton = document.querySelector('#moreOptionsButton');
-}
-if (moreOptionMenuButton != null) {
-    moreOptionMenuButton.addEventListener('click', () => (moreOptionMenu.open = !moreOptionMenu.open));
-    moreOptionMenu.setAnchorCorner(Corner.BOTTOM_START);
-    document.querySelector('#moreOptionsMenu').addEventListener('MDCMenu:selected', evt => moreOptionsSelection(evt.detail.index));
-}
-
-var shareMenu = null;
-var shareMenuButton = null;
-if (document.querySelector('#shareMenu')) {
-    shareMenu = new MDCMenu(document.querySelector('#shareMenu'));
-    shareMenuButton = document.querySelector('#shareButton');
-}
-if (shareMenuButton != null) {
-    shareMenuButton.addEventListener('click', () => (shareMenu.open = !shareMenu.open));
-    shareMenu.setAnchorCorner(Corner.BOTTOM_START);
-    document.querySelector('#shareMenu').addEventListener('MDCMenu:selected', evt => shareRedirect(evt));
-}
+export var mdcMenuElms = [].map.call(document.querySelectorAll('.s-mdc-menu'), function (el) {
+    let elmMenuButton = el.querySelector('.s-mdc-menu__button');
+    let elmMenuList = el.querySelector('.s-mdc-menu__list');
+    let mdcMenuList = new MDCMenu(elmMenuList);
+    let actionFn = el.getAttribute('data-action-fn');
+    if (actionFn) {
+        let fn = (typeof actionFn == "string") ? window[actionFn] : actionFn;
+        if (el.hasAttribute('data-action-fn-ri')) {
+            elmMenuList.addEventListener('MDCMenu:selected', (evt) => fn(evt.detail.index));
+        } else {
+            elmMenuList.addEventListener('MDCMenu:selected', (evt) => fn(evt));
+        }
+    }
+    if (elmMenuButton) {
+        elmMenuButton.addEventListener('click', () => (mdcMenuList.open = !mdcMenuList.open));
+        mdcMenuList.setAnchorCorner(Corner.BOTTOM_START);
+    }
+    if (elmMenuList.hasAttribute('data-assigned-var')) {
+        MDCMenu.prototype.assignedVar = null;
+        mdcMenuList.assignedVar = elmMenuList.getAttribute('id');
+    }
+    return mdcMenuList;
+});
 
 
 // Material Notched Outline
@@ -1147,19 +1124,19 @@ var mdcRadioButtons = [].map.call(document.querySelectorAll('.mdc-radio'), funct
 
 
 // Material Ripple
-let mdcButtonRipples = [].map.call(document.querySelectorAll('.mdc-icon-button'), function (el) {
+var mdcRippleElms = [].map.call(document.querySelectorAll('.mdc-icon-button'), function (el) {
     return new MDCRipple(el);
 });
-mdcButtonRipples.forEach((elem) => {
+mdcRippleElms.forEach((elem) => {
     elem.unbounded = true;
 });
-mdcButtonRipples = mdcButtonRipples.concat([].map.call(document.querySelectorAll('.mdc-button, .mdc-fab'), function (el) {
+mdcRippleElms = mdcRippleElms.concat([].map.call(document.querySelectorAll('.mdc-button, .mdc-fab, .mdc-card__primary-action'), function (el) {
     return new MDCRipple(el);
 }));
 
 
 // Material Snackbar
-const snackbar = new MDCSnackbar(document.querySelector('.mdc-snackbar'));
+export const mdcSnackbarElm = new MDCSnackbar(document.querySelector('.mdc-snackbar'));
 
 
 // Material Selects
@@ -1292,7 +1269,7 @@ if ('serviceWorker' in navigator) {
         
         if (event.isUpdate) {
             console.log('App update found...');
-            initSnackbar(snackbar, updateSBDataObj);
+            initSnackbar(mdcSnackbarElm, updateSBDataObj);
         }
     });
     // Registers the Workbox Service Worker
@@ -1355,7 +1332,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
     deferredPrompt = e;
     // Show the Snackbar popup to Install
     if (!appIsInstalled) {
-        initSnackbar(snackbar, installSBDataObj);
+        initSnackbar(mdcSnackbarElm, installSBDataObj);
     }
 });
 

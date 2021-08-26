@@ -230,11 +230,11 @@ function saveRating(elmID, index) {
     let i = 0
     let elm = document.getElementById(elmID);
     let question = elm.getAttribute('data-action-fn-val');
-    elm.querySelectorAll('.mdc-list-item').forEach((el) => {
+    elm.querySelectorAll('.mdc-deprecated-list-item').forEach((el) => {
         if (i == index) {
-            el.classList.add('mdc-list-item--selected');
+            el.classList.add('mdc-deprecated-list-item--selected');
         } else {
-            el.classList.remove('mdc-list-item--selected');
+            el.classList.remove('mdc-deprecated-list-item--selected');
         }
         i++;
     });

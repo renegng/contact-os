@@ -69,36 +69,35 @@
                 <div class="mdc-layout-grid__inner container-chat--grid__inner">
                     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4-desktop mdc-layout-grid__cell--span-3-tablet
                                 mdc-layout-grid__cell--span-4-phone container-chat--sidemenu">
-                        <header class="container-chat--sidemenu-header">
-                            <img id="header-accountImage"
+                        <header class="s-mdc-menu container-chat--sidemenu-header" data-action-fn="updateRTCUserPersonalStatus">
+                            <img id="header-accountImage" class="s-mdc-menu__button"
                                 src="{{ url_for('static', filename='images/manifest/agent_f.svg') }}"
                                 alt="Account Photo" />
-                            <i
-                                class="material-icons container-chat--sidemenu-header-info-data-status-icon s-font-color-chat-offline">
+                            <i class="material-icons container-chat--sidemenu-header-info-data-status-icon s-font-color-chat-offline">
                                 stop_circle
                             </i>
                             <div class="container-chat--sidemenu-header-info-data-status-menu mdc-menu-surface--anchor">
-                                <div id="accountStatus" class="mdc-menu mdc-menu-surface" tabindex="-1">
+                                <div id="accountStatus" class="s-mdc-menu__list mdc-menu mdc-menu-surface" tabindex="-1">
                                     <div class="mdc-typography--subtitle2 s-font-color-secondary s-menu-subtitle">
                                         Selecciona tu estado:</div>
-                                    <ul class="mdc-list mdc-menu__items" role="menu" aria-hidden="true">
-                                        <li class="mdc-list-item" role="menuitem" tabindex="0">
-                                            <span class="mdc-list-item__ripple"></span>
-                                            <i class="material-icons mdc-list-item__graphic s-font-color-chat-online"
+                                    <ul class="mdc-deprecated-list mdc-menu__items" role="menu" aria-hidden="true">
+                                        <li class="mdc-deprecated-list-item" role="menuitem" tabindex="0">
+                                            <span class="mdc-deprecated-list-item__ripple"></span>
+                                            <i class="material-icons mdc-deprecated-list-item__graphic s-font-color-chat-online"
                                                 aria-hidden="true">stop_circle</i>
-                                            <span class="mdc-list-item__text">Disponible</span>
+                                            <span class="mdc-deprecated-list-item__text">Disponible</span>
                                         </li>
-                                        <li class="mdc-list-item" role="menuitem" tabindex="1">
-                                            <span class="mdc-list-item__ripple"></span>
-                                            <i class="material-icons mdc-list-item__graphic s-font-color-chat-away"
+                                        <li class="mdc-deprecated-list-item" role="menuitem" tabindex="1">
+                                            <span class="mdc-deprecated-list-item__ripple"></span>
+                                            <i class="material-icons mdc-deprecated-list-item__graphic s-font-color-chat-away"
                                                 aria-hidden="true">stop_circle</i>
-                                            <span class="mdc-list-item__text">Ausente</span>
+                                            <span class="mdc-deprecated-list-item__text">Ausente</span>
                                         </li>
-                                        <li class="mdc-list-item" role="menuitem" tabindex="2">
-                                            <span class="mdc-list-item__ripple"></span>
-                                            <i class="material-icons mdc-list-item__graphic s-font-color-chat-away"
+                                        <li class="mdc-deprecated-list-item" role="menuitem" tabindex="2">
+                                            <span class="mdc-deprecated-list-item__ripple"></span>
+                                            <i class="material-icons mdc-deprecated-list-item__graphic s-font-color-chat-away"
                                                 aria-hidden="true">stop_circle</i>
-                                            <span class="mdc-list-item__text">En reunión</span>
+                                            <span class="mdc-deprecated-list-item__text">En reunión</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -116,39 +115,48 @@
                                 </div>
                             </div>
                         </header>
-                        <div class="mdc-select container-chat--sidemenu-filters" role="filters"
-                            data-action-fn="filterRTCUserList">
-                            <div class="mdc-select__anchor">
+                        <div class="mdc-select mdc-select--filled container-chat--sidemenu-filters" data-action-fn="filterRTCUserList">
+                            <div class="mdc-select__anchor" role="button">
                                 <span class="mdc-select__ripple"></span>
-                                <input type="text" disabled readonly class="mdc-select__selected-text">
-                                <i class="mdc-select__dropdown-icon"></i>
                                 <span class="mdc-floating-label">Filtrar personas</span>
+                                <span class="mdc-select__selected-text-container">
+                                    <span class="mdc-select__selected-text"></span>
+                                </span>
+                                <span class="mdc-select__dropdown-icon">
+                                    <i class="material-icons mdc-select__dropdown-icon-active">arrow_drop_up</i>
+                                    <i class="material-icons mdc-select__dropdown-icon-inactive">arrow_drop_down</i>
+                                </span>
                                 <span class="mdc-line-ripple"></span>
                             </div>
-                            <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox">
-                                <ul class="mdc-list mdc-select__list">
-                                    <li class="mdc-list-item" data-value="anon">
-                                        <span class="mdc-list-item__text">
+                            <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth" role="listbox" tabindex="0">
+                                <ul class="mdc-deprecated-list mdc-select__list">
+                                    <li class="mdc-deprecated-list-item" data-value="anon">
+                                        <span class="mdc-deprecated-list-item__ripple"></span>
+                                        <span class="mdc-deprecated-list-item__text">
                                             Anonim@s
                                         </span>
                                     </li>
-                                    <li class="mdc-list-item" data-value="mine">
-                                        <span class="mdc-list-item__text">
+                                    <li class="mdc-deprecated-list-item" data-value="mine">
+                                        <span class="mdc-deprecated-list-item__ripple"></span>
+                                        <span class="mdc-deprecated-list-item__text">
                                             Asignados a mí
                                         </span>
                                     </li>
-                                    <li class="mdc-list-item" data-value="emp">
-                                        <span class="mdc-list-item__text">
+                                    <li class="mdc-deprecated-list-item" data-value="emp">
+                                        <span class="mdc-deprecated-list-item__ripple"></span>
+                                        <span class="mdc-deprecated-list-item__text">
                                             Funcionari@s
                                         </span>
                                     </li>
-                                    <li class="mdc-list-item" data-value="reg">
-                                        <span class="mdc-list-item__text">
+                                    <li class="mdc-deprecated-list-item" data-value="reg">
+                                        <span class="mdc-deprecated-list-item__ripple"></span>
+                                        <span class="mdc-deprecated-list-item__text">
                                             Registrad@s
                                         </span>
                                     </li>
-                                    <li class="mdc-list-item mdc-list-item--selected" data-value="all">
-                                        <span class="mdc-list-item__text">
+                                    <li class="mdc-deprecated-list-item mdc-deprecated-list-item--selected" data-value="all">
+                                        <span class="mdc-deprecated-list-item__ripple"></span>
+                                        <span class="mdc-deprecated-list-item__text">
                                             Tod@s
                                         </span>
                                     </li>
@@ -156,48 +164,48 @@
                             </div>
                         </div>
                         <div class="container-chat--sidemenu-rooms">
-                            <ul id="anon-active-rooms" class="container-chat--sidemenu-rooms-usertype mdc-list mdc-list--avatar-list mdc-list--two-line">
+                            <ul id="anon-active-rooms" class="container-chat--sidemenu-rooms-usertype mdc-deprecated-list mdc-deprecated-list--avatar-list mdc-deprecated-list--two-line">
                                 <li class="container-chat--sidemenu-rooms-usertype-header mdc-typography--subtitle2 s-font-color-primary">
                                     <span class="container-chat--sidemenu-rooms-usertype-text">
                                         Anonim@s
                                     </span>
                                 </li>
-                                <li id="anon-no-active-room" class="mdc-list-item container-chat--sidemenu-rooms-usertype-empty">
-                                    <span class="mdc-list-item__ripple"></span>
-                                    <span class="mdc-list-item__graphic material-icons" aria-hidden="true">nights_stay</span>
-                                    <span class="mdc-list-item__text">
-                                        <span class="mdc-list-item__primary-text">0 contactos.</span>
-                                        <span class="mdc-list-item__secondary-text">No hay actividad.</span>
+                                <li id="anon-no-active-room" class="mdc-deprecated-list-item container-chat--sidemenu-rooms-usertype-empty">
+                                    <span class="mdc-deprecated-list-item__ripple"></span>
+                                    <span class="mdc-deprecated-list-item__graphic material-icons" aria-hidden="true">nights_stay</span>
+                                    <span class="mdc-deprecated-list-item__text">
+                                        <span class="mdc-deprecated-list-item__primary-text">0 contactos.</span>
+                                        <span class="mdc-deprecated-list-item__secondary-text">No hay actividad.</span>
                                     </span>
                                 </li>
                             </ul>
-                            <ul id="reg-active-rooms" class="container-chat--sidemenu-rooms-usertype mdc-list mdc-list--avatar-list mdc-list--two-line">
+                            <ul id="reg-active-rooms" class="container-chat--sidemenu-rooms-usertype mdc-deprecated-list mdc-deprecated-list--avatar-list mdc-deprecated-list--two-line">
                                 <li class="container-chat--sidemenu-rooms-usertype-header mdc-typography--subtitle2 s-font-color-primary">
                                     <span class="container-chat--sidemenu-rooms-usertype-text">
                                         Registrad@s
                                     </span>
                                 </li>
-                                <li id="reg-no-active-room" class="mdc-list-item container-chat--sidemenu-rooms-usertype-empty">
-                                    <span class="mdc-list-item__ripple"></span>
-                                    <span class="mdc-list-item__graphic material-icons" aria-hidden="true">nights_stay</span>
-                                    <span class="mdc-list-item__text">
-                                        <span class="mdc-list-item__primary-text">0 contactos.</span>
-                                        <span class="mdc-list-item__secondary-text">No hay actividad.</span>
+                                <li id="reg-no-active-room" class="mdc-deprecated-list-item container-chat--sidemenu-rooms-usertype-empty">
+                                    <span class="mdc-deprecated-list-item__ripple"></span>
+                                    <span class="mdc-deprecated-list-item__graphic material-icons" aria-hidden="true">nights_stay</span>
+                                    <span class="mdc-deprecated-list-item__text">
+                                        <span class="mdc-deprecated-list-item__primary-text">0 contactos.</span>
+                                        <span class="mdc-deprecated-list-item__secondary-text">No hay actividad.</span>
                                     </span>
                                 </li>
                             </ul>
-                            <ul id="emp-active-rooms" class="container-chat--sidemenu-rooms-usertype mdc-list mdc-list--avatar-list mdc-list--two-line">
+                            <ul id="emp-active-rooms" class="container-chat--sidemenu-rooms-usertype mdc-deprecated-list mdc-deprecated-list--avatar-list mdc-deprecated-list--two-line">
                                 <li class="container-chat--sidemenu-rooms-usertype-header mdc-typography--subtitle2 s-font-color-primary">
                                     <span class="container-chat--sidemenu-rooms-usertype-text">
                                         Funcionari@s
                                     </span>
                                 </li>
-                                <li id="emp-no-active-room" class="mdc-list-item container-chat--sidemenu-rooms-usertype-empty">
-                                    <span class="mdc-list-item__ripple"></span>
-                                    <span class="mdc-list-item__graphic material-icons" aria-hidden="true">nights_stay</span>
-                                    <span class="mdc-list-item__text">
-                                        <span class="mdc-list-item__primary-text">0 contactos.</span>
-                                        <span class="mdc-list-item__secondary-text">No hay actividad.</span>
+                                <li id="emp-no-active-room" class="mdc-deprecated-list-item container-chat--sidemenu-rooms-usertype-empty">
+                                    <span class="mdc-deprecated-list-item__ripple"></span>
+                                    <span class="mdc-deprecated-list-item__graphic material-icons" aria-hidden="true">nights_stay</span>
+                                    <span class="mdc-deprecated-list-item__text">
+                                        <span class="mdc-deprecated-list-item__primary-text">0 contactos.</span>
+                                        <span class="mdc-deprecated-list-item__secondary-text">No hay actividad.</span>
                                     </span>
                                 </li>
                             </ul>
@@ -259,47 +267,47 @@
                                     data-action-fn="initAudioCall">
                                     <i class="material-icons mdc-icon-button__icon">call</i>
                                 </button>
-                                <div class="mdc-menu-surface--anchor">
-                                    <button id="moreOptionsButton" class="mdc-icon-button s-font-color-secondary"
+                                <div class="s-mdc-menu mdc-menu-surface--anchor" data-action-fn="moreOptionsSelection" data-action-fn-ri>
+                                    <button id="moreOptionsButton" class="s-mdc-menu__button mdc-icon-button s-font-color-secondary"
                                         aria-label="More" alt="More">
                                         <i class="material-icons mdc-icon-button__icon">more_vert</i>
                                     </button>
-                                    <div id="moreOptionsMenu" class="mdc-menu mdc-menu-surface" tabindex="-1">
-                                        <ul class="mdc-list mdc-menu__items" role="menu" aria-hidden="true">
-                                            <li id="transferUserOption" class="mdc-list-item" role="menuitem"
+                                    <div id="moreOptionsMenu" class="s-mdc-menu__list mdc-menu mdc-menu-surface" tabindex="-1">
+                                        <ul class="mdc-deprecated-list mdc-menu__items" role="menu" aria-hidden="true">
+                                            <li id="transferUserOption" class="mdc-deprecated-list-item" role="menuitem"
                                                 tabindex="0">
-                                                <span class="mdc-list-item__ripple"></span>
-                                                <i class="s-font-color-secondary material-icons mdc-list-item__graphic"
+                                                <span class="mdc-deprecated-list-item__ripple"></span>
+                                                <i class="s-font-color-secondary material-icons mdc-deprecated-list-item__graphic"
                                                     aria-hidden="true">
                                                     send
                                                 </i>
-                                                <span class="mdc-list-item__text">Transferir</span>
+                                                <span class="mdc-deprecated-list-item__text">Transferir</span>
                                             </li>
-                                            <li id="createUserAppt" class="mdc-list-item" role="menuitem"
+                                            <li id="createUserAppt" class="mdc-deprecated-list-item" role="menuitem"
                                                 tabindex="0">
-                                                <span class="mdc-list-item__ripple"></span>
-                                                <i class="s-font-color-secondary material-icons mdc-list-item__graphic"
+                                                <span class="mdc-deprecated-list-item__ripple"></span>
+                                                <i class="s-font-color-secondary material-icons mdc-deprecated-list-item__graphic"
                                                     aria-hidden="true">
                                                     book_online
                                                 </i>
-                                                <span class="mdc-list-item__text">Crear cita</span>
+                                                <span class="mdc-deprecated-list-item__text">Crear cita</span>
                                             </li>
-                                            <li class="mdc-list-item" role="menuitem" tabindex="1">
-                                                <span class="mdc-list-item__ripple"></span>
-                                                <i class="s-font-color-secondary material-icons mdc-list-item__graphic"
+                                            <li class="mdc-deprecated-list-item" role="menuitem" tabindex="1">
+                                                <span class="mdc-deprecated-list-item__ripple"></span>
+                                                <i class="s-font-color-secondary material-icons mdc-deprecated-list-item__graphic"
                                                     aria-hidden="true">
                                                     exit_to_app
                                                 </i>
-                                                <span class="mdc-list-item__text">Finalizar atención</span>
+                                                <span class="mdc-deprecated-list-item__text">Finalizar atención</span>
                                             </li>
-                                            <hr class="mdc-list-divider s-mdc-list-divider">
-                                            <li class="mdc-list-item" role="menuitem" tabindex="2">
-                                                <span class="mdc-list-item__ripple"></span>
-                                                <i class="s-font-color-secondary material-icons mdc-list-item__graphic"
+                                            <hr class="mdc-deprecated-list-divider s-mdc-deprecated-list-divider">
+                                            <li class="mdc-deprecated-list-item" role="menuitem" tabindex="2">
+                                                <span class="mdc-deprecated-list-item__ripple"></span>
+                                                <i class="s-font-color-secondary material-icons mdc-deprecated-list-item__graphic"
                                                     aria-hidden="true">
                                                     cancel
                                                 </i>
-                                                <span class="mdc-list-item__text">Cerrar conexión</span>
+                                                <span class="mdc-deprecated-list-item__text">Cerrar conexión</span>
                                             </li>
                                         </ul>
                                     </div>
@@ -379,17 +387,17 @@
                         <i class="material-icons mdc-text-field__icon">search</i>
                         <span class="mdc-line-ripple"></span>
                     </label>
-                    <ul id="no-transfer-list" class="mdc-list mdc-list--avatar-list mdc-list--two-line">
-                        <li class="mdc-list-item">
-                            <span class="mdc-list-item__ripple"></span>
-                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">nights_stay</span>
-                            <span class="mdc-list-item__text">
-                                <span class="mdc-list-item__primary-text">0 contactos.</span>
-                                <span class="mdc-list-item__secondary-text">No hay funcionarios.</span>
+                    <ul id="no-transfer-list" class="mdc-deprecated-list mdc-deprecated-list--avatar-list mdc-deprecated-list--two-line">
+                        <li class="mdc-deprecated-list-item">
+                            <span class="mdc-deprecated-list-item__ripple"></span>
+                            <span class="mdc-deprecated-list-item__graphic material-icons" aria-hidden="true">nights_stay</span>
+                            <span class="mdc-deprecated-list-item__text">
+                                <span class="mdc-deprecated-list-item__primary-text">0 contactos.</span>
+                                <span class="mdc-deprecated-list-item__secondary-text">No hay funcionarios.</span>
                             </span>
                         </li>
                     </ul>
-                    <ul class="mdc-list mdc-list--avatar-list mdc-list--two-line container-dialog--transfer container--hidden"
+                    <ul class="mdc-deprecated-list mdc-deprecated-list--avatar-list mdc-deprecated-list--two-line container-dialog--transfer container--hidden"
                         id="transfer-list" role="radiogroup">
                     </ul>
                 </div>

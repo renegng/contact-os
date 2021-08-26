@@ -151,7 +151,7 @@ class rtcPeerConnection {
             
             if (this.isInitialSignal) {
                 this.isInitialSignal = false;
-                swcms.showUserRTCConSnackbar('con', this.uListElem.querySelector('.mdc-list-item__primary-text').textContent);
+                swcms.showUserRTCConSnackbar('con', this.uListElem.querySelector('.mdc-deprecated-list-item__primary-text').textContent);
             }
         });
     
@@ -175,14 +175,14 @@ class rtcPeerConnection {
 
             let utype = this.uListElem.getAttribute('data-meta-utype');
             let uid = (utype != 'anon')? parseInt(this.uListElem.getAttribute('data-meta-uid')) : this.uListElem.getAttribute('data-meta-rid');
-            let upic = this.uListElem.querySelector('.mdc-list-item__graphic').src;
+            let upic = this.uListElem.querySelector('.mdc-deprecated-list-item__graphic').src;
 
             socket.emit('getConversationId', JSON.stringify({
                 'u_id': uid,
                 'u_ip': this.uListElem.getAttribute('data-meta-ip'),
                 'u_rid': this.uListElem.getAttribute('data-meta-rid'),
                 'u_type': utype,
-                'u_name': this.uListElem.querySelector('.mdc-list-item__primary-text').textContent,
+                'u_name': this.uListElem.querySelector('.mdc-deprecated-list-item__primary-text').textContent,
                 'u_photoURL': upic,
                 'e_id': swcms.advStreams.myUserInfo.id,
                 'e_name': swcms.advStreams.myUserInfo.name,
@@ -202,7 +202,7 @@ class rtcPeerConnection {
             });
     
             rtcConnections = newRTCConnections;
-            swcms.showUserRTCConSnackbar('dcon', this.uListElem.querySelector('.mdc-list-item__primary-text').textContent);
+            swcms.showUserRTCConSnackbar('dcon', this.uListElem.querySelector('.mdc-deprecated-list-item__primary-text').textContent);
             enableRTCUserList();
         });
         
@@ -210,12 +210,12 @@ class rtcPeerConnection {
             console.log('Initiator Data Received: ' + data);
             let utype = this.uListElem.getAttribute('data-meta-utype');
             let uid = (utype != 'anon')? this.uListElem.getAttribute('data-meta-uid') : this.uListElem.getAttribute('data-meta-rid');
-            let upic = this.uListElem.querySelector('.mdc-list-item__graphic').src;
+            let upic = this.uListElem.querySelector('.mdc-deprecated-list-item__graphic').src;
             let jMsg = JSON.parse(data);
             switch (jMsg.msgType) {
                 case 'audio':
                 case 'audiovideo':
-                    if (!this.uListElem.classList.contains('mdc-list-item--selected')) {
+                    if (!this.uListElem.classList.contains('mdc-deprecated-list-item--selected')) {
                         this.uListElem.click();
                     }
                     if (jMsg.msg == 'accepted') {
@@ -245,8 +245,8 @@ class rtcPeerConnection {
                             break;
                     }
                     swcms.appendChatMessage(jMsg.msg, jMsg.msgDateTime, 'others', jMsg.msgUserName, uid, upic);
-                    if (!this.uListElem.classList.contains('mdc-list-item--selected')) {
-                        this.uListElem.querySelector('.mdc-list-item__meta').classList.remove('container--hidden');
+                    if (!this.uListElem.classList.contains('mdc-deprecated-list-item--selected')) {
+                        this.uListElem.querySelector('.mdc-deprecated-list-item__meta').classList.remove('container--hidden');
                     }
                     storeConvMsg((utype != 'anon')? parseInt(uid) : uid, jMsg.msg, jMsg.msgDateTime, this.rtcSimplePeer, this.convId, utype);
                     let nxtElm = rtcUserList.querySelector('.container-chat--sidemenu-rooms-usertype-header');
@@ -254,7 +254,7 @@ class rtcPeerConnection {
                     break;
                 
                 case 'typ':
-                    if (this.uListElem.classList.contains('mdc-list-item--selected')) {
+                    if (this.uListElem.classList.contains('mdc-deprecated-list-item--selected')) {
                         if (jMsg.msg) {
                             document.querySelector('.container-chat--body-message-istyping').classList.remove('container--hidden');
                         } else {
@@ -382,7 +382,7 @@ function establishRTC(init = true, receiverData = null) {
     });
 
     // Set Newly Created Peer as the Current Peer
-    if (uListElem.classList.contains('mdc-list-item--selected')) {
+    if (uListElem.classList.contains('mdc-deprecated-list-item--selected')) {
         currPeerObj = newPeer;
         peer = currPeerObj.peerConnection;
     }
@@ -517,7 +517,7 @@ function appendRTCTransferList(user) {
         userContainer = createRTCListUserContainer('rtcTransferList');
     }
     setRTCUserTransferContainer(userContainer, user);
-    setUserStatusColor(userContainer.querySelector('.mdc-list-item__graphic-status'), user.userInfo.status);
+    setUserStatusColor(userContainer.querySelector('.mdc-deprecated-list-item__graphic-status'), user.userInfo.status);
 }
 
 // Check if Peer Exists and Assign it to Peer if available
@@ -544,13 +544,13 @@ function checkUserAssignment(uListElem) {
 
     if (aid && aid != swcms.advStreams.myUserInfo.id && ustat != 'Disponible') {
         let ename = '';
-        let uname = uListElem.querySelector('.mdc-list-item__primary-text').textContent;
+        let uname = uListElem.querySelector('.mdc-deprecated-list-item__primary-text').textContent;
 
         document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
             let qry = 'li:not(.container-chat--sidemenu-rooms-usertype-header):not(.container-chat--sidemenu-rooms-usertype-empty)';
             cont.querySelectorAll(qry).forEach((elm) => {
                 if (elm.getAttribute('data-meta-uid') == aid) {
-                    ename = elm.querySelector('.mdc-list-item__primary-text').textContent;
+                    ename = elm.querySelector('.mdc-deprecated-list-item__primary-text').textContent;
                 }
             });
         });
@@ -577,14 +577,14 @@ function createRTCListUserContainer(parentContainer) {
     let userInfo = document.createElement('span');
     let metaContainer = document.createElement('span');
 
-    userContainer.classList.add('mdc-list-item');
-    ripple.classList.add('mdc-list-item__ripple');
-    userPhoto.classList.add('mdc-list-item__graphic');
-    userStatus.classList.add('material-icons', 'mdc-list-item__graphic-status', 's-font-color-chat-online');
-    textContainer.classList.add('mdc-list-item__text');
-    userName.classList.add('mdc-list-item__primary-text');
-    userInfo.classList.add('mdc-list-item__secondary-text', 'mdc-typography--caption');
-    metaContainer.classList.add('mdc-list-item__meta');
+    userContainer.classList.add('mdc-deprecated-list-item');
+    ripple.classList.add('mdc-deprecated-list-item__ripple');
+    userPhoto.classList.add('mdc-deprecated-list-item__graphic');
+    userStatus.classList.add('material-icons', 'mdc-deprecated-list-item__graphic-status', 's-font-color-chat-online');
+    textContainer.classList.add('mdc-deprecated-list-item__text');
+    userName.classList.add('mdc-deprecated-list-item__primary-text');
+    userInfo.classList.add('mdc-deprecated-list-item__secondary-text', 'mdc-typography--caption');
+    metaContainer.classList.add('mdc-deprecated-list-item__meta');
 
     userStatus.textContent = 'stop_circle';
 
@@ -700,8 +700,8 @@ function enableRTCUserList(enable = true){
 function endRTCSession(showUsrSatSurv = false) {
     let usrElem = null;
     document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
-        if (cont.querySelector('.mdc-list-item--selected')) {
-            usrElem = cont.querySelector('.mdc-list-item--selected');
+        if (cont.querySelector('.mdc-deprecated-list-item--selected')) {
+            usrElem = cont.querySelector('.mdc-deprecated-list-item--selected');
         };
     });
 
@@ -803,8 +803,8 @@ function filterRTCUserList(value) {
 // Filter RTC User Transfer List
 function filterRTCUserTransferList(txt) {
     document.querySelectorAll('#transfer-list > li').forEach((elm) => {
-        let userName = elm.querySelector('.mdc-list-item__primary-text').textContent;
-        let userRole = elm.querySelector('.mdc-list-item__secondary-text').textContent;
+        let userName = elm.querySelector('.mdc-deprecated-list-item__primary-text').textContent;
+        let userRole = elm.querySelector('.mdc-deprecated-list-item__secondary-text').textContent;
 
         // Removes special characters, start/end spaces and uppercases from all names to compare
         let userNameNorm = userName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
@@ -873,6 +873,8 @@ function moreOptionsSelection(index) {
             break;
     }
 }
+/* Allow 'window' context to reference the function */
+window.moreOptionsSelection = moreOptionsSelection;
 
 // Set RTC User List Container Data
 function setRTCUserContainer(container, room_id, user, uType) {
@@ -890,11 +892,11 @@ function setRTCUserContainer(container, room_id, user, uType) {
     container.setAttribute('data-meta-uid', user.id);
     container.setAttribute('data-meta-utime', activityTime);
     container.setAttribute('data-meta-utype', uType);
-    container.querySelector('.mdc-list-item__graphic').src = userPhoto;
-    container.querySelector('.mdc-list-item__primary-text').textContent = userName;
+    container.querySelector('.mdc-deprecated-list-item__graphic').src = userPhoto;
+    container.querySelector('.mdc-deprecated-list-item__primary-text').textContent = userName;
 
     if (userInfo.assignedTo && userInfo.assignedTo == swcms.advStreams.myUserInfo.id && userInfo.status == 'Transferid@') {
-        container.querySelector('.mdc-list-item__meta').classList.remove('container--hidden');
+        container.querySelector('.mdc-deprecated-list-item__meta').classList.remove('container--hidden');
     }
 }
 
@@ -905,10 +907,10 @@ function setRTCUserTransferContainer(container, user) {
 
     container.id = 'tl_' + user.id;
     container.setAttribute('data-meta-uid', user.id);
-    container.querySelector('.mdc-list-item__graphic').src = userPhoto;
+    container.querySelector('.mdc-deprecated-list-item__graphic').src = userPhoto;
     container.querySelector('.mdc-radio__native-control').value = user.id
-    container.querySelector('.mdc-list-item__primary-text').textContent = userInfo.name;
-    container.querySelector('.mdc-list-item__secondary-text').textContent = userInfo.roles;
+    container.querySelector('.mdc-deprecated-list-item__primary-text').textContent = userInfo.name;
+    container.querySelector('.mdc-deprecated-list-item__secondary-text').textContent = userInfo.roles;
 }
 
 // Set User Status Element Color
@@ -946,8 +948,8 @@ function showContactsList() {
     let elemFocus = null;
 
     document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
-        if (cont.querySelector('.mdc-list-item--selected')) {
-            elemFocus = cont.querySelector('.mdc-list-item--selected');
+        if (cont.querySelector('.mdc-deprecated-list-item--selected')) {
+            elemFocus = cont.querySelector('.mdc-deprecated-list-item--selected');
         };
     });
 
@@ -958,7 +960,7 @@ function showContactsList() {
     sideMenuEl.classList.remove('container--hidden');
 
     if (elemFocus) {
-        elemFocus.classList.remove('mdc-list-item--selected');
+        elemFocus.classList.remove('mdc-deprecated-list-item--selected');
     }
 }
 
@@ -992,7 +994,7 @@ function showConversationUI(showOrHide, usrElem) {
     let sideMenuEl = document.querySelector('.container-chat--sidemenu');
     let elemFocus = false;
     if (usrElem) {
-        elemFocus = usrElem.classList.contains('mdc-list-item--selected');
+        elemFocus = usrElem.classList.contains('mdc-deprecated-list-item--selected');
     }
     
     // True: shows UI IF the element is not already displayed
@@ -1003,8 +1005,8 @@ function showConversationUI(showOrHide, usrElem) {
         let currentElemFocus = null;
         
         document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
-            if (cont.querySelector('.mdc-list-item--selected')) {
-                currentElemFocus = cont.querySelector('.mdc-list-item--selected');
+            if (cont.querySelector('.mdc-deprecated-list-item--selected')) {
+                currentElemFocus = cont.querySelector('.mdc-deprecated-list-item--selected');
             };
         });
 
@@ -1014,10 +1016,10 @@ function showConversationUI(showOrHide, usrElem) {
         chatNoConver.classList.add('container--hidden');
 
         if (currentElemFocus) {
-            currentElemFocus.classList.remove('mdc-list-item--selected');
+            currentElemFocus.classList.remove('mdc-deprecated-list-item--selected');
         }
-        usrElem.classList.add('mdc-list-item--selected', 'container-chat--sidemenu-assigned');
-        usrElem.querySelector('.mdc-list-item__meta').classList.add('container--hidden');
+        usrElem.classList.add('mdc-deprecated-list-item--selected', 'container-chat--sidemenu-assigned');
+        usrElem.querySelector('.mdc-deprecated-list-item__meta').classList.add('container--hidden');
         
         // Mobile UI - Hide SideMenu
         if (window.matchMedia("(max-width: 37.49em)").matches) {
@@ -1036,17 +1038,17 @@ function showConversationUI(showOrHide, usrElem) {
         chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
         
         // Update User's Topbar info
-        let usrName = usrElem.querySelector('.mdc-list-item__primary-text').textContent;
-        let usrPhoto = usrElem.querySelector('.mdc-list-item__graphic').src;
+        let usrName = usrElem.querySelector('.mdc-deprecated-list-item__primary-text').textContent;
+        let usrPhoto = usrElem.querySelector('.mdc-deprecated-list-item__graphic').src;
         let usrStatus = usrElem.getAttribute('data-meta-status');
         let transferOption = document.querySelector('#transferUserOption');
         document.querySelector('#chat-pic').src = usrPhoto;
         document.querySelector('.container-chat--topbar-info-data-name').textContent = usrName;
         updateRTCUserStatus(uid, usrStatus);
         if (uType == 'emp' && transferOption) {
-            transferOption.classList.add('mdc-list-item--disabled');
+            transferOption.classList.add('mdc-deprecated-list-item--disabled');
         } else {
-            transferOption.classList.remove('mdc-list-item--disabled');
+            transferOption.classList.remove('mdc-deprecated-list-item--disabled');
         }
         // Update is Typing Message
         let activeIsTypingEl = document.querySelector('.container-chat--body-message-istyping');
@@ -1071,7 +1073,7 @@ function showConversationUI(showOrHide, usrElem) {
 
         if (elemFocus) {
             usrElem.classList.remove('container-chat--sidemenu-assigned');
-            usrElem.classList.remove('mdc-list-item--selected');
+            usrElem.classList.remove('mdc-deprecated-list-item--selected');
         }
         
         // Mobile UI - Show SideMenu
@@ -1133,7 +1135,7 @@ function showRTCUserList(userlist) {
                 let uType = elm.getAttribute('data-meta-utype');
                 let id = (uType == 'anon')? elm.getAttribute('data-meta-rid') : elm.getAttribute('data-meta-uid');
     
-                if (!elm.classList.contains('mdc-list-item--selected')){
+                if (!elm.classList.contains('mdc-deprecated-list-item--selected')){
                     // Remove element if not in focus
                     let m_elm = document.getElementById('m_' + id);
                     elm.remove();
@@ -1151,7 +1153,7 @@ function showRTCUserList(userlist) {
         let qry = 'li:not(.container-chat--sidemenu-rooms-usertype-header):not(.container-chat--sidemenu-rooms-usertype-empty)';
         if (cont.querySelectorAll(qry).length > 0) {
             cont.querySelector('.container-chat--sidemenu-rooms-usertype-empty').classList.add('container--hidden');
-            if (cont.querySelectorAll('.mdc-list-item--selected').length > 0)
+            if (cont.querySelectorAll('.mdc-deprecated-list-item--selected').length > 0)
                 noActiveRooms = false;
         } else {
             cont.querySelector('.container-chat--sidemenu-rooms-usertype-empty').classList.remove('container--hidden');
@@ -1198,8 +1200,8 @@ function transferRTCUser() {
     if (empUserRadio) {
         let userTransfer = null;
         document.querySelectorAll('.container-chat--sidemenu-rooms-usertype').forEach((cont) => {
-            if (cont.querySelector('.mdc-list-item--selected')) {
-                userTransfer = cont.querySelector('.mdc-list-item--selected');
+            if (cont.querySelector('.mdc-deprecated-list-item--selected')) {
+                userTransfer = cont.querySelector('.mdc-deprecated-list-item--selected');
             };
         });
         let r_id = userTransfer.getAttribute('data-meta-rid');
@@ -1231,7 +1233,7 @@ function transferRTCUser() {
         msgEl.textContent = '';
         msgEl.appendChild(msgloadEl);
         msgEl.appendChild(loadEl);
-        swcms.showUserRTCConSnackbar('trn', userTransfer.querySelector('.mdc-list-item__primary-text').textContent);
+        swcms.showUserRTCConSnackbar('trn', userTransfer.querySelector('.mdc-deprecated-list-item__primary-text').textContent);
     }
 }
 
@@ -1296,14 +1298,14 @@ window.updateRTCUserPersonalStatus = updateRTCUserPersonalStatus;
 // Update RTC User Status elements
 function updateRTCUserStatus(id, usrStatus) {
     let elem = document.getElementById('l_' + id);
-    let elemFocus = elem.classList.contains('mdc-list-item--selected');
+    let elemFocus = elem.classList.contains('mdc-deprecated-list-item--selected');
     let uActTime = (usrStatus != 'Offline')? elem.getAttribute('data-meta-utime') : returnFormatDate(Date.now());
     let uRoles = elem.getAttribute('data-meta-roles');
     let uType = elem.getAttribute('data-meta-utype');
 
     let statusText = (uType == 'emp')? '[' + uRoles + '] ' + usrStatus + ' - ' + uActTime : usrStatus + ' - ' + uActTime;
-    elem.querySelector('.mdc-list-item__secondary-text').textContent = statusText;
-    setUserStatusColor(elem.querySelector('.mdc-list-item__graphic-status'), usrStatus);
+    elem.querySelector('.mdc-deprecated-list-item__secondary-text').textContent = statusText;
+    setUserStatusColor(elem.querySelector('.mdc-deprecated-list-item__graphic-status'), usrStatus);
     
 
     if (elemFocus) {

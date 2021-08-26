@@ -39,7 +39,9 @@
 
 @use "@material/animation";
 @use "@material/button";
+@use "@material/button/mdc-button";
 @use "@material/card";
+@use "@material/card/mdc-card";
 @use "@material/dialog";
 @use "@material/dialog/mdc-dialog";
 @use "@material/drawer";
@@ -49,7 +51,9 @@
 @use "@material/fab";
 @use "@material/fab/mdc-fab";
 @use "@material/floating-label";
+@use "@material/floating-label/mdc-floating-label";
 @use "@material/form-field";
+@use "@material/form-field/mdc-form-field";
 @use "@material/icon-button";
 @use "@material/icon-button/mdc-icon-button";
 @use "@material/image-list";
@@ -57,6 +61,7 @@
 @use "@material/layout-grid";
 @use "@material/layout-grid/mdc-layout-grid";
 @use "@material/line-ripple";
+@use "@material/line-ripple/mdc-line-ripple";
 @use "@material/linear-progress";
 @use "@material/linear-progress/mdc-linear-progress";
 @use "@material/list";
@@ -66,17 +71,19 @@
 @use "@material/menu-surface";
 @use "@material/menu-surface/mdc-menu-surface";
 @use "@material/notched-outline";
+@use "@material/notched-outline/mdc-notched-outline";
 @use "@material/radio";
 @use "@material/radio/mdc-radio";
 @use "@material/ripple";
+@use "@material/ripple/mdc-ripple";
 @use "@material/rtl";
 @use "@material/rtl/mixins";
 @use "@material/select";
 @use "@material/select/mdc-select";
-@use "@material/snackbar";
 @use "@material/shape";
+@use "@material/snackbar";
+@use "@material/snackbar/mdc-snackbar";
 @use "@material/switch";
-@use "@material/switch/mdc-switch";
 @use "@material/tab";
 @use "@material/tab/mdc-tab";
 @use "@material/tab-bar";
@@ -88,36 +95,43 @@
 @use "@material/textfield/icon";
 @use "@material/textfield/helper-text";
 @use "@material/textfield";
+@use "@material/textfield/mdc-text-field";
 @use "@material/top-app-bar";
 @use "@material/top-app-bar/mdc-top-app-bar";
 @use "@material/typography";
 @use "@material/typography/mdc-typography";
 
 /* Default Components Styles */
-@include button.core-styles;
-@include card.core-styles;
-@include dialog.core-styles;
-@include fab.core-styles;
-@include floating-label.core-styles;
-@include helper-text.helper-text-core-styles;
-@include icon.icon-core-styles;
-@include icon-button.core-styles;
-@include image-list.core-styles;
-@include line-ripple.core-styles;
-@include linear-progress.core-styles;
-@include list.core-styles;
-@include menu.core-styles;
-@include menu-surface.core-styles;
-@include notched-outline.core-styles;
-@include radio.core-styles;
-@include ripple.core-styles;
-@include select.core-styles;
-@include snackbar.core-styles;
-@include tab.core-styles;
-@include tab-bar.core-styles;
-@include tab-indicator.core-styles;
-@include tab-scroller.core-styles;
-@include textfield.core-styles;
+// @use "@material/button/styles" as button-style;
+// @use "@material/radio/styles" as radio-style;
+// @use "@material/select/styles" as select-style;
+// @use "@material/switch/styles" as switch-style;
+// @use "@material/list/evolution-mixins" as list-evolution-mixins;
+// @include list-evolution-mixins.core-styles;
+// @include button.core-styles;
+// @include card.core-styles;
+// @include dialog.core-styles;
+// @include fab.core-styles;
+// @include floating-label.core-styles;
+// @include helper-text.helper-text-core-styles;
+// @include icon.icon-core-styles;
+// @include icon-button.core-styles;
+// @include image-list.core-styles;
+// @include line-ripple.core-styles;
+// @include linear-progress.core-styles;
+// @include list.core-styles;
+// @include menu.core-styles;
+// @include menu-surface.core-styles;
+// @include notched-outline.core-styles;
+// @include radio.core-styles;
+// @include ripple.core-styles;
+// @include select.core-styles;
+// @include snackbar.core-styles;
+// @include tab.core-styles;
+// @include tab-bar.core-styles;
+// @include tab-indicator.core-styles;
+// @include tab-scroller.core-styles;
+// @include textfield.core-styles;
 
 /* Material Components Theming */
 
@@ -257,8 +271,8 @@
 }
 
 /* List */
-.mdc-list {
-    .mdc-list-item {
+.mdc-deprecated-list {
+    .mdc-deprecated-list-item {
         a {
             color: inherit;
             display: inline-flex;
@@ -268,23 +282,23 @@
     }
 }
 
-.component-wrapper > .mdc-list {
-    border: 0.0625rem solid rgba(0, 0, 0, 0.1);
-    background: stv.$swing-theme-background;
+// .component-wrapper > .mdc-deprecated-list {
+//     border: 0.0625rem solid rgba(0, 0, 0, 0.1);
+//     background: stv.$swing-theme-background;
 
-    .mdc-list-item__graphic {
-        background-color: if(
-            theme.contrast-tone(stv.$swing-theme-background) == "dark",
-            rgba(0, 0, 0, 0.12),
-            rgba(255, 255, 255, 0.12)
-        );
-        color: if(
-            theme.contrast-tone(stv.$swing-theme-background) == "dark",
-            rgba(0, 0, 0, 0.68),
-            rgba(255, 255, 255, 0.68)
-        );
-    }
-}
+//     .mdc-deprecated-list-item__graphic {
+//         background-color: if(
+//             theme.contrast-tone(stv.$swing-theme-background) == "dark",
+//             rgba(0, 0, 0, 0.12),
+//             rgba(255, 255, 255, 0.12)
+//         );
+//         color: if(
+//             theme.contrast-tone(stv.$swing-theme-background) == "dark",
+//             rgba(0, 0, 0, 0.68),
+//             rgba(255, 255, 255, 0.68)
+//         );
+//     }
+// }
 
 /* Menu */
 .mdc-menu-surface--anchor > .mdc-menu {
@@ -295,11 +309,7 @@
 /* Select */
 .mdc-select {
     @include select.container-fill-color(stv.$swing-theme-surface);
-
-    .mdc-select__anchor, .mdc-select__menu {
-        min-width: 5rem;
-        width: 90%;
-    }
+    width: 100%;
 }
 
 /* Snackbar */
@@ -340,21 +350,21 @@
 }
 
 /* Tabs */
-.component-wrapper .mdc-tab-bar {
-    background: stv.$swing-theme-primary;
+// .component-wrapper .mdc-tab-bar {
+//     background: stv.$swing-theme-primary;
 
-    .mdc-tab {
-        @include tab.text-label-color(stv.$swing-theme-on-primary);
+//     .mdc-tab {
+//         @include tab.text-label-color(stv.$swing-theme-on-primary);
 
-        .mdc-tab__ripple {
-            @include tab.states-color(stv.$swing-theme-on-primary);
-        }
-    }
+//         .mdc-tab__ripple {
+//             @include tab.states-color(stv.$swing-theme-on-primary);
+//         }
+//     }
 
-    .mdc-tab-indicator {
-        @include tab-indicator.underline-color(stv.$swing-theme-on-primary);
-    }
-}
+//     .mdc-tab-indicator {
+//         @include tab-indicator.underline-color(stv.$swing-theme-on-primary);
+//     }
+// }
 
 /* Text field */
 .mdc-text-field {
@@ -377,37 +387,37 @@
     display: none;
 }
 
-.component-wrapper .mdc-top-app-bar {
-    border-radius: 0.5rem;
-    @include top-app-bar.fill-color(stv.$swing-theme-secondary);
-    position: relative;
-    z-index: 1;
+// .component-wrapper .mdc-top-app-bar {
+//     border-radius: 0.5rem;
+//     @include top-app-bar.fill-color(stv.$swing-theme-secondary);
+//     position: relative;
+//     z-index: 1;
 
-    &:not(.mdc-top-app-bar--short) {
-        width: 100%;
-    }
-}
+//     &:not(.mdc-top-app-bar--short) {
+//         width: 100%;
+//     }
+// }
 
-.component-wrapper {
-    &.button-component-wrapper,
-    &.fab-component-wrapper {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+// .component-wrapper {
+//     &.button-component-wrapper,
+//     &.fab-component-wrapper {
+//         display: flex;
+//         justify-content: space-between;
+//         align-items: center;
+//     }
 
-    // Offset built-in padding to left-align all components
+//     // Offset built-in padding to left-align all components
 
-    &.chips-component-wrapper {
-        @include rtl.reflexive-box(margin, left, -0.5rem);
-    }
+//     &.chips-component-wrapper {
+//         @include rtl.reflexive-box(margin, left, -0.5rem);
+//     }
 
-    &.checkbox-component-wrapper,
-    &.radio-component-wrapper {
-        @include rtl.reflexive-box(margin, left, -0.625rem);
-    }
+//     &.checkbox-component-wrapper,
+//     &.radio-component-wrapper {
+//         @include rtl.reflexive-box(margin, left, -0.625rem);
+//     }
 
-    &.icon-button-component-wrapper {
-        @include rtl.reflexive-box(margin, left, -0.75rem);
-    }
-}
+//     &.icon-button-component-wrapper {
+//         @include rtl.reflexive-box(margin, left, -0.75rem);
+//     }
+// }

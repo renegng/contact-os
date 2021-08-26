@@ -8,60 +8,60 @@
         <h6 class="mdc-drawer__subtitle">Asistencia Remota</h6>
     </div>
     <div class="mdc-drawer__content">
-        <nav class="mdc-list">
-            <a class="mdc-list-item" href="/welcome/" aria-current="page" tabindex="0">
-                <span class="mdc-list-item__ripple"></span>
-                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">home</i>
-                <span class="mdc-list-item__text">Bienvenido</span>
+        <nav class="mdc-deprecated-list">
+            <a class="mdc-deprecated-list-item" href="/welcome/" aria-current="page" tabindex="0">
+                <span class="mdc-deprecated-list-item__ripple"></span>
+                <i class="material-icons mdc-deprecated-list-item__graphic" aria-hidden="true">home</i>
+                <span class="mdc-deprecated-list-item__text">Bienvenido</span>
             </a>
             {% if current_user.is_authenticated %}
-            <a class="mdc-list-item" href="/home/" aria-current="page">
-                <span class="mdc-list-item__ripple"></span>
-                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">widgets</i>
-                <span class="mdc-list-item__text">Funciones</span>
+            <a class="mdc-deprecated-list-item" href="/home/" aria-current="page">
+                <span class="mdc-deprecated-list-item__ripple"></span>
+                <i class="material-icons mdc-deprecated-list-item__graphic" aria-hidden="true">widgets</i>
+                <span class="mdc-deprecated-list-item__text">Funciones</span>
             </a>
                 {% if current_user.is_user_role(['adm','emp']) %}
-            <a class="mdc-list-item" href="/chat/admin/" aria-current="page">
-                <span class="mdc-list-item__ripple"></span>
-                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">chat</i>
-                <span class="mdc-list-item__text">Chat</span>
+            <a class="mdc-deprecated-list-item" href="/chat/admin/" aria-current="page">
+                <span class="mdc-deprecated-list-item__ripple"></span>
+                <i class="material-icons mdc-deprecated-list-item__graphic" aria-hidden="true">chat</i>
+                <span class="mdc-deprecated-list-item__text">Chat</span>
             </a>
                 {% elif current_user.is_user_role(['usr']) %}
-            <a class="mdc-list-item" href="/chat/home/" aria-current="page">
-                <span class="mdc-list-item__ripple"></span>
-                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">chat</i>
-                <span class="mdc-list-item__text">Chat</span>
+            <a class="mdc-deprecated-list-item" href="/chat/home/" aria-current="page">
+                <span class="mdc-deprecated-list-item__ripple"></span>
+                <i class="material-icons mdc-deprecated-list-item__graphic" aria-hidden="true">chat</i>
+                <span class="mdc-deprecated-list-item__text">Chat</span>
             </a>
                 {% endif %}
-            <a class="mdc-list-item" href="/appointments/" aria-current="page">
-                <span class="mdc-list-item__ripple"></span>
-                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">event</i>
-                <span class="mdc-list-item__text">Citas</span>
+            <a class="mdc-deprecated-list-item" href="/appointments/" aria-current="page">
+                <span class="mdc-deprecated-list-item__ripple"></span>
+                <i class="material-icons mdc-deprecated-list-item__graphic" aria-hidden="true">event</i>
+                <span class="mdc-deprecated-list-item__text">Citas</span>
             </a>
                 {% if current_user.is_user_role(['adm','emp']) %}
-            <a class="mdc-list-item" href="/statistics/" aria-current="page">
-                <span class="mdc-list-item__ripple"></span>
-                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">poll</i>
-                <span class="mdc-list-item__text">Estadísticas</span>
+            <a class="mdc-deprecated-list-item" href="/statistics/" aria-current="page">
+                <span class="mdc-deprecated-list-item__ripple"></span>
+                <i class="material-icons mdc-deprecated-list-item__graphic" aria-hidden="true">poll</i>
+                <span class="mdc-deprecated-list-item__text">Estadísticas</span>
             </a>
                 {% endif %}
             {% else %}
-            <a class="mdc-list-item" href="/chat/" aria-current="page">
-                <span class="mdc-list-item__ripple"></span>
-                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">chat</i>
-                <span class="mdc-list-item__text">Chat</span>
+            <a class="mdc-deprecated-list-item" href="/chat/" aria-current="page">
+                <span class="mdc-deprecated-list-item__ripple"></span>
+                <i class="material-icons mdc-deprecated-list-item__graphic" aria-hidden="true">chat</i>
+                <span class="mdc-deprecated-list-item__text">Chat</span>
             </a>
             {% endif %}
-            <a class="mdc-list-item" href="https://drive.google.com/drive/folders/18LWswNRXNYC-VkIvE86GHSoXwrzLk64B" target="_blank">
-                <span class="mdc-list-item__ripple"></span>
-                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">library_books</i>
-                <span class="mdc-list-item__text">Recursos de Ayuda</span>
+            <a class="mdc-deprecated-list-item" href="https://drive.google.com/drive/folders/18LWswNRXNYC-VkIvE86GHSoXwrzLk64B" target="_blank">
+                <span class="mdc-deprecated-list-item__ripple"></span>
+                <i class="material-icons mdc-deprecated-list-item__graphic" aria-hidden="true">library_books</i>
+                <span class="mdc-deprecated-list-item__text">Recursos de Ayuda</span>
             </a>
-            <hr class="mdc-list-divider s-mdc-list-divider">
-            <a class="mdc-list-item" href="/acercade/">
-                <span class="mdc-list-item__ripple"></span>
-                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">info</i>
-                <span class="mdc-list-item__text">Acerca de...</span>
+            <hr class="mdc-deprecated-list-divider s-mdc-deprecated-list-divider">
+            <a class="mdc-deprecated-list-item" href="/acercade/">
+                <span class="mdc-deprecated-list-item__ripple"></span>
+                <i class="material-icons mdc-deprecated-list-item__graphic" aria-hidden="true">info</i>
+                <span class="mdc-deprecated-list-item__text">Acerca de...</span>
             </a>
         </nav>
     </div>
@@ -80,57 +80,57 @@
             </span>
         </section>
         <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
-            <div class="mdc-menu-surface--anchor">
-                <button id="shareButton" class="mdc-top-app-bar__action-item mdc-icon-button" aria-label="Share"
+            <div class="s-mdc-menu mdc-menu-surface--anchor" data-action-fn="shareRedirect">
+                <button id="shareButton" class="s-mdc-menu__button mdc-top-app-bar__action-item mdc-icon-button" aria-label="Share"
                     alt="Share">
                     <i class="material-icons mdc-icon-button__icon">share</i>
                 </button>
-                <div id="shareMenu" class="mdc-menu mdc-menu-surface" tabindex="-1">
-                    <ul class="mdc-list mdc-menu__items" role="menu" aria-hidden="true">
-                        <li class="mdc-list-item" role="menuitem" tabindex="0">
-                            <span class="mdc-list-item__ripple"></span>
-                            <i class="s-icon-color-email material-icons mdc-list-item__graphic" aria-hidden="true">email</i>
-                            <span class="mdc-list-item__text">Email</span>
+                <div id="shareMenu" class="s-mdc-menu__list mdc-menu mdc-menu-surface" tabindex="-1">
+                    <ul class="mdc-deprecated-list mdc-menu__items" role="menu" aria-hidden="true">
+                        <li class="mdc-deprecated-list-item" role="menuitem" tabindex="0">
+                            <span class="mdc-deprecated-list-item__ripple"></span>
+                            <i class="s-icon-color-email material-icons mdc-deprecated-list-item__graphic" aria-hidden="true">email</i>
+                            <span class="mdc-deprecated-list-item__text">Email</span>
                         </li>
-                        <li class="mdc-list-item" role="menuitem" tabindex="0">
-                            <span class="mdc-list-item__ripple"></span>
-                            <i class="s-icon-color-facebook mdc-list-item__graphic fa fa-facebook" aria-hidden="true"></i>
-                            <span class="mdc-list-item__text">Facebook</span>
+                        <li class="mdc-deprecated-list-item" role="menuitem" tabindex="0">
+                            <span class="mdc-deprecated-list-item__ripple"></span>
+                            <i class="s-icon-color-facebook mdc-deprecated-list-item__graphic fa fa-facebook" aria-hidden="true"></i>
+                            <span class="mdc-deprecated-list-item__text">Facebook</span>
                         </li>
-                        <li class="mdc-list-item" role="menuitem" tabindex="0">
-                            <span class="mdc-list-item__ripple"></span>
-                            <i class="s-icon-color-linkedin mdc-list-item__graphic fa fa-linkedin" aria-hidden="true"></i>
-                            <span class="mdc-list-item__text">LinkedIn</span>
+                        <li class="mdc-deprecated-list-item" role="menuitem" tabindex="0">
+                            <span class="mdc-deprecated-list-item__ripple"></span>
+                            <i class="s-icon-color-linkedin mdc-deprecated-list-item__graphic fa fa-linkedin" aria-hidden="true"></i>
+                            <span class="mdc-deprecated-list-item__text">LinkedIn</span>
                         </li>
-                        <li class="mdc-list-item" role="menuitem" tabindex="0">
-                            <span class="mdc-list-item__ripple"></span>
-                            <i class="s-icon-color-twitter mdc-list-item__graphic fa fa-twitter" aria-hidden="true"></i>
-                            <span class="mdc-list-item__text">Twitter</span>
+                        <li class="mdc-deprecated-list-item" role="menuitem" tabindex="0">
+                            <span class="mdc-deprecated-list-item__ripple"></span>
+                            <i class="s-icon-color-twitter mdc-deprecated-list-item__graphic fa fa-twitter" aria-hidden="true"></i>
+                            <span class="mdc-deprecated-list-item__text">Twitter</span>
                         </li>
-                        <li class="mdc-list-item" role="menuitem" tabindex="0">
-                            <span class="mdc-list-item__ripple"></span>
-                            <i class="s-icon-color-whatsapp mdc-list-item__graphic fa fa-whatsapp" aria-hidden="true"></i>
-                            <span class="mdc-list-item__text">WhatsApp</span>
+                        <li class="mdc-deprecated-list-item" role="menuitem" tabindex="0">
+                            <span class="mdc-deprecated-list-item__ripple"></span>
+                            <i class="s-icon-color-whatsapp mdc-deprecated-list-item__graphic fa fa-whatsapp" aria-hidden="true"></i>
+                            <span class="mdc-deprecated-list-item__text">WhatsApp</span>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="mdc-menu-surface--anchor">
-                <button id="accountButton" class="mdc-top-app-bar__action-item mdc-icon-button" aria-label="My Account" alt="My Account">
+            <div class="s-mdc-menu mdc-menu-surface--anchor" data-action-fn="accountRedirect">
+                <button id="accountButton" class="s-mdc-menu__button mdc-top-app-bar__action-item mdc-icon-button" aria-label="My Account" alt="My Account">
                     <i id="accountIcon" class="material-icons mdc-icon-button__icon">person</i>
                     <img id="accountImage" src="" class="mdc-icon-button__icon container--hidden"/>
                 </button>
-                <div id="accountMenu" class="mdc-menu mdc-menu-surface" tabindex="-1">
-                    <ul class="mdc-list mdc-menu__items" role="menu" aria-hidden="true">
-                        <li id="accountLogIn" class="mdc-list-item" role="menuitem" tabindex="0">
-                            <span class="mdc-list-item__ripple"></span>
-                            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">cloud_queue</i>
-                            <span class="mdc-list-item__text">Iniciar Sesión</span>
+                <div id="accountMenu" class="s-mdc-menu__list mdc-menu mdc-menu-surface" tabindex="-1">
+                    <ul class="mdc-deprecated-list mdc-menu__items" role="menu" aria-hidden="true">
+                        <li id="accountLogIn" class="mdc-deprecated-list-item" role="menuitem" tabindex="0">
+                            <span class="mdc-deprecated-list-item__ripple"></span>
+                            <i class="material-icons mdc-deprecated-list-item__graphic" aria-hidden="true">cloud_queue</i>
+                            <span class="mdc-deprecated-list-item__text">Iniciar Sesión</span>
                         </li>
-                        <li id="accountLogOut" class="mdc-list-item container--hidden" role="menuitem" tabindex="1">
-                            <span class="mdc-list-item__ripple"></span>
-                            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">cloud_off</i>
-                            <span class="mdc-list-item__text">Cerrar Sesión</span>
+                        <li id="accountLogOut" class="mdc-deprecated-list-item container--hidden" role="menuitem" tabindex="1">
+                            <span class="mdc-deprecated-list-item__ripple"></span>
+                            <i class="material-icons mdc-deprecated-list-item__graphic" aria-hidden="true">cloud_off</i>
+                            <span class="mdc-deprecated-list-item__text">Cerrar Sesión</span>
                         </li>
                     </ul>
                 </div>
@@ -186,26 +186,26 @@
                         Sigue conectado con nosotros
                     </div>
                     <div class="footer-followus__list">
-                        <ul class="mdc-list" aria-orientation="vertical" aria-hidden="true">
-                            <li class="mdc-list-item">
-                                <span class="mdc-list-item__ripple"></span>
+                        <ul class="mdc-deprecated-list" aria-orientation="vertical" aria-hidden="true">
+                            <li class="mdc-deprecated-list-item">
+                                <span class="mdc-deprecated-list-item__ripple"></span>
                                 <a href="https://www.facebook.com/" target="_blank" rel="external">
-                                    <i class="mdc-list-item__graphic fa fa-facebook" aria-hidden="true"></i>
-                                    <span class="mdc-list-item__text">Facebook</span>
+                                    <i class="mdc-deprecated-list-item__graphic fa fa-facebook" aria-hidden="true"></i>
+                                    <span class="mdc-deprecated-list-item__text">Facebook</span>
                                 </a>
                             </li>
-                            <li class="mdc-list-item">
-                                <span class="mdc-list-item__ripple"></span>
+                            <li class="mdc-deprecated-list-item">
+                                <span class="mdc-deprecated-list-item__ripple"></span>
                                 <a href="https://twitter.com/" target="_blank" rel="external">
-                                    <i class="mdc-list-item__graphic fa fa-twitter" aria-hidden="true"></i>
-                                    <span class="mdc-list-item__text">Twitter</span>
+                                    <i class="mdc-deprecated-list-item__graphic fa fa-twitter" aria-hidden="true"></i>
+                                    <span class="mdc-deprecated-list-item__text">Twitter</span>
                                 </a>
                             </li>
-                            <li class="mdc-list-item">
-                                <span class="mdc-list-item__ripple"></span>
+                            <li class="mdc-deprecated-list-item">
+                                <span class="mdc-deprecated-list-item__ripple"></span>
                                 <a href="https://www.youtube.com/" target="_blank" rel="external">
-                                    <i class="mdc-list-item__graphic fa fa-youtube" aria-hidden="true"></i>
-                                    <span class="mdc-list-item__text">YouTube</span>
+                                    <i class="mdc-deprecated-list-item__graphic fa fa-youtube" aria-hidden="true"></i>
+                                    <span class="mdc-deprecated-list-item__text">YouTube</span>
                                 </a>
                             </li>
                         </ul>
@@ -218,26 +218,26 @@
                         Contáctanos
                     </div>
                     <div class="footer-contactus__list">
-                        <ul class="mdc-list" aria-orientation="vertical" aria-hidden="true">
-                            <li class="mdc-list-item">
-                                <span class="mdc-list-item__ripple"></span>
+                        <ul class="mdc-deprecated-list" aria-orientation="vertical" aria-hidden="true">
+                            <li class="mdc-deprecated-list-item">
+                                <span class="mdc-deprecated-list-item__ripple"></span>
                                 <a href="https://www.google.com/maps/search/Paris" target="_blank" rel="external">
-                                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">place</i>
-                                    <span class="mdc-list-item__text">Google Maps</span>
+                                    <i class="material-icons mdc-deprecated-list-item__graphic" aria-hidden="true">place</i>
+                                    <span class="mdc-deprecated-list-item__text">Google Maps</span>
                                 </a>
                             </li>
-                            <li class="mdc-list-item" itemscope itemtype="http://schema.org/LocalBusiness">
-                                <span class="mdc-list-item__ripple"></span>
+                            <li class="mdc-deprecated-list-item" itemscope itemtype="http://schema.org/LocalBusiness">
+                                <span class="mdc-deprecated-list-item__ripple"></span>
                                 <a href="tel:+50311223344" rel="external">
-                                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">phone</i>
-                                    <span class="mdc-list-item__text" itemprop="telephone">+503 1122 3344</span>
+                                    <i class="material-icons mdc-deprecated-list-item__graphic" aria-hidden="true">phone</i>
+                                    <span class="mdc-deprecated-list-item__text" itemprop="telephone">+503 1122 3344</span>
                                 </a>
                             </li>
-                            <li class="mdc-list-item">
-                                <span class="mdc-list-item__ripple"></span>
+                            <li class="mdc-deprecated-list-item">
+                                <span class="mdc-deprecated-list-item__ripple"></span>
                                 <a href="mailto:info@rxdbit.com" target="_blank" rel="external">
-                                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">email</i>
-                                    <span class="mdc-list-item__text">info@rxdbit.com</span>
+                                    <i class="material-icons mdc-deprecated-list-item__graphic" aria-hidden="true">email</i>
+                                    <span class="mdc-deprecated-list-item__text">info@rxdbit.com</span>
                                 </a>
                             </li>
                         </ul>

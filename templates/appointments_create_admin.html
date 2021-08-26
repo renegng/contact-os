@@ -34,7 +34,7 @@
                         <span class="mdc-line-ripple"></span>
                     </label>
                     <div id="searchUsersMenu" class="mdc-menu mdc-menu-surface container-appointmentadm-searchmenu" tabindex="-1">
-                        <ul class="mdc-list mdc-list--two-line mdc-menu__items" role="menu" aria-hidden="true">
+                        <ul class="mdc-deprecated-list mdc-deprecated-list--two-line mdc-menu__items" role="menu" aria-hidden="true">
                         </ul>
                     </div>
                 </div>
@@ -74,19 +74,25 @@
                         <span class="mdc-line-ripple"></span>
                     </label>
                 </div>
-                <div class="mdc-select container-appointment-id-types" role="button" id="u.national_id_type" data-assigned-var>
-                    <div class="mdc-select__anchor">
+                <div class="mdc-select mdc-select--filled container-appointment-id-types" id="u.national_id_type" data-assigned-var>
+                    <div class="mdc-select__anchor" role="button">
                         <span class="mdc-select__ripple"></span>
-                        <input type="text" disabled readonly class="mdc-select__selected-text">
-                        <i class="mdc-select__dropdown-icon"></i>
                         <span class="mdc-floating-label">Tipo de identificación</span>
+                        <span class="mdc-select__selected-text-container">
+                            <span class="mdc-select__selected-text"></span>
+                        </span>
+                        <span class="mdc-select__dropdown-icon">
+                            <i class="material-icons mdc-select__dropdown-icon-active">arrow_drop_up</i>
+                            <i class="material-icons mdc-select__dropdown-icon-inactive">arrow_drop_down</i>
+                        </span>
                         <span class="mdc-line-ripple"></span>
                     </div>
-                    <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox" tabindex="0">
-                        <ul id="f-appointment-nat-id-type-select" class="mdc-list mdc-select__list">
+                    <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth" tabindex="0">
+                        <ul id="f-appointment-nat-id-type-select" class="mdc-deprecated-list mdc-select__list" role="listbox">
                             {% for id_doc in ids_docs_types %}
-                            <li class="mdc-list-item" data-value="{{ id_doc.name_short }}">
-                                <span class="mdc-list-item__text">
+                            <li class="mdc-deprecated-list-item" data-value="{{ id_doc.name_short }}">
+                                <span class="mdc-deprecated-list-item__ripple"></span>
+                                <span class="mdc-deprecated-list-item__text">
                                     {{ id_doc.name }}
                                 </span>
                             </li>
@@ -112,29 +118,39 @@
                         <span class="mdc-line-ripple"></span>
                     </label>
                 </div>
-                <div class="mdc-select container-appointment-csc--state" role="button" id="u.state" data-action-fn="getCities" data-assigned-var>
-                    <div class="mdc-select__anchor">
+                <div class="mdc-select mdc-select--filled container-appointment-csc--state" id="u.state" data-action-fn="getCities" data-assigned-var>
+                    <div class="mdc-select__anchor" role="button">
                         <span class="mdc-select__ripple"></span>
-                        <input type="text" disabled readonly class="mdc-select__selected-text">
-                        <i class="mdc-select__dropdown-icon"></i>
                         <span class="mdc-floating-label">Departamento</span>
+                        <span class="mdc-select__selected-text-container">
+                            <span class="mdc-select__selected-text"></span>
+                        </span>
+                        <span class="mdc-select__dropdown-icon">
+                            <i class="material-icons mdc-select__dropdown-icon-active">arrow_drop_up</i>
+                            <i class="material-icons mdc-select__dropdown-icon-inactive">arrow_drop_down</i>
+                        </span>
                         <span class="mdc-line-ripple"></span>
                     </div>
-                    <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox" tabindex="0">
-                        <ul id="f-appointment-department-select" class="mdc-list mdc-select__list">
+                    <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth" role="listbox" tabindex="0">
+                        <ul id="f-appointment-department-select" class="mdc-deprecated-list mdc-select__list">
                         </ul>
                     </div>
                 </div>
-                <div class="mdc-select container-appointment-csc--city" role="button" id="u.city" data-assigned-var>
-                    <div class="mdc-select__anchor">
+                <div class="mdc-select mdc-select--filled container-appointment-csc--city" id="u.city" data-assigned-var>
+                    <div class="mdc-select__anchor" role="button">
                         <span class="mdc-select__ripple"></span>
-                        <input type="text" disabled readonly class="mdc-select__selected-text">
-                        <i class="mdc-select__dropdown-icon"></i>
                         <span class="mdc-floating-label">Municipio</span>
+                        <span class="mdc-select__selected-text-container">
+                            <span class="mdc-select__selected-text"></span>
+                        </span>
+                        <span class="mdc-select__dropdown-icon">
+                            <i class="material-icons mdc-select__dropdown-icon-active">arrow_drop_up</i>
+                            <i class="material-icons mdc-select__dropdown-icon-inactive">arrow_drop_down</i>
+                        </span>
                         <span class="mdc-line-ripple"></span>
                     </div>
-                    <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox" tabindex="0">
-                        <ul id="f-appointment-city-select" class="mdc-list mdc-select__list">
+                    <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth" role="listbox" tabindex="0">
+                        <ul id="f-appointment-city-select" class="mdc-deprecated-list mdc-select__list">
                         </ul>
                     </div>
                 </div>
@@ -144,19 +160,25 @@
                 <h5 class="mdc-typography--headline5 s-font-color-primary" id="step-two">
                     Paso 2: Selecciona el servicio
                 </h5>
-                <div class="mdc-select container-appointment-service--services" role="button" data-action-fn="selectAppointmentService">
-                    <div class="mdc-select__anchor">
+                <div class="mdc-select mdc-select--filled container-appointment-service--services" data-action-fn="selectAppointmentService">
+                    <div class="mdc-select__anchor" role="button">
                         <span class="mdc-select__ripple"></span>
-                        <input type="text" disabled readonly class="mdc-select__selected-text">
-                        <i class="mdc-select__dropdown-icon"></i>
                         <span class="mdc-floating-label">Tipos de servicios</span>
+                        <span class="mdc-select__selected-text-container">
+                            <span class="mdc-select__selected-text"></span>
+                        </span>
+                        <span class="mdc-select__dropdown-icon">
+                            <i class="material-icons mdc-select__dropdown-icon-active">arrow_drop_up</i>
+                            <i class="material-icons mdc-select__dropdown-icon-inactive">arrow_drop_down</i>
+                        </span>
                         <span class="mdc-line-ripple"></span>
                     </div>
-                    <div class="mdc-select__menu mdc-menu mdc-menu-surface" role="listbox" tabindex="0">
-                        <ul id="f-appointment-service-select" class="mdc-list mdc-select__list">
+                    <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth" role="listbox" tabindex="0">
+                        <ul id="f-appointment-service-select" class="mdc-deprecated-list mdc-select__list">
                             {% for service in services %}
-                            <li class="mdc-list-item" data-value="{{ service.name_short }}">
-                                <span class="mdc-list-item__text">
+                            <li class="mdc-deprecated-list-item" data-value="{{ service.name_short }}">
+                                <span class="mdc-deprecated-list-item__ripple"></span>
+                                <span class="mdc-deprecated-list-item__text">
                                     {{ service.name }}
                                 </span>
                             </li>
@@ -180,7 +202,7 @@
                         <span class="mdc-line-ripple"></span>
                     </label>
                     <div id="searchEmployeesMenu" class="mdc-menu mdc-menu-surface container-appointmentadm-searchmenu" tabindex="-1">
-                        <ul class="mdc-list mdc-list--two-line mdc-menu__items" role="menu" aria-hidden="true">
+                        <ul class="mdc-deprecated-list mdc-deprecated-list--two-line mdc-menu__items" role="menu" aria-hidden="true">
                         </ul>
                     </div>
                 </div>
@@ -199,22 +221,22 @@
                      data-day-format="DDD" data-first-day-of-the-week="2">
                 </div>
                 <div class="jsCalendar-caption">
-                    <ul class="mdc-list mdc-list--non-interactive">
-                        <li class="mdc-list-item">
-                            <i class="mdc-list-item__graphic material-icons s-font-color-primary">trip_origin</i>
-                            <span class="mdc-list-item__text mdc-typography--subtitle2">Fecha seleccionada</span>
+                    <ul class="mdc-deprecated-list mdc-deprecated-list--non-interactive">
+                        <li class="mdc-deprecated-list-item">
+                            <i class="mdc-deprecated-list-item__graphic material-icons s-font-color-primary">trip_origin</i>
+                            <span class="mdc-deprecated-list-item__text mdc-typography--subtitle2">Fecha seleccionada</span>
                         </li>
-                        <li class="mdc-list-item">
-                            <i class="mdc-list-item__graphic material-icons jsCalendar-caption-available">trip_origin</i>
-                            <span class="mdc-list-item__text mdc-typography--subtitle2">Disponible</span>
+                        <li class="mdc-deprecated-list-item">
+                            <i class="mdc-deprecated-list-item__graphic material-icons jsCalendar-caption-available">trip_origin</i>
+                            <span class="mdc-deprecated-list-item__text mdc-typography--subtitle2">Disponible</span>
                         </li>
-                        <li class="mdc-list-item">
-                            <i class="mdc-list-item__graphic material-icons jsCalendar-caption-booked">trip_origin</i>
-                            <span class="mdc-list-item__text mdc-typography--subtitle2">Varias reservaciones</span>
+                        <li class="mdc-deprecated-list-item">
+                            <i class="mdc-deprecated-list-item__graphic material-icons jsCalendar-caption-booked">trip_origin</i>
+                            <span class="mdc-deprecated-list-item__text mdc-typography--subtitle2">Varias reservaciones</span>
                         </li>
-                        <li class="mdc-list-item">
-                            <i class="mdc-list-item__graphic material-icons jsCalendar-caption-booked-full">trip_origin</i>
-                            <span class="mdc-list-item__text mdc-typography--subtitle2">Agotado</span>
+                        <li class="mdc-deprecated-list-item">
+                            <i class="mdc-deprecated-list-item__graphic material-icons jsCalendar-caption-booked-full">trip_origin</i>
+                            <span class="mdc-deprecated-list-item__text mdc-typography--subtitle2">Agotado</span>
                         </li>
                     </ul>
                 </div>
@@ -245,29 +267,29 @@
                     Paso 6: Confirma tu cita
                 </h5>
                 <div class="container-appointment-confirm--review">
-                    <ul class="mdc-list mdc-list--non-interactive">
-                        <li class="mdc-list-item">
-                            <i class="mdc-list-item__graphic material-icons s-font-color-secondary">how_to_reg</i>
-                            <span class="mdc-list-item__text mdc-typography--body1 container-appointment-confirm--user">-</span>
+                    <ul class="mdc-deprecated-list mdc-deprecated-list--non-interactive">
+                        <li class="mdc-deprecated-list-item">
+                            <i class="mdc-deprecated-list-item__graphic material-icons s-font-color-secondary">how_to_reg</i>
+                            <span class="mdc-deprecated-list-item__text mdc-typography--body1 container-appointment-confirm--user">-</span>
                             <input type="hidden" id="app_usr_id" value="">
                         </li>
-                        <li class="mdc-list-item">
-                            <i class="mdc-list-item__graphic material-icons s-font-color-secondary">handyman</i>
-                            <span class="mdc-list-item__text mdc-typography--body1 container-appointment-confirm--service">-</span>
+                        <li class="mdc-deprecated-list-item">
+                            <i class="mdc-deprecated-list-item__graphic material-icons s-font-color-secondary">handyman</i>
+                            <span class="mdc-deprecated-list-item__text mdc-typography--body1 container-appointment-confirm--service">-</span>
                             <input type="hidden" id="app_svc_id" value="">
                         </li>
-                        <li class="mdc-list-item">
-                            <i class="mdc-list-item__graphic material-icons s-font-color-secondary">support_agent</i>
-                            <span class="mdc-list-item__text mdc-typography--body1 container-appointment-confirm--emp">-</span>
+                        <li class="mdc-deprecated-list-item">
+                            <i class="mdc-deprecated-list-item__graphic material-icons s-font-color-secondary">support_agent</i>
+                            <span class="mdc-deprecated-list-item__text mdc-typography--body1 container-appointment-confirm--emp">-</span>
                             <input type="hidden" id="app_emp_id" value="">
                         </li>
-                        <li class="mdc-list-item">
-                            <i class="mdc-list-item__graphic material-icons s-font-color-secondary">today</i>
-                            <span class="mdc-list-item__text mdc-typography--body1 container-appointment-confirm--date">-</span>
+                        <li class="mdc-deprecated-list-item">
+                            <i class="mdc-deprecated-list-item__graphic material-icons s-font-color-secondary">today</i>
+                            <span class="mdc-deprecated-list-item__text mdc-typography--body1 container-appointment-confirm--date">-</span>
                         </li>
-                        <li class="mdc-list-item">
-                            <i class="mdc-list-item__graphic material-icons s-font-color-secondary">schedule</i>
-                            <span class="mdc-list-item__text mdc-typography--body1 container-appointment-confirm--time">-</span>
+                        <li class="mdc-deprecated-list-item">
+                            <i class="mdc-deprecated-list-item__graphic material-icons s-font-color-secondary">schedule</i>
+                            <span class="mdc-deprecated-list-item__text mdc-typography--body1 container-appointment-confirm--time">-</span>
                             <input type="hidden" id="app_sch_dt" value="">
                         </li>
                     </ul>

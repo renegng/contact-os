@@ -6,13 +6,11 @@ Contact-Os, Progressive Web App
 # Requirements
 
 Swing CMS is being develop with the following libraries:
-- Python 3.6.6 (on a virtual environment)
-- Python pip 10.0.1
-- Flask 1.0.2
-- Apache HTTPD 2.4.18
-- Nginx and Gunicorn 20.0.4
-- SocketIO 2.3.0, Flask-SocketIO 4.3.0 and SimplePeer 9.7
-- libapache2-mod-wsgi-py3
+- Python 3.8 (on a virtual environment)
+- Python pip 21.2.4
+- Flask 2.0.1
+- Nginx 1.14.0 and Gunicorn 20.1.0
+- SocketIO 3.1.0, Flask-SocketIO 5.1.1 and SimplePeer 9.7
 - NodeJS 10.1.0
 - npm 6.0.1
 - npm libraries:
@@ -25,7 +23,6 @@ Swing CMS is being develop with the following libraries:
     - babel-core 
     - babel-loader
     - material-components-web
-    - aos (animation on scroll)
 
 
 # Installation steps
@@ -97,14 +94,13 @@ To install Swing CMS, follow the next steps (under Ubuntu 16.04):
 
 8 - Instal NodeJS:
 
-    ~: curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+    ~: curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 
     ~: sudo apt-get install -y nodejs
 
 9 - Execute NodeJS's npm to install all libraries needed:
 
     ~: npm install
-    ~: rm node_modules/aos/.babelrc
     ~: npm run build-prd-wp
 
 ** - AOS can sometimes generate some issues. To prevent that delete the .babelrc file under the node_modules/aos folder.
