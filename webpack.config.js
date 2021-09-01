@@ -4,8 +4,9 @@ const autoprefixer = require('autoprefixer');
 
 // Creates the general bundle
 var wpBundle = new Object({
+    // When entry is an array, only the last one in the array will be exposed through library (swcms)
+    // If all entries are to be exposed, then entry should use the object syntax and library the array name syntax
     entry: [
-        './instance/js/swing_firebase-api-init.js',
         './static/css/swing_app.scss',
         './static/js/swing_firebase.js',
         './static/js/swing_app.js'
@@ -26,7 +27,7 @@ var wpBundle = new Object({
                         [
                             '@babel/preset-env', {
                                 'useBuiltIns': 'entry',
-                                'corejs': {'version': '3', 'proposals': true},
+                                'corejs': {'version': '3.16', 'proposals': true},
                             }
                         ]
                     ],
