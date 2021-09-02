@@ -282,6 +282,12 @@ def _logoutuser():
         return jsonify({ 'status': 'error' })
 
 
+@home.route('/offline/')
+def _offline():
+    app.logger.debug('** SWING_CMS ** - Offline')
+    return render_template('offline.html')
+
+
 @home.route('/politicaprivacidad/')
 def _politicaprivacidad():
     app.logger.debug('** SWING_CMS ** - PoliticaPrivacidad')

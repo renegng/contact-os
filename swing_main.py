@@ -34,7 +34,7 @@ with app.app_context():
 
     # Register the Service Worker
     @app.route('/sw.js', methods=['GET'])
-    def serviceworker():
-        return app.send_static_file('js/sw.js')
+    def _serviceworker():
+        return app.send_static_file('js/bundle/sw.js')
 
     

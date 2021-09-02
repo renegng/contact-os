@@ -184,40 +184,6 @@ var wpAppointmentsView = new Object({
     }
 });
 
-// Creates the statistics and reports bundle
-var wpStatistics = new Object({
-    entry: [
-        './static/js/stats.js'
-    ],
-    output: {
-        filename: 'static/js/bundle/stats.min.js',
-        library: 'swsts',
-        libraryTarget: 'var',
-        path: __dirname
-    },
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                loader: 'babel-loader',
-                options: {
-                    plugins: [
-                        '@babel/plugin-proposal-class-properties'
-                    ],
-                    presets: [
-                        [
-                            '@babel/preset-env', {
-                                'useBuiltIns': 'entry',
-                                'corejs': {'version': '3', 'proposals': true},
-                            }
-                        ]
-                    ]
-                }
-            }
-        ]
-    }
-});
-
 // Creates the initiator bundle - NOT IN USE
 var wpRTCInitiator = new Object({
     entry: [
@@ -286,6 +252,74 @@ var wpRTCReceiver = new Object({
     }
 });
 
+// Creates the service worker bundle
+var wpServiceWorker = new Object({
+    entry: [
+        './static/js/serviceworker.js'
+    ],
+    output: {
+        filename: 'static/js/bundle/sw.js',
+        library: 'swsrw',
+        libraryTarget: 'var',
+        path: __dirname
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+                options: {
+                    plugins: [
+                        '@babel/plugin-proposal-class-properties'
+                    ],
+                    presets: [
+                        [
+                            '@babel/preset-env', {
+                                'useBuiltIns': 'entry',
+                                'corejs': {'version': '3', 'proposals': true},
+                            }
+                        ]
+                    ]
+                }
+            }
+        ]
+    }
+});
+
+// Creates the statistics and reports bundle
+var wpStatistics = new Object({
+    entry: [
+        './static/js/stats.js'
+    ],
+    output: {
+        filename: 'static/js/bundle/stats.min.js',
+        library: 'swsts',
+        libraryTarget: 'var',
+        path: __dirname
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+                options: {
+                    plugins: [
+                        '@babel/plugin-proposal-class-properties'
+                    ],
+                    presets: [
+                        [
+                            '@babel/preset-env', {
+                                'useBuiltIns': 'entry',
+                                'corejs': {'version': '3', 'proposals': true},
+                            }
+                        ]
+                    ]
+                }
+            }
+        ]
+    }
+});
+
 /*** Compilation of Bundles ***/
 
 // Compile all modules
@@ -295,6 +329,7 @@ module.exports = [
     wpAppointmentsEmp,
     wpAppointmentsUsr,
     wpAppointmentsView,
+    wpServiceWorker,
     wpStatistics,
     wpBundle
 ];

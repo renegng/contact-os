@@ -42,7 +42,17 @@
     "chart.js": "^3.5.1",
     "core-js": "^3.16.2",
     "litepicker": "^2.0.11",
+    "localforage": "^1.10.0",
     "material-components-web": "^12.0.0",
+    "workbox-background-sync": "^6.2.4",
+    "workbox-cacheable-response": "^6.2.4",
+    "workbox-core": "^6.2.4",
+    "workbox-expiration": "^6.2.4",
+    "workbox-google-analytics": "^6.2.4",
+    "workbox-precaching": "^6.2.4",
+    "workbox-recipes": "^6.2.4",
+    "workbox-routing": "^6.2.4",
+    "workbox-strategies": "^6.2.4",
     "workbox-window": "^6.2.4"
   }
 }

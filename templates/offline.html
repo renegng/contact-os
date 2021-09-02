@@ -1,0 +1,25 @@
+{% extends 'layout_main-footer_topbar.html' %}
+{% block page_description %}Contact-Os, Fuera de Línea, Offline, Sin conexión a internet{% endblock %}
+{% block page_title %}Offline{% endblock %}
+{% block body %}
+<main class="s-main-content">
+    <div class="container-color-background">
+        <div class="mdc-layout-grid">
+            <div class="mdc-layout-grid__inner">
+                <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet 
+                            mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--align-middle s-font-align-center">
+                    <i class="material-icons s-font-color-primary s-font-size-xl" aria-hidden="true">
+                        cloud_off
+                    </i>
+                    <p class="mdc-typography--headline5 s-font-color-secondary">
+                        Sin conexión a internet.
+                    </p>
+                    <p class="mdc-typography--overline s-font-color-secondary">
+                        Recupere conexión e intente de nuevo.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

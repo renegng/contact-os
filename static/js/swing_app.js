@@ -1,5 +1,6 @@
 /************************** IMPORTS **************************/
 
+import * as localForage from "localforage";
 import anchorme from 'anchorme';
 import 'core-js';
 import 'regenerator-runtime/runtime';
@@ -1249,14 +1250,14 @@ if (document.querySelector('.s-googlemaps')) {
 
 
 // Instance of Local Storage to retrieve SW Version
-const swStore = localforage.createInstance({
+const swStore = localForage.createInstance({
     name: 'swingcms-sw'
 });
 
 
 // Evaluate if Browser accepts Service Workers
 if ('serviceWorker' in navigator) {
-    const wb = new Workbox('/sw.js', { scope: '/' });
+    const wb = new Workbox('/sw.js');
     // Detects an update for the app's content and prompts user to refresh
     wb.addEventListener('installed', event => {
         // Retrieve SW version
