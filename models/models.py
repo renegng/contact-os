@@ -44,6 +44,7 @@ crypto_key = AESCryptoKey()
 class ElasticSearchInit():
     def __init__(self):
         self._es = None
+        self._esOn = False
     
     def init_app(self, app):
         # Validate that Elastic Search URL Exists
@@ -57,6 +58,18 @@ class ElasticSearchInit():
     @instance.setter
     def instance(self, val):
         self._es = val
+    
+    @property
+    def instanceOn(self):
+        try:
+            self._esOn = self._es.ping()
+        except Exception as e:
+            pass
+        return self._esOn
+    
+    @instanceOn.setter
+    def instanceOn(self, val):
+        self._esOn = val
 
 
 # **************************************************************************
@@ -78,7 +91,7 @@ def es_refactor_index(index):
     return ref_index
 
 def add_to_index(index, model):
-    if not es.instance:
+    if not es.instanceOn:
         return
     index = es_refactor_index(index)
     if not es.instance.indices.exists(index=index):
@@ -135,7 +148,7 @@ def add_to_index(index, model):
     es.instance.index(index=index, id=model.id, body=indexData)
 
 def query_index(index, query, page, per_page):
-    if not es.instance:
+    if not es.instanceOn:
         return [], 0
     index = es_refactor_index(index)
     search = es.instance.search(
@@ -155,7 +168,7 @@ def query_index(index, query, page, per_page):
     return ids, search['hits']['total']['value']
 
 def remove_from_index(index, model = None):
-    if not es.instance:
+    if not es.instanceOn:
         return
     index = es_refactor_index(index)
     if not model:

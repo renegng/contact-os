@@ -45,7 +45,18 @@ const fibaAuthUIConfig = {
         // Leave the lines as is for the providers you want to offer your users.
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-        firebase.auth.EmailAuthProvider.PROVIDER_ID
+        firebase.auth.EmailAuthProvider.PROVIDER_ID,
+        {
+            provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+            recaptchaParameters: {
+                type: 'image',
+                size: 'normal',
+                badge: 'inline'
+            },
+            defaultCountry: 'SV'
+            // loginHint: '+50377889900',
+            // whitelistedCountries: ['SV','US']
+        }
     ],
     // Terms of service url/callback.
     tosUrl: '/terminosdelservicio/',

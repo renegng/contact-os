@@ -215,7 +215,10 @@ def _loginuser():
         # Retrieve the uid from the JWT idToken
         idToken = request.json['idToken']
         decoded_token = auth.verify_id_token(idToken)
-        usremail = decoded_token['email']
+        
+        # Validate Firebase Sign In Provider Data - Either Email or Phone
+        firebaseData = decoded_token['firebase']
+        usremail = decoded_token['email'] if firebaseData['sign_in_provider'] != 'phone' else decoded_token['uid'] + '@no-email.org'
         uid = decoded_token['uid'] if usremail != 'admusr@contact-os.com' else 'CTOS-Administrator'
 
         # Search for the user in the DB.
@@ -227,8 +230,8 @@ def _loginuser():
             # User is not registered on DB. Insert user in DB.
             user = User()
             user.uid = uid
-            user.email = fbUser.email
-            user.name = fbUser.display_name
+            user.email = fbUser.email if firebaseData['sign_in_provider'] != 'phone' else usremail
+            user.name = fbUser.display_name if firebaseData['sign_in_provider'] != 'phone' else 'Usuari@ ' + fbUser.phone_number
             user.phonenumber = fbUser.phone_number
             user.datecreated = dt.now(tz.utc)
             user.cmuserid = 'CTOS-' + user.name.strip().upper()[0:1] + user.datecreated.strftime('-%y%m%d-%H%M%S')
