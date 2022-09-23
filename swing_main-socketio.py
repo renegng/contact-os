@@ -1,4 +1,5 @@
 from swing_main import app
+# from views.siortc import socketio
 from views.socketio import socketio
 
 socketio.init_app(app)

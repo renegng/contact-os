@@ -11,10 +11,12 @@ Swing CMS is being develop with the following libraries:
 - Flask 2.0.1
 - Nginx 1.14.0 and Gunicorn 20.1.0
 - SocketIO 3.1.0, Flask-SocketIO 5.1.1 and SimplePeer 9.7
-- NodeJS 10.1.0
-- npm 6.0.1
+- NodeJS 14.17.6
+- Elasticsearch 7.15.2
+- MySQL 8.0 or PostgreSQL 14.1
+- npm 6.14.15
 - npm libraries:
-    - webpack@4
+    - webpack@5
     - css-loader
     - sass-loader
     - node-sass
@@ -23,6 +25,7 @@ Swing CMS is being develop with the following libraries:
     - babel-core 
     - babel-loader
     - material-components-web
+    - lots more!...
 
 
 # Installation steps
@@ -43,9 +46,9 @@ To install Swing CMS, follow the next steps (under Ubuntu 16.04):
 
     ~: git clone git@github.com:renegng/contact-os.git
 
-4 - Inside the prevoius folder, install a Python 3.5 or greater virtual environment and the RDBMS (MySQL, ElasticSearch) prerequisites:
+4 - Inside the prevoius folder, install a Python 3.8 or greater virtual environment and the RDBMS (MySQL, ElasticSearch) prerequisites:
 
-    ~: [python | python3 | python3.6 | python3.x] -m venv venv
+    ~: [python | python3 | python3.8 | python3.x] -m venv venv
     ~: sudo apt-get install build-essential python3-dev libmysqlclient-dev
     ~: sudo apt-get install elasticsearch
 
@@ -72,6 +75,7 @@ To install Swing CMS, follow the next steps (under Ubuntu 16.04):
     ~: pip install flask-socketio
     ~: pip install flask-babel
     ~: pip install gunicorn[eventlet]
+    ~: pip install gevent
     ~: pip install psycopg2-binary
     ~: pip install firebase-admin
     ~: pip install mysqlclient
@@ -147,3 +151,4 @@ Proper credit for the following people/teams:
 - Icons made by <a href="https://www.flaticon.com/authors/dinosoftlabs" title="DinosoftLabs">DinosoftLabs</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 - Anchorme for URL detection and replacement
 - Sounds from <a href="https://www.zapsplat.com/" title="Zapsplat">zapsplat.com</a> and <a href="https://mixkit.co/" title="Mixkit">mixkit.com</a>
+- dev-console.macro, date-fns & crypto-js for essential and amazing JS Libraries.

@@ -34,6 +34,11 @@
     $on-surface: stv.$swing-theme-on-surface
 );
 
+@use "@material/typography" with (
+    $font-family: stv.$swing-typography-font-family
+);
+@use "@material/typography/mdc-typography";
+
 /* Import of Material Components */
 /* These are the Material Components utilized within the project */
 
@@ -98,8 +103,6 @@
 @use "@material/textfield/mdc-text-field";
 @use "@material/top-app-bar";
 @use "@material/top-app-bar/mdc-top-app-bar";
-@use "@material/typography";
-@use "@material/typography/mdc-typography";
 
 /* Default Components Styles */
 // @use "@material/button/styles" as button-style;

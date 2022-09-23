@@ -23,9 +23,14 @@ var wpBundle = new Object({
                 test: /\.js$/,
                 loader: 'babel-loader',
                 options: {
+                    plugins: [
+                        '@babel/plugin-proposal-class-properties',
+                        'babel-plugin-macros'
+                    ],
                     presets: [
                         [
                             '@babel/preset-env', {
+                                'modules': false,
                                 'useBuiltIns': 'entry',
                                 'corejs': {'version': '3.16', 'proposals': true},
                             }
@@ -96,11 +101,13 @@ var wpAppointmentsEmp = new Object({
                 loader: 'babel-loader',
                 options: {
                     plugins: [
-                        '@babel/plugin-proposal-class-properties'
+                        '@babel/plugin-proposal-class-properties',
+                        'babel-plugin-macros'
                     ],
                     presets: [
                         [
                             '@babel/preset-env', {
+                                'modules': false,
                                 'useBuiltIns': 'entry',
                                 'corejs': {'version': '3', 'proposals': true},
                             }
@@ -131,11 +138,13 @@ var wpAppointmentsUsr = new Object({
                 loader: 'babel-loader',
                 options: {
                     plugins: [
-                        '@babel/plugin-proposal-class-properties'
+                        '@babel/plugin-proposal-class-properties',
+                        'babel-plugin-macros'
                     ],
                     presets: [
                         [
                             '@babel/preset-env', {
+                                'modules': false,
                                 'useBuiltIns': 'entry',
                                 'corejs': {'version': '3', 'proposals': true},
                             }
@@ -168,79 +177,13 @@ var wpAppointmentsView = new Object({
                 loader: 'babel-loader',
                 options: {
                     plugins: [
-                        '@babel/plugin-proposal-class-properties'
+                        '@babel/plugin-proposal-class-properties',
+                        'babel-plugin-macros'
                     ],
                     presets: [
                         [
                             '@babel/preset-env', {
-                                'useBuiltIns': 'entry',
-                                'corejs': {'version': '3', 'proposals': true},
-                            }
-                        ]
-                    ]
-                }
-            }
-        ]
-    }
-});
-
-// Creates the initiator bundle - NOT IN USE
-var wpRTCInitiator = new Object({
-    entry: [
-        './static/js/rtc-initiator.js'
-    ],
-    output: {
-        filename: 'static/js/bundle/rtc-initiator.min.js',
-        library: 'swrtc',
-        libraryTarget: 'var',
-        path: __dirname
-    },
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                loader: 'babel-loader',
-                options: {
-                    plugins: [
-                        '@babel/plugin-proposal-class-properties'
-                    ],
-                    presets: [
-                        [
-                            '@babel/preset-env', {
-                                'useBuiltIns': 'entry',
-                                'corejs': {'version': '3', 'proposals': true},
-                            }
-                        ]
-                    ]
-                }
-            }
-        ]
-    }
-});
-
-// Creates the receiver bundle - NOT IN USE
-var wpRTCReceiver = new Object({
-    entry: [
-        './static/js/rtc-receiver.js'
-    ],
-    output: {
-        filename: 'static/js/bundle/rtc-receiver.min.js',
-        library: 'swrtc',
-        libraryTarget: 'var',
-        path: __dirname
-    },
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                loader: 'babel-loader',
-                options: {
-                    plugins: [
-                        '@babel/plugin-proposal-class-properties'
-                    ],
-                    presets: [
-                        [
-                            '@babel/preset-env', {
+                                'modules': false,
                                 'useBuiltIns': 'entry',
                                 'corejs': {'version': '3', 'proposals': true},
                             }
@@ -270,11 +213,85 @@ var wpServiceWorker = new Object({
                 loader: 'babel-loader',
                 options: {
                     plugins: [
-                        '@babel/plugin-proposal-class-properties'
+                        '@babel/plugin-proposal-class-properties',
+                        'babel-plugin-macros'
                     ],
                     presets: [
                         [
                             '@babel/preset-env', {
+                                'modules': false,
+                                'useBuiltIns': 'entry',
+                                'corejs': {'version': '3', 'proposals': true},
+                            }
+                        ]
+                    ]
+                }
+            }
+        ]
+    }
+});
+
+// Creates the initiator bundle
+var wpSIORTCInitiator = new Object({
+    entry: [
+        './static/js/sio-rtc-initiator.js'
+    ],
+    output: {
+        filename: 'static/js/bundle/sio-rtc-initiator.min.js',
+        library: 'swsiortc',
+        libraryTarget: 'var',
+        path: __dirname
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+                options: {
+                    plugins: [
+                        '@babel/plugin-proposal-class-properties',
+                        'babel-plugin-macros'
+                    ],
+                    presets: [
+                        [
+                            '@babel/preset-env', {
+                                'modules': false,
+                                'useBuiltIns': 'entry',
+                                'corejs': {'version': '3', 'proposals': true},
+                            }
+                        ]
+                    ]
+                }
+            }
+        ]
+    }
+});
+
+// Creates the receiver bundle
+var wpSIORTCReceiver = new Object({
+    entry: [
+        './static/js/sio-rtc-receiver.js'
+    ],
+    output: {
+        filename: 'static/js/bundle/sio-rtc-receiver.min.js',
+        library: 'swsiortc',
+        libraryTarget: 'var',
+        path: __dirname
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+                options: {
+                    plugins: [
+                        '@babel/plugin-proposal-class-properties',
+                        'babel-plugin-macros'
+                    ],
+                    presets: [
+                        [
+                            '@babel/preset-env', {
+                                'modules': false,
                                 'useBuiltIns': 'entry',
                                 'corejs': {'version': '3', 'proposals': true},
                             }
@@ -304,11 +321,13 @@ var wpStatistics = new Object({
                 loader: 'babel-loader',
                 options: {
                     plugins: [
-                        '@babel/plugin-proposal-class-properties'
+                        '@babel/plugin-proposal-class-properties',
+                        'babel-plugin-macros'
                     ],
                     presets: [
                         [
                             '@babel/preset-env', {
+                                'modules': false,
                                 'useBuiltIns': 'entry',
                                 'corejs': {'version': '3', 'proposals': true},
                             }
@@ -324,8 +343,8 @@ var wpStatistics = new Object({
 
 // Compile all modules
 module.exports = [
-    // wpRTCInitiator,
-    // wpRTCReceiver,
+    wpSIORTCInitiator,
+    wpSIORTCReceiver,
     wpAppointmentsEmp,
     wpAppointmentsUsr,
     wpAppointmentsView,

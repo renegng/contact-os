@@ -162,9 +162,10 @@ def _chat():
     try:
         # Validate if the user has a Valid Session and Redirects
         response = isUserLoggedInRedirect('chat', 'redirect')
-        if response is not None: return response
-        
-        return render_template('chat.html')
+        if response is not None:
+            return response
+        else:
+            return render_template('chat.html')
     except Exception as e:
         app.logger.error('** SWING_CMS ** - Try Chat Error: {}'.format(e))
         return jsonify({ 'status': 'error' })
@@ -184,12 +185,6 @@ def _chat_home():
     return render_template('chat_home.html')
 
 
-# @home.route('/components/')
-# def _components():
-#     app.logger.debug('** SWING_CMS ** - Components')
-#     return render_template('components.html')
-
-
 @home.route('/home/')
 @login_required
 def _home():
@@ -200,7 +195,16 @@ def _home():
 @home.route('/login/')
 def _login():
     app.logger.debug('** SWING_CMS ** - Login')
-    return render_template('login.html')
+    try:
+        # Validate if the user has a Valid Session and Redirects
+        response = isUserLoggedInRedirect('login', 'redirect')
+        if response is not None:
+            return response
+        else:
+            return render_template('login.html')
+    except Exception as e:
+        app.logger.error('** SWING_CMS ** - Login Error: {}'.format(e))
+        return jsonify({ 'status': 'error' })
 
 
 @home.route('/loginuser/', methods=['POST'])
@@ -216,23 +220,33 @@ def _loginuser():
         idToken = request.json['idToken']
         decoded_token = auth.verify_id_token(idToken)
         
-        # Validate Firebase Sign In Provider Data - Either Email or Phone
-        firebaseData = decoded_token['firebase']
-        usremail = decoded_token['email'] if firebaseData['sign_in_provider'] != 'phone' else decoded_token['uid'] + '@no-email.org'
+        usremail = decoded_token['email'] if 'email' in decoded_token else None
         uid = decoded_token['uid'] if usremail != 'admusr@contact-os.com' else 'CTOS-Administrator'
 
         # Search for the user in the DB.
         user = User.query.filter_by(uid = uid).first()
         if user is None:
-            # Retrieve Firebase's User info
-            fbUser = auth.get_user(uid)
+            # Retrieve Firebase User info
+            fibaUser = auth.get_user(uid)
+            # Validate Firebase Sign In Provider Data
+            fibaData = decoded_token['firebase']
+            # Update User Display Name and Email if Sign In Provider is Phone
+            if fibaData['sign_in_provider'] == 'phone':
+                fibaUserDisplayName = 'Usuari@ ' + fibaUser.phone_number
+                fibaUserEmail = uid + '@no-email.org'
+
+                fibaUser = auth.update_user(
+                    uid,
+                    email = fibaUserEmail,
+                    display_name =  fibaUserDisplayName
+                )
 
             # User is not registered on DB. Insert user in DB.
             user = User()
             user.uid = uid
-            user.email = fbUser.email if firebaseData['sign_in_provider'] != 'phone' else usremail
-            user.name = fbUser.display_name if firebaseData['sign_in_provider'] != 'phone' else 'Usuari@ ' + fbUser.phone_number
-            user.phonenumber = fbUser.phone_number
+            user.email = fibaUser.email
+            user.name = fibaUser.display_name
+            user.phonenumber = fibaUser.phone_number
             user.datecreated = dt.now(tz.utc)
             user.cmuserid = 'CTOS-' + user.name.strip().upper()[0:1] + user.datecreated.strftime('-%y%m%d-%H%M%S')
             db.session.add(user)
@@ -248,6 +262,7 @@ def _loginuser():
             db.session.add(user_userxrole)
 
             db.session.commit()
+
             app.logger.info('** SWING_CMS ** - LoginUser added: {}'.format(user.id))
         
         # Create User Session

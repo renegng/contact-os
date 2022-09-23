@@ -1,9 +1,10 @@
 /************************** IMPORTS **************************/
 
-import * as localForage from "localforage";
-import anchorme from 'anchorme';
 import 'core-js';
 import 'regenerator-runtime/runtime';
+import anchorme from 'anchorme';
+import console from 'dev-console.macro';
+import * as localForage from "localforage";
 import { accountRedirect } from './swing_firebase';
 import { MDCDialog } from '@material/dialog';
 import { MDCDrawer } from "@material/drawer";
@@ -468,46 +469,6 @@ function startUserMedia(av, state) {
     });
 }
 
-// Snackbar Data for Failed Get User Media Devices
-const failedGetUserMediaSBDataObj = {
-    actionHandler: () => { console.log('GetUserMedia Devices Failed...'); },
-    actionText: 'OK',
-    message: 'Por favor habilite el acceso a la cámara y/o micrófono.',
-    timeout: 10000
-};
-
-// Snackbar Data for Connecting Peers
-const conPeerSBDataObj = {
-    actionHandler: () => { console.log('Connecting to user...'); },
-    actionText: 'OK',
-    message: 'Conectando con Usuari@.',
-    timeout: 4500
-};
-
-// Snackbar Data for Disconnecting Peers
-const disconPeerSBDataObj = {
-    actionHandler: () => { console.log('User disconnected.'); },
-    actionText: 'OK',
-    message: 'Usuari@ desconectad@.',
-    timeout: 10000
-};
-
-// Snackbar Data for Transfering Peers
-const transferPeerSBDataObj = {
-    actionHandler: () => { console.log('Transfering user...'); },
-    actionText: 'OK',
-    message: 'Usuari@ transferid@.',
-    timeout: 5000
-};
-
-// Snackbar Data for Receiving Transferral Peers
-const transferralPeerSBDataObj = {
-    actionHandler: () => { console.log('User transferral received.'); },
-    actionText: 'OK',
-    message: 'Usuari@ asignad@.',
-    timeout: 10000
-};
-
 // Show or Hide Audio/Video Call UI
 export function displayCallUI(state, av = '') {
     switch (state) {
@@ -752,24 +713,6 @@ export function stopVideo() {
 window.stopVideo = stopVideo;
 
 
-// Show Tabs Content
-export function showTabContent(e) {
-    var tabId = e.target.id;
-    var tabIndex = e.detail.index;
-    var tabsContentId = tabId + "-content";
-    var tabsContentEl = document.getElementById(tabsContentId);
-    Array.from(tabsContentEl.getElementsByClassName('s-article__text')).forEach((elem) => {
-        if (elem.tabIndex == tabIndex) {
-            elem.classList.remove('s-article__text--hidden');
-            elem.classList.add('s-article__text--show');
-        } else {
-            elem.classList.add('s-article__text--hidden');
-            elem.classList.remove('s-article__text--show');
-        }
-    });
-}
-
-
 // Snackbar init function
 let sbCurrEvent = null;
 export function initSnackbar(sb, initObject) {
@@ -805,6 +748,45 @@ export function initSnackbar(sb, initObject) {
 /* Allow 'window' context to reference the function */
 window.initSnackbar = initSnackbar;
 
+// Snackbar Data for Failed Get User Media Devices
+const failedGetUserMediaSBDataObj = {
+    actionHandler: () => { console.log('GetUserMedia Devices Failed...'); },
+    actionText: 'OK',
+    message: 'Por favor habilite el acceso a la cámara y/o micrófono.',
+    timeout: 10000
+};
+
+// Snackbar Data for Connecting Peers
+const conPeerSBDataObj = {
+    actionHandler: () => { console.log('Connecting to user...'); },
+    actionText: 'OK',
+    message: 'Conectando con Usuari@.',
+    timeout: 4500
+};
+
+// Snackbar Data for Disconnecting Peers
+const disconPeerSBDataObj = {
+    actionHandler: () => { console.log('User disconnected.'); },
+    actionText: 'OK',
+    message: 'Usuari@ desconectad@.',
+    timeout: 10000
+};
+
+// Snackbar Data for Transfering Peers
+const transferPeerSBDataObj = {
+    actionHandler: () => { console.log('Transfering user...'); },
+    actionText: 'OK',
+    message: 'Usuari@ transferid@.',
+    timeout: 5000
+};
+
+// Snackbar Data for Receiving Transferral Peers
+const transferralPeerSBDataObj = {
+    actionHandler: () => { console.log('User transferral received.'); },
+    actionText: 'OK',
+    message: 'Usuari@ asignad@.',
+    timeout: 10000
+};
 
 // Show Snackbars of User Connection and Disconnection
 export function showUserRTCConSnackbar(state, arg = '') {
@@ -898,25 +880,14 @@ window.accountRedirect = accountRedirect;
 /************************** MATERIAL DESIGN COMPONENTS INIT **************************/
 
 // Material Dialog
-var assignedDialogEl = document.querySelector('#assigned-dialog');
-if (assignedDialogEl) {
-    mdcAssignedDialogEl = new MDCDialog(assignedDialogEl);
-}
-
-var disconnectedDialogEl = document.querySelector('#disconnected-dialog');
-if (disconnectedDialogEl) {
-    mdcDisconnectedDialogEl = new MDCDialog(disconnectedDialogEl);
-}
-
-var endRTCDialogEl = document.querySelector('#endrtc-dialog');
-if (endRTCDialogEl) {
-    mdcEndRTCDialogEl = new MDCDialog(endRTCDialogEl);
-}
-
-var transferDialogEl = document.querySelector('#transfer-dialog');
-if (transferDialogEl) {
-    mdcTransferDialogEl = new MDCDialog(transferDialogEl);
-}
+export var mdcDialogs = [].map.call(document.querySelectorAll('.mdc-dialog'), function (el) {
+    let mdcDialog = new MDCDialog(el);
+    if (el.hasAttribute('data-assigned-var')) {
+        MDCDialog.prototype.assignedVar = null;
+        mdcDialog.assignedVar = el.getAttribute('id');
+    }
+    return mdcDialog;
+});
 
 
 // Material Drawer & Top App Bar
@@ -1068,7 +1039,7 @@ var mdcLineRipples = [].map.call(document.querySelectorAll('.mdc-line-ripple'), 
 // Material Linear Progress
 export const mdcTopBarLoading = new MDCLinearProgress(document.querySelector('.s-topbar-loading'));
 
-var mdcLinearProgress = [].map.call(document.querySelectorAll('.mdc-linear-progress:not(.s-topbar-loading)'), function (el) {
+export var mdcLinearProgress = [].map.call(document.querySelectorAll('.mdc-linear-progress:not(.s-topbar-loading)'), function (el) {
     return new MDCLinearProgress(el);
 });
 
@@ -1119,13 +1090,13 @@ var mdcNotchedOutlines = [].map.call(document.querySelectorAll('.mdc-notched-out
 
 
 // Material Radio Buttons
-var mdcRadioButtons = [].map.call(document.querySelectorAll('.mdc-radio'), function (el) {
+export var mdcRadioButtons = [].map.call(document.querySelectorAll('.mdc-radio'), function (el) {
     return new MDCRadio(el);
 });
 
 
 // Material Ripple
-var mdcRippleElms = [].map.call(document.querySelectorAll('.mdc-icon-button'), function (el) {
+export var mdcRippleElms = [].map.call(document.querySelectorAll('.mdc-icon-button'), function (el) {
     return new MDCRipple(el);
 });
 mdcRippleElms.forEach((elem) => {
@@ -1157,7 +1128,7 @@ export var mdcSelects = [].map.call(document.querySelectorAll('.mdc-select'), fu
 
 
 // Material Tab
-var mdcTabBars = [].map.call(document.querySelectorAll('.mdc-tab-bar'), function (el) {
+export var mdcTabBars = [].map.call(document.querySelectorAll('.mdc-tab-bar'), function (el) {
     let mdcTab = new MDCTabBar(el);
     let actionFn = el.getAttribute('data-action-fn');
     if (actionFn) {
@@ -1170,7 +1141,6 @@ var mdcTabBars = [].map.call(document.querySelectorAll('.mdc-tab-bar'), function
     }
     return mdcTab;
 });
-// document.querySelector('#mdc-tab-bar__id-noticias').addEventListener('MDCTabBar:activated', evt => showTabContent(evt));
 
 
 // Material Textfields

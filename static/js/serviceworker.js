@@ -19,7 +19,6 @@ const swStore = localForage.createInstance({
 const filesToPreCache = [
     // Web pages
     { url: '/', revision: '2021-09-02-1' },
-    { url: '/login/', revision: '2021-09-02-1' },
     { url: '/offline/', revision: '2021-09-02-1' },
     { url: '/politicaprivacidad/', revision: '2021-09-02-1' },
     { url: '/terminosdelservicio/', revision: '2021-09-02-1' },

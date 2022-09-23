@@ -112,13 +112,8 @@ def getUserRedirectURL(user, origin):
     try:
         redirectURL = '/'
 
-        # Validate User Login Redirect URL
-        if origin == 'loginuser':
-            # Set URL for regular registered user
-            redirectURL = '/home/'
-
         # Validate Try Chat Redirect URL
-        elif origin == 'chat':
+        if origin == 'chat':
             # Set URL for regular registered user
             redirectURL = '/chat/home/'
 
@@ -127,6 +122,11 @@ def getUserRedirectURL(user, origin):
                 # Check if user has a different role than user
                 if role.user_role.name_short != 'usr':
                     redirectURL = '/chat/admin/'
+        
+        # Validate User Login Redirect URL
+        elif origin == 'login' or origin == 'loginuser':
+            # Set URL for regular registered user
+            redirectURL = '/home/'
 
         
         return redirectURL

@@ -2,16 +2,87 @@
 // Newest Firebase SDK9 is not compatible with FirebaseUI yet
 import { default as fibaKey } from '../../instance/js/swing_firebase-key.json';
 import { advStreams, postFetch } from './swing_app';
+import * as localForage from "localforage";
+import console from 'dev-console.macro';
 
-// Initialize Firebase
 const fibaConfig = fibaKey.firebaseConfig;
-firebase.initializeApp(fibaConfig);
+var fibaApp, fibaAnalytics, fibaAuthUI;
+// Avoids onAuthStateChanged initializeRTC on Signing Out
+var userSignsOut = false;
+
+// Validate if Firebase is already initialized
+if (!firebase.apps.length) {
+    // Initialize Firebase
+    fibaApp = firebase.initializeApp(fibaConfig);
+
+    // Initialize FirebaseUI
+    fibaAuthUI = new firebaseui.auth.AuthUI(fibaApp.auth());
+    
+    // Get Signed-In User info
+    fibaApp.auth().onAuthStateChanged((user) => {
+        // Create a Local Storage to retrieve User Firebase Info 
+        const usrStore = localForage.createInstance({
+            name: 'swingcms-usr'
+        });
+
+        if (user) {
+            // User is signed in
+            console.log('Firebase User Info found');
+            advStreams.myUserInfo.name = user.displayName;
+            advStreams.myUserInfo.photoURL = (user.photoURL) ? user.photoURL : '/static/images/manifest/user_f.svg';
+            if (document.querySelector('#accountIcon')) {
+                document.querySelector('#accountIcon').classList.add('container--hidden');
+                document.querySelector('#accountImage').src = advStreams.myUserInfo.photoURL;
+                document.querySelector('#accountImage').classList.remove('container--hidden');
+                document.querySelector('#accountLogIn').classList.add('container--hidden');
+                document.querySelector('#accountLogOut').classList.remove('container--hidden');
+            }
+        } else {
+            // User is not signed in
+            console.log('Firebase User Info not found');
+            advStreams.myUserInfo.name = 'Anonim@';
+            advStreams.myUserInfo.photoURL = '/static/images/manifest/user_f.svg';
+        }
+
+        // Store User Firebase Info
+        usrStore.getItem('usrInfo').then((val) => {
+            let uInfo = {
+                'u_name': advStreams.myUserInfo.name,
+                'p_url': advStreams.myUserInfo.photoURL
+            }
+            // If no User Firebase Info is found
+            if (!val) {
+                // Store User Firebase Info
+                usrStore.setItem('usrInfo', JSON.stringify(uInfo)).then((val) => {
+                    console.log('User Info Created: ' + val);
+                    // Initialize SocketIO connection after User Firebase Info Stored, while on Chat
+                    if (document.querySelector('.container-chat') && !userSignsOut) {
+                        console.log('FIBA: Initializing SocketIO/SimplePeer');
+                        swsiortc.initializeSIORTC(JSON.parse(val));
+                    }
+                });
+            } else {
+                // Update User Firebase Info
+                usrStore.setItem('usrInfo', JSON.stringify(uInfo)).then((val) => {
+                    console.log('User Info Updated: ' + val);
+                });
+            }
+        });
+
+        // When a RTC Connection Intent exists, it executes signaling
+        if (document.querySelector('.container-chat') && !userSignsOut) {
+            initializeRTC();
+        }
+    });
+} else {
+    fibaApp = firebase.app();
+    fibaAuthUI = firebaseui.auth.AuthUI.getInstance();
+}
 
 // Initialize Firebase Analytics
-const fibaAnalytics = firebase.analytics();
-
-// Initialize FirebaseUI
-var fibaAuthUI = new firebaseui.auth.AuthUI(firebase.auth());
+if (firebase.apps.length) {
+    fibaAnalytics = fibaApp.analytics();
+}
 
 // FirebaseUI Config
 const fibaAuthUIConfig = {
@@ -45,7 +116,6 @@ const fibaAuthUIConfig = {
         // Leave the lines as is for the providers you want to offer your users.
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-        firebase.auth.EmailAuthProvider.PROVIDER_ID,
         {
             provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
             recaptchaParameters: {
@@ -56,7 +126,8 @@ const fibaAuthUIConfig = {
             defaultCountry: 'SV'
             // loginHint: '+50377889900',
             // whitelistedCountries: ['SV','US']
-        }
+        },
+        firebase.auth.EmailAuthProvider.PROVIDER_ID
     ],
     // Terms of service url/callback.
     tosUrl: '/terminosdelservicio/',
@@ -69,36 +140,6 @@ if (document.querySelector('#firebaseui-auth-container')) {
     fibaAuthUI.start('#firebaseui-auth-container', fibaAuthUIConfig);
 }
 
-// Avoids onAuthStateChanged initializeRTC on Signing Out
-var userSignsOut = false;
-
-// Get Signed-In User info
-firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        // User is signed in
-        console.log('Firebase User Info found');
-        advStreams.myUserInfo.name = user.displayName;
-        advStreams.myUserInfo.photoURL = (user.photoURL) ? user.photoURL : '/static/images/manifest/user_f.svg';
-        if (document.querySelector('#accountIcon')) {
-            document.querySelector('#accountIcon').classList.add('container--hidden');
-            document.querySelector('#accountImage').src = advStreams.myUserInfo.photoURL;
-            document.querySelector('#accountImage').classList.remove('container--hidden');
-            document.querySelector('#accountLogIn').classList.add('container--hidden');
-            document.querySelector('#accountLogOut').classList.remove('container--hidden');
-        }
-    } else {
-        // User is not signed in
-        console.log('Firebase User Info not found');
-        advStreams.myUserInfo.name = 'Anonim@';
-        advStreams.myUserInfo.photoURL = '/static/images/manifest/user_f.svg';
-    }
-
-    // When a RTC Connection Intent exists, it executes signaling
-    if (document.querySelector('.container-chat') && !userSignsOut) {
-        initializeRTC();
-    }
-});
-
 // Account LogIn/LogOut Redirect
 export function accountRedirect(e) {
     if (e.detail.index == 0) {
@@ -106,7 +147,7 @@ export function accountRedirect(e) {
         window.location.href = '/login/';
     } else if (e.detail.index == 1) {
         // Log Out User
-        firebase.auth().signOut().then(function() {
+        fibaApp.auth().signOut().then(function() {
             // Firebase Sign-out successful. Proceed to close sessions
             // SocketIO disconnect session
             console.log('Signing out...');
